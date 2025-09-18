@@ -1,0 +1,17 @@
+Models:
+  model_bt_node:
+    python_handlers:
+      resume_protocol : resume_protocol_handler
+      start_streaming : start_streaming_handler
+    c_handlers:
+      dummy_commands:
+    triggers:
+      model_power_meter:
+  model_power_meter:
+    python_handlers:
+      add_activity : add_power_activity_handler
+    c_handlers:
+      dummy_commands:
+    triggers:
+      model_bt_node:
+

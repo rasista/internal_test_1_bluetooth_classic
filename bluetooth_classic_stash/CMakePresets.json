@@ -1,0 +1,47 @@
+{
+    "version": 6,
+    "include": [
+        "../../cmake/preset/compiler.json",
+        "../../cmake/preset/die.json"
+    ],
+    "vendor": {
+    "silabs.com/sled": {
+        "components": {
+            "bluetooth_classic_rail_interface": {
+                "presets": ["cortex/m33" , "cortex/m55"],
+                "targets": ["btc_hal"]
+            }
+        }
+    }
+},
+    "configurePresets": [
+        {"hidden": true, "name": "root", "environment": {"SLED_ROOT":  "$env{GSDK}"}},
+        {"name": "cortex/m33", "inherits": ["root", "gcc", "variant-cortex-m33"], "cacheVariables": {"INSTALL_PREFIX": "$env{BTC}/inc" , "CHIP_NAME": "sixg300xilpwh72000fpga"}},
+        {"name": "cortex/m55", "inherits": ["root", "gcc",  "variant-cortex-m55"], "cacheVariables": {"INSTALL_PREFIX": "$env{BTC}/inc", "CHIP_NAME": "sixg300xilpwh74000fpga"}},
+        {"name": "x86/64", "inherits": ["root", "gcc", "variant-x86-64"], "cacheVariables": {"INSTALL_PREFIX": "$env{BTC}/inc"}}
+
+    ],
+
+    "buildPresets": [
+        {"name": "cortex/m33/release/build", "configurePreset": "cortex/m33", "configuration": "release"  , "targets": ["all"]},
+        {"name": "cortex/m33/debug/build", "configurePreset": "cortex/m33", "configuration": "debug"  , "targets": ["all"]},
+        {"name": "cortex/m33/release/install", "configurePreset": "cortex/m33", "configuration": "release" ,  "targets": ["install"]},
+        {"name": "cortex/m33/debug/install", "configurePreset": "cortex/m33", "configuration": "debug" ,"targets": ["install"]},
+        {"name": "cortex/m55/release/build", "configurePreset": "cortex/m55", "configuration": "release" ,"targets": ["all"]},
+        {"name": "cortex/m55/debug/build", "configurePreset": "cortex/m55", "configuration": "debug" ,"targets": ["all"]},
+        {"name": "cortex/m55/release/install", "configurePreset": "cortex/m55", "configuration": "release" ,"targets": ["install"]},
+        {"name": "cortex/m55/debug/install", "configurePreset": "cortex/m55", "configuration": "debug", "targets": ["install"]},
+        {"name": "x86-64/debug/build", "configurePreset": "x86/64", "configuration": "debug", "targets": ["all"]},
+        {"name": "x86-64/debug/install", "configurePreset": "x86/64", "configuration": "debug", "targets": ["install"]},
+        {"name": "cortex/m33/release/build-slow", "configurePreset": "cortex/m33", "configuration": "release",  "targets": ["all"] , "jobs" :1},
+        {"name": "cortex/m55/release/build-slow", "configurePreset": "cortex/m55", "configuration": "release" , "targets": ["all"] , "jobs" :1}
+    ],
+
+    "workflowPresets": [
+        {"name": "cortex/m33", "steps": [{"type": "configure", "name": "cortex/m33"}, {"type": "build", "name": "cortex/m33/release/build"}, {"type": "build", "name": "cortex/m33/debug/build"}, {"type": "build", "name": "cortex/m33/release/install"} , {"type": "build", "name": "cortex/m33/debug/install"}]}, 
+        {"name": "cortex/m55", "steps": [{"type": "configure", "name": "cortex/m55"}, {"type": "build", "name": "cortex/m55/release/build"}, {"type": "build", "name": "cortex/m55/debug/build"}, {"type": "build", "name": "cortex/m55/release/install"} , {"type": "build", "name": "cortex/m55/debug/install"}]},
+        {"name": "cortex/m33-slow", "steps": [{"type": "configure", "name": "cortex/m33"}, {"type": "build", "name": "cortex/m33/release/build-slow"}]},
+        {"name": "cortex/m55-slow", "steps": [{"type": "configure", "name": "cortex/m55"}, {"type": "build", "name": "cortex/m55/release/build-slow"}]}
+    ]
+    
+}

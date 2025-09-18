@@ -1,0 +1,30 @@
+# Lines starting with # are comments.
+
+# Groups starting with RG such as RG_PlatformBringUp, RG_PlatformService, RG_PlatformDriver, RG_PlatformMisc, RG_PlatformInfra, RG_PlatformCPC, RG_Platform
+# are native BitBucket Reviewer Groups. Their content is available on the stash frontend only to admins, but can be read by anyone through the REST API at
+# 
+# DL.GSDK.Reviewer-Groups.Leads is a DL for giving admin access to management for the purpose of modifying user groups
+# This can be done by visiting https://stash.silabs.com/projects/BTDM_AUDIO/repos/bluetooth_classic/settings/reviewer-groups
+
+### User Groups
+#BTDM Audio Leads
+
+# Plugin settings
+CODEOWNERS.toplevel.auto_unapprove_on_change enable
+
+@@@btdm_audio_reviewers @@dl.btdm_audio_reviewers
+
+# Global CodeOwners
+** @@btdm_audio_reviewers
+(Check(@@btdm_audio_reviewers >= 2))
+
+# Devops CodeOwners
+devops_dependencies.sh              @@Devops
+Jenkinsfile                         @@Devops
+**/*.Jenkinsfile                    @@Devops
+(Check(@@Devops >= 1))
+Dockerfile                          @@Devops @btdm_audio_reviewers
+(Check(@@Devops >= 1) | Check(@@btdm_audio_reviewers >= 1))
+
+CODEOWNERS                          @@btdm_audio_reviewers @@Devops
+(Check(@@Devops >= 1) | Check(@@btdm_audio_reviewers >= 1))

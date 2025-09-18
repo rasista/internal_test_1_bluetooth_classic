@@ -1,0 +1,5 @@
+model_controller add_process_request <process_name> <periodicity> <min_time> <max_time> <gstart_priority> <end_priority> <start_time> <Master=1/Slave=0> <Tx=1/Rx=0>
+
+#invoke 5000 model_ull add_process_request sco 7500 3750 3750 100 60 6500 1 1
+#invoke 5003 model_ull add_process_request esco 7500 3750 3750 110 60 6500 1 0
+#invoke 5005 model_ull add_process_request sniff 100000 5000 5000 130 90 6500 1 1

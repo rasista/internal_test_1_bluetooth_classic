@@ -1,0 +1,21 @@
+sm_name : esco_central_sm
+includes: 
+  - device_management/procedure_triggers.yaml
+  
+states:
+  esco_central_sm_idle:
+    START_PROCEDURE: esco_central_start_procedure_handler
+  ESCO_CENTRAL_TX_SCHEDULED:
+    TX_DONE: esco_central_tx_done_handler
+    TX_ABORT: esco_central_tx_abort_handler
+  ESCO_CENTRAL_RX_HEADER_SCHEDULED:
+    RX_TIMEOUT: esco_central_rx_timeout_handler
+    RX_ABORT: esco_central_rx_timeout_handler
+    RX_HEADER_RECEIVED: esco_central_rx_header_done_handler
+  ESCO_CENTRAL_RX_COMPLETE_SCHEDULED:
+    RX_DONE: esco_central_rx_complete_handler
+    RX_ABORT: esco_central_rx_timeout_handler
+    RX_TIMEOUT: esco_central_rx_timeout_handler
+  ESCO_RETRANSMIT_CENTRAL_TX_SCHEDULED:
+    TX_DONE: esco_central_tx_done_handler
+    TX_ABORT: esco_central_tx_abort_handler

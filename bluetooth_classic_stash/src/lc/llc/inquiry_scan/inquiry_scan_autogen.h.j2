@@ -1,0 +1,33 @@
+#ifndef INQUIRY_SCAN_AUTOGEN_H_
+#define INQUIRY_SCAN_AUTOGEN_H_
+#include "state_machine.h"
+#include "btc_device.h"
+
+extern sm_t inquiry_scan_sm_cb;
+
+typedef enum inquiry_scan_states_s {
+{% for state in list_states %}
+    {{ state }},
+{% endfor%}
+    {{ sm_name }}_STATE_MAX
+} inquiry_scan_states_t;
+
+
+/*typedef enum inquiry_scan_triggers_s {
+{% for trigger in list_triggers %}
+    //{{ sm_name }}_{{ trigger }},
+    {{ trigger }},
+{% endfor%}
+    {{ sm_name }}_TRIGGER_MAX
+} inquiry_scan_triggers_t;
+*/
+
+{% macro generate_handler_protoypes()%}
+{% for handler in list_handlers %}
+void {{handler}}(sm_t *inquiry_scan_sm_cb, uint8_t trigger);
+{% endfor %}
+{% endmacro%}
+
+{{ generate_handler_protoypes() -}}
+
+#endif

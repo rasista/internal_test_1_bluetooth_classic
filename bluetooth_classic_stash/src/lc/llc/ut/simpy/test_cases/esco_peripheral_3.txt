@@ -1,0 +1,19 @@
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_device_parameters_esco {"set_device_parameters_esco":{"is_edr":1,"is_esco":1,"connection_device_index":0,"lt_addr":2,"flow":1,"peer_role":1,"t_esco":12,"d_esco":0,"w_esco":0},"device_index":1}
+#invoke 8000 rail_1 set_var packet_type peripheral 2
+#invoke 9000 btc_dev_1 start_esco_peripheral {"start_esco_peripheral":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":40},"device_index":1}
+
+#invoke 9002 rail_1 expect “rx_start is 15000 in scheduled_activities”
+#invoke 9003 rail_1 expect “rx_end is 16249 in scheduled_activities”
+#invoke 15500 air_medium rx_header_done rail_1
+#invoke 15505 rail_1 set_var packet_type peripheral 3
+#invoke 16248 air_medium rx_end rail_1
+#invoke 16250 rail_1 expect “tx_start is 16250 in scheduled_activities”
+
+#invoke 30000 rail_1 expect "rx_start is 30000 in scheduled_activities"
+#invoke 30005 rail_1 expect “rx_end is 33749 in scheduled_activities”
+#invoke 30500 air_medium rx_header_done rail_1
+#invoke 30502 rail_1 set_var packet_type peripheral 3  
+#invoke 33740 air_medium rx_end rail_1
+#invoke 33750 rail_1 expect "tx_start is 33750 in scheduled_activities”
+#invoke 33751 rail_1 set_var rail_status -1

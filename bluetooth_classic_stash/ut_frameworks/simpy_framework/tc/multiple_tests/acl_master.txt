@@ -1,0 +1,42 @@
+ACL TEST CASES MASTER 
+
+Testcase:
+#invoke 0 btc_dev_1 init_device 1 11:22:33:44:55:66                            
+#invoke 1250 btc_dev_1 init_acl 1 
+#invoke 9000 btc_dev_1 start_acl 1
+
+ 
+Test Case 1(IDEAL TEST CASE)
+!# FOR 3DH3 packet
+#invoke 9001 rail_1 packet_type “3DH3” 
+#invoke 9002 rail_1 expect “tx_start is 10000 in scheduled_activities”
+#invoke 9003 rail_1 expect “tx_end is 13750 in scheduled_activities”
+#invoke 13750 air_medium rx_header_status 1
+#invoke 13780 air_medium rx_end 1
+
+
+Test Case 2(IDEAL TEST CASE)
+!# FOR 3DH5 packet
+#invoke 13781 rail_1 packet_type “3DH5”
+#invoke 13782 rail_1 expect “tx_start is 15000 in scheduled_activities”
+#invoke 21250 air_medium rx_header_status 1
+#invoke 21280 air_medium rx_end 1
+
+Test Case 3
+!# Doing TX_ABORT from Master 
+!# FOR 3DH3
+#invoke 21281 rail_1 packet_type “3DH3”
+#invoke 21282 rail_1 expect “tx_start is 22500 in scheduled_activities” 
+#Invoke 22501 air_medium tx_end 1
+Next TX scheduled at next 2npo.
+
+Test Case 4 
+!# For 3DH3 packet(Doing Timeout for Rx_header)
+#invoke 22599 rail_1 packet_type “3DH3”
+#invoke 22600 rail_1 expect “tx_start is 25000 in scheduled_activities” 
+#invoke 23000 rail_1 expect “tx_end is 28750 in scheduled_activities”
+#invoke 28750 air_medium rx_header_status 1
+#invoke 28751 air_medium rx_timeout 1
+!3 Tx start for next cycle
+#invoke 28760 rail_1 expect “tx_start is 30000 in scheduled_activities” 
+

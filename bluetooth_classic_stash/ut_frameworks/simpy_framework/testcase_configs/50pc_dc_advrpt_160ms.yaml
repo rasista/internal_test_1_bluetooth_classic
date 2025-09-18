@@ -1,0 +1,49 @@
+define: &NUM_LE_NODES 16
+
+Models:
+  mesh_scanner:
+    instances: *NUM_LE_NODES
+    secondary_init_function : secondary_init_function
+    init_params:
+      scan_window: 75000
+      scan_interval: 100000
+      variance: 10
+      synchronised: 0
+    python_handlers:
+      rx_done : rx_done_handler
+      listen_pause_req : listen_pause_req_handler
+      resume_listen : resume_listen_handler
+      tx_start : tx_start_handler
+      tx_end : tx_end_handler
+      get_results : get_results_handler
+    c_handlers:
+  mesh_advertiser:
+    instances: *NUM_LE_NODES
+    secondary_init_function : secondary_init_function
+    init_params: 
+      adv_relay_repeat_count: 5
+      adv_relay_step_interval: 16
+      adv_relay_min_random_delay: 500
+      adv_relay_max_random_delay: 50000
+      adv_packet_duration: 365
+      listen_range: 4
+      instances: *NUM_LE_NODES
+    python_handlers:
+      adv_req : adv_request_handler
+      adv_req_immediate : adv_request_immediate_handler
+      reschedule_tx : reschedule_tx_handler
+      listen_window : listen_window_handler
+      listen_pause_req_ack : listen_pause_req_ack_handler
+    c_handlers:
+  model_le_mesh_tester:
+    python_handlers:
+      start_test: start_test_handler
+      stop_test: stop_test_handler
+      get_results : get_results_handler
+    secondary_init_function : secondary_init_function
+    init_params: 
+      test_adv_frequency: 100000
+      test_adv_variance:  100
+      instances: *NUM_LE_NODES
+      file_name: 50pc_dc_advrpt_160ms.yaml
+    c_handlers:

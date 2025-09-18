@@ -1,0 +1,17 @@
+sm_name : test_mode_sm
+includes:
+  - device_management/procedure_triggers.yaml
+states:
+  test_mode_sm_idle:
+    START_PROCEDURE: test_mode_start_procedure_handler
+  TEST_MODE_TX_SCHEDULED:
+    TX_DONE: test_mode_tx_done_handler
+    TX_ABORT: test_mode_tx_abort_handler
+  #TEST_MODE_WAITING_FOR_RX_PKT_HEADER:
+    #RX_HEADER_RECEIVED: test_mode_header_received_done_handler
+    #RX_TIMEOUT: test_mode_header_received_timeout_handler
+    #RX_ABORT: test_mode_header_received_abort_handler
+  TEST_MODE_WAITING_FOR_RX_COMPLETE:
+    RX_DONE: test_mode_rx_done_handler
+    RX_ABORT: test_mode_rx_abort_handler
+    RX_TIMEOUT: test_mode_rx_timeout_handler

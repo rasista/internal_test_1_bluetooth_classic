@@ -1,0 +1,948 @@
+lmp_cmds:
+  lmp_name_req:
+    OPCODE:
+      value: 1
+    EXTENDED_OPCODE: 0
+    parameters:
+      name_offset: 1  
+  lmp_name_res:
+    OPCODE:
+      value: 2
+    EXTENDED_OPCODE: 0
+    parameters:
+      name_offset: 1
+      name_length: 1
+      name_fragment:
+        var_length: 14
+  lmp_accepted:
+    OPCODE: 
+      value: 3  #value of the opcode in decimal
+    EXTENDED_OPCODE: 0
+    parameters:
+      opcode: 1
+  lmp_not_accepted:
+    OPCODE:
+      value: 4
+    EXTENDED_OPCODE: 0
+    parameters:
+      opcode: 1
+      error_opcode: 1 
+  lmp_clkoffset_req:
+    OPCODE:
+      value: 5
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_clkoffset_res:
+    OPCODE:
+      value: 6
+    EXTENDED_OPCODE: 0
+    parameters:
+      clock_offset: 2 
+  lmp_detach:
+    OPCODE:
+      value: 7
+    EXTENDED_OPCODE: 0
+    parameters:
+      error_code: 1
+  lmp_in_rand:
+    OPCODE:
+      value: 8 
+    EXTENDED_OPCODE: 0
+    parameters:
+      random_number: 16  
+  lmp_comb_key:
+    OPCODE:
+      value: 9
+    EXTENDED_OPCODE: 0
+    parameters:
+      random_number: 16
+  lmp_unit_key:
+    OPCODE:
+      value: 10
+    EXTENDED_OPCODE: 0
+    parameters:
+      key: 16 
+  lmp_au_rand:
+    OPCODE: 
+      value: 11  
+    EXTENDED_OPCODE: 0
+    parameters:
+      random_number: 16
+  lmp_sres:
+    OPCODE:
+      value: 12
+    EXTENDED_OPCODE: 0
+    parameters:
+      authentication_rsp: 4
+  lmp_temp_rand:
+    OPCODE:
+      value: 13
+    EXTENDED_OPCODE: 0
+    parameters:
+      random_number: 16 
+  lmp_temp_key:
+    OPCODE:
+      value: 14
+    EXTENDED_OPCODE: 0
+    parameters:
+      key: 16 
+  lmp_encryption_mode_req:
+    OPCODE:
+      value: 15
+    EXTENDED_OPCODE: 0
+    parameters:
+      encryption_mode: 1
+  lmp_encryption_key_size_req:
+    OPCODE:
+      value: 16 
+    EXTENDED_OPCODE: 0
+    parameters:
+      key_size: 1
+  lmp_start_encryption_req:
+    OPCODE:
+      value: 17
+    EXTENDED_OPCODE: 0
+    parameters:
+      random_number: 16
+  lmp_stop_encryption_req:
+    OPCODE:
+      value: 18
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_switch_req:
+    OPCODE:
+      value: 19 
+    EXTENDED_OPCODE: 0
+    parameters:
+      switch_instant: 4
+  lmp_hold:
+    OPCODE:
+      value: 20  
+    EXTENDED_OPCODE: 0
+    parameters:
+      hold_time: 2
+      hold_instant: 4
+  lmp_hold_req:
+    OPCODE:
+      value: 21
+    EXTENDED_OPCODE: 0
+    parameters:
+      hold_time: 2
+      hold_instant: 4
+  lmp_sniff_req:
+    OPCODE:
+      value: 23 
+    EXTENDED_OPCODE: 0
+    parameters:
+      timing_control_flags_1: 1
+      D_sniff: 2
+      T_sniff: 2
+      timing_control_flags_2: 2
+      sniff_timeout: 2
+  lmp_unsniff_req:
+    OPCODE:
+      value: 24
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_incr_power_req:
+    OPCODE:
+      value: 31
+    EXTENDED_OPCODE: 0
+    parameters:
+      reserved: 1   
+  lmp_decr_power_req:
+    OPCODE:
+      value: 32
+    EXTENDED_OPCODE: 0
+    parameters:
+      reserved: 1 
+  lmp_max_power:
+    OPCODE:
+      value: 33
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_min_power:
+    OPCODE:
+      value: 34
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_auto_rate:
+    OPCODE: 
+      value: 35
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_preferred_rate:
+    OPCODE:
+      value: 36
+    EXTENDED_OPCODE: 0
+    parameters:
+      data_rate: 1
+  lmp_version_req:
+    OPCODE:
+      value: 37 
+    EXTENDED_OPCODE: 0
+    parameters:
+      version: 1
+      company_identifier: 2
+      subversion: 2 
+  lmp_version_res:
+    OPCODE:
+      value: 38
+    EXTENDED_OPCODE: 0
+    parameters:
+      version: 1
+      company_identifier: 2
+      subversion: 2 
+  lmp_features_req:
+    OPCODE:
+      value: 39 
+    EXTENDED_OPCODE: 0
+    parameters:
+      features: 8
+  lmp_features_res:
+    OPCODE:
+      value: 40
+    EXTENDED_OPCODE: 0
+    parameters:
+      features: 8  
+  lmp_quality_of_service:
+    OPCODE:
+      value: 41
+    EXTENDED_OPCODE: 0
+    parameters:
+      poll_interval: 2
+      N_BC: 1
+  lmp_quality_of_service_req:
+    OPCODE:
+      value: 42
+    EXTENDED_OPCODE: 0
+    parameters:
+      poll_interval: 2
+      N_BC: 1
+  lmp_SCO_link_req:
+    OPCODE:
+      value: 43 
+    EXTENDED_OPCODE: 0
+    parameters:
+      SCO_handle: 1
+      timing_control_flags: 1
+      D_SCO: 1
+      T_SCO: 1
+      SCO_packet: 1
+      air_mode: 1 
+  lmp_remove_SCO_link_req:
+    OPCODE:
+      value: 44 
+    EXTENDED_OPCODE: 0
+    parameters:
+      SCO_handle: 1
+      error_code: 1
+  lmp_max_slot:
+    OPCODE:
+      value: 45
+    EXTENDED_OPCODE: 0
+    parameters:
+      max_slots: 1
+  lmp_max_slot_req:
+    OPCODE:
+      value: 46
+    EXTENDED_OPCODE: 0
+    parameters:
+      max_slots: 1 
+  lmp_timimg_accuracy_req:
+    OPCODE:
+      value: 47
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_timing_accuracy_res:
+    OPCODE:
+      value: 48 
+    EXTENDED_OPCODE: 0
+    parameters:
+      drift: 1
+      jitter: 1
+  lmp_setup_complete:
+    OPCODE:
+      value: 49
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_use_semi_permanent_key:
+    OPCODE:
+      value: 50
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_host_connection_req:
+    OPCODE:
+      value: 51
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_slot_offset:
+    OPCODE:
+      value: 52
+    EXTENDED_OPCODE: 0
+    parameters:
+      slot_offset: 2
+      bd_addr: 6 
+  lmp_page_mode_req:
+    OPCODE:
+      value: 53
+    EXTENDED_OPCODE: 0
+    parameters:
+      page_scheme: 1
+      page_scheme_setting: 1
+  lmp_page_scan_mode_req:
+    OPCODE:
+      value: 54
+    EXTENDED_OPCODE: 0
+    parameters:
+      page_scheme: 1
+      page_scheme_setting: 1
+  lmp_supervision_timeout:
+    OPCODE:
+      value: 55
+    EXTENDED_OPCODE: 0
+    parameters:
+      supervision_timeout : 2 
+  lmp_test_activate:
+    OPCODE:
+      value: 56
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_test_control:
+    OPCODE:
+      value: 57
+    EXTENDED_OPCODE: 0
+    parameters:
+      test_senario: 1
+      hopping_mode: 1
+      tx_frequency: 1
+      rx_frequency: 1
+      power_mode: 1
+      poll_period: 1
+      packet_type: 1
+      test_data_length: 2
+  lmp_encryption_key_size_mask_req:
+    OPCODE:
+      value: 58
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_encryption_key_size_mask_res:
+    OPCODE:
+      value: 59  
+    EXTENDED_OPCODE: 0
+    parameters:
+      key_size_mask: 2
+  lmp_set_afh:
+    OPCODE:
+      value: 60 
+    EXTENDED_OPCODE: 0
+    parameters:
+      afh_instant: 4
+      afh_mode: 1
+      afh_channel_map: 10
+  lmp_encapsulated_header:
+    OPCODE:
+      value: 61 
+    EXTENDED_OPCODE: 0
+    parameters:
+      encap_major_type: 1
+      encap_minor_type: 1
+      encap_payload_length: 1
+  lmp_encapsulated_payload:
+    OPCODE:
+      value: 62
+    EXTENDED_OPCODE: 0
+    parameters:
+      encap_data: 16
+  lmp_simple_pairing_confirm:
+    OPCODE:
+      value: 63
+    EXTENDED_OPCODE: 0   
+    parameters:
+      commitment_value: 16
+  lmp_simple_pairing_number:
+    OPCODE:
+      value: 64
+    EXTENDED_OPCODE: 0
+    parameters:
+      noncvalue: 16
+  lmp_dhkey_check:
+    OPCODE:
+      value: 65
+    EXTENDED_OPCODE: 0
+    parameters:
+      confirmation_value: 16
+  lmp_pause_encryption_aes_req:
+    OPCODE:
+      value: 66
+    EXTENDED_OPCODE: 0
+    parameters:
+      random_number: 16 
+  lmp_accepted_ext:
+    OPCODE: 
+      value: 127
+    EXTENDED_OPCODE: 
+      value : 1
+    parameters:
+      extended_opcode: 1
+  lmp_not_accepted_ext:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 2
+    parameters:
+      extended_opcode: 1
+      error_code: 1 
+  lmp_features_req_ext:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 3 
+    parameters:
+      features_page: 1
+      max_supported_page: 1
+      extended_features: 8
+  lmp_features_res_ext:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 4  
+    parameters:
+      features_page: 1
+      max_supported_page: 1
+      extended_features: 8
+  lmp_clk_adj:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 5
+    parameters:
+      clk_adj_id : 1
+      clk_adj_instant : 4
+      clk_adj_offset : 2
+      clk_adj_slots : 1
+      clk_adj_mode : 1
+      clk_adj_clk : 4
+  lmp_clk_adj_ack:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 6
+    parameters :
+      clk_adj_id: 1
+  lmp_clk_adj_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 7
+    parameters :
+      clk_adj_offset: 2
+      clk_adj_slots: 1
+      clk_adj_period: 1 
+  lmp_packet_type_table_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 11
+    parameters:
+      packet_type_table: 1
+  lmp_eSCO_link_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 12  
+    parameters:
+      eSCO_handle: 1
+      eSCO_lt_addr: 1
+      timing_control_flags: 1
+      D_eSCO: 1
+      T_eSCO: 1
+      W_eSCO: 1
+      eSCO_packet_type_C_P: 1
+      eSCO_packet_type_P_C: 1
+      packet_length_C_P: 2
+      packet_length_P_C: 2
+      air_mode: 1
+      negotiation_state: 1
+  lmp_remove_eSCO_link_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 13 
+    parameters:
+      eSCO_handle: 1
+      error_code: 1 
+  lmp_channel_classification_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 16
+    parameters:
+      afh_reporting_mode: 1
+      afh_min_interval : 2
+      afh_max_interval : 2 
+  lmp_channel_classification:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 17
+    parameters:
+      afh_channel_classification: 10 
+  lmp_sniff_subrating_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 21
+    parameters:
+      max_sniff_subrate: 1
+      min_sniff_mode_tieout: 2
+      sniff_subrating_instant: 4
+  lmp_sniff_subrating_res:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 22
+    parameters:
+      max_sniff_subrate : 1
+      min_sniff_mode_timeout: 2
+      sniff_subrating_instant: 4
+  lmp_pause_encryption_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 23
+    parameters: 0
+  lmp_resume_encryption_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 24  
+    parameters: 0
+  lmp_io_capability_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 25  
+    parameters:
+      io_capabilities: 1
+      oob_auth_data: 1
+      authentication_requirements: 1
+  lmp_io_capability_res:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 26 
+    parameters:
+      io_capabilities: 1
+      oob_auth_data: 1
+      authentication_requirements: 1  
+  lmp_numeric_comparison_failed:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 27
+    parameters: 0
+  lmp_passkey_failed:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 28
+    parameters: 0
+  lmp_oob_failed:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 29
+    parameters: 0
+  lmp_keypress_notification:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 30
+    parameters:
+      notification_type: 1   
+  lmp_power_control_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 31
+    parameters:
+      power_adj_req: 1 
+  lmp_power_control_res:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 32
+    parameters:
+      power_adj_rsp: 1 
+  lmp_ping_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 33
+    parameters: 0
+  lmp_ping_res:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 34
+    parameters: 0
+  lmp_sam_set_type0:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 35 
+    parameters:
+      update_mode: 1
+      sam_type0_submap: 14
+  lmp_sam_define_map:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 36
+    parameters:
+      sam_index: 1
+      T_sam_sm: 1
+      N_sam_sm: 1
+      sam_submaps: 12
+  lmp_sam_switch:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 37
+    parameters:
+      sam_index: 1
+      timing_control_flags: 1
+      D_sam: 1
+      sam_instant: 4
+ 
+lmp_accepted_cmd_events:
+  lmp_sniff_req:
+    OPCODE:
+      value: 23
+    EXTENDED_OPCODE: 0
+    parameters:
+      timing_control_flags_1: 1
+      D_sniff: 2
+      T_sniff: 2
+      timing_control_flags_2: 2
+      sniff_timeout: 2
+  lmp_unsniff_req:
+    OPCODE:
+      value: 24
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_max_slot_req:
+    OPCODE:
+      value: 46
+    EXTENDED_OPCODE: 0
+    parameters:
+      max_slots: 1
+  lmp_host_connection_req:
+    OPCODE:
+      value: 51
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_in_rand:
+    OPCODE:
+      value: 8
+    EXTENDED_OPCODE: 0
+    parameters:
+      random_number: 16
+  lmp_encryption_mode_req:
+    OPCODE:
+      value: 15
+    EXTENDED_OPCODE: 0
+    parameters:
+      encryption_mode: 1
+  lmp_encryption_key_size_req:
+    OPCODE:
+      value: 16
+    EXTENDED_OPCODE: 0
+    parameters:
+      key_size: 1
+  lmp_start_encryption_req:
+    OPCODE:
+      value: 17
+    EXTENDED_OPCODE: 0
+    parameters:
+      random_number: 16
+  lmp_stop_encryption_req:
+    OPCODE:
+      value: 18
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_encapsulated_header:
+    OPCODE:
+      value: 61
+    EXTENDED_OPCODE: 0
+    parameters:
+      encap_major_type: 1
+      encap_minor_type: 1
+      encap_payload_length: 1
+  lmp_encapsulated_payload:
+    OPCODE:
+      value: 62
+    EXTENDED_OPCODE: 0
+    parameters:
+      encap_data: 16
+  lmp_simple_pairing_number:
+    OPCODE:
+      value: 64
+    EXTENDED_OPCODE: 0
+    parameters:
+      noncvalue: 16
+  lmp_dhkey_check:
+    OPCODE:
+      value: 65
+    EXTENDED_OPCODE: 0
+    parameters:
+      confirmation_value: 16
+  lmp_switch_req:
+    OPCODE:
+      value: 19
+    EXTENDED_OPCODE: 0
+    parameters:
+      switch_instant: 4
+  lmp_quality_of_service_req:
+    OPCODE:
+      value: 42
+    EXTENDED_OPCODE: 0
+    parameters:
+      poll_interval: 2
+      N_BC: 1
+
+lmp_accepted_ext_cmd_events:
+  lmp_packet_type_table_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 11
+    parameters:
+      packet_type_table: 1
+  lmp_eSCO_link_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 12
+    parameters:
+      eSCO_handle: 1
+      eSCO_lt_addr: 1
+      timing_control_flags: 1
+      D_eSCO: 1
+      T_eSCO: 1
+      W_eSCO: 1
+      eSCO_packet_type_C_P: 1
+      eSCO_packet_type_P_C: 1
+      packet_length_C_P: 2
+      packet_length_P_C: 2
+      air_mode: 1
+      negotiation_state: 1
+  lmp_remove_eSCO_link_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 13
+    parameters:
+      eSCO_handle: 1
+      error_code: 1
+
+lmp_not_accepted_cmd_events:
+  lmp_sniff_req:
+    OPCODE:
+      value: 23
+    EXTENDED_OPCODE: 0
+    parameters:
+      timing_control_flags_1: 1
+      D_sniff: 2
+      T_sniff: 2
+      timing_control_flags_2: 2
+      sniff_timeout: 2
+  lmp_max_slot_req:
+    OPCODE:
+      value: 46
+    EXTENDED_OPCODE: 0
+    parameters:
+      max_slots: 1
+  lmp_host_connection_req:
+    OPCODE:
+      value: 51
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_in_rand:
+    OPCODE:
+      value: 8
+    EXTENDED_OPCODE: 0
+    parameters:
+      random_number: 16
+  lmp_au_rand:
+    OPCODE:
+      value: 11
+    EXTENDED_OPCODE: 0
+    parameters:
+      random_number: 16
+  lmp_encryption_mode_req:
+    OPCODE:
+      value: 15
+    EXTENDED_OPCODE: 0
+    parameters:
+      encryption_mode: 1
+  lmp_encryption_key_size_req:
+    OPCODE:
+      value: 16
+    EXTENDED_OPCODE: 0
+    parameters:
+      key_size: 1
+  lmp_start_encryption_req:
+    OPCODE:
+      value: 17
+    EXTENDED_OPCODE: 0
+    parameters:
+      random_number: 16
+  lmp_stop_encryption_req:
+    OPCODE:
+      value: 18
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_switch_req:
+    OPCODE:
+      value: 19
+    EXTENDED_OPCODE: 0
+    parameters:
+      switch_instant: 4
+  lmp_simple_pairing_confirm:
+    OPCODE:
+      value: 63
+    EXTENDED_OPCODE: 0   
+    parameters:
+      commitment_value: 16
+  lmp_simple_pairing_number:
+    OPCODE:
+      value: 64
+    EXTENDED_OPCODE: 0
+    parameters:
+      noncvalue: 16
+  lmp_dhkey_check:
+    OPCODE:
+      value: 65
+    EXTENDED_OPCODE: 0
+    parameters:
+      confirmation_value: 16
+  lmp_encapsulated_header:
+    OPCODE:
+      value: 61
+    EXTENDED_OPCODE: 0
+    parameters:
+      encap_major_type: 1
+      encap_minor_type: 1
+      encap_payload_length: 1
+  lmp_encapsulated_payload:
+    OPCODE:
+      value: 62
+    EXTENDED_OPCODE: 0
+    parameters:
+      encap_data: 16
+  lmp_quality_of_service_req:
+    OPCODE:
+      value: 42
+    EXTENDED_OPCODE: 0
+    parameters:
+      poll_interval: 2
+      N_BC: 1
+  lmp_incr_power_req:
+    OPCODE:
+      value: 31
+    EXTENDED_OPCODE: 0
+    parameters:
+      reserved: 1
+  lmp_decr_power_req:
+    OPCODE:
+      value: 32
+    EXTENDED_OPCODE: 0
+    parameters:
+      reserved: 1
+  lmp_max_power:
+    OPCODE:
+      value: 33
+    EXTENDED_OPCODE: 0
+    parameters: 0
+  lmp_min_power:
+    OPCODE:
+      value: 34
+    EXTENDED_OPCODE: 0
+    parameters: 0
+ 
+
+lmp_not_accepted_ext_cmd_events:
+  lmp_packet_type_table_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 11
+    parameters:
+      packet_type_table: 1
+  lmp_eSCO_link_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 12
+    parameters:
+      eSCO_handle: 1
+      eSCO_lt_addr: 1
+      timing_control_flags: 1
+      D_eSCO: 1
+      T_eSCO: 1
+      W_eSCO: 1
+      eSCO_packet_type_C_P: 1
+      eSCO_packet_type_P_C: 1
+      packet_length_C_P: 2
+      packet_length_P_C: 2
+      air_mode: 1
+      negotiation_state: 1
+  lmp_remove_eSCO_link_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 13
+    parameters:
+      eSCO_handle: 1
+      error_code: 1
+  lmp_pause_encryption_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 23
+    parameters: 0
+  lmp_io_capability_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 25
+    parameters:
+      io_capabilities: 1
+      oob_auth_data: 1
+      authentication_requirements: 1
+  lmp_sniff_subrating_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 21
+    parameters:
+      max_sniff_subrate: 1
+      min_sniff_mode_tieout: 2
+      sniff_subrating_instant: 4
+  lmp_power_control_req:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 31
+    parameters:
+      power_adj_req: 1
+  lmp_power_control_res:
+    OPCODE:
+      value: 127
+    EXTENDED_OPCODE:
+      value: 32
+    parameters:
+      power_adj_rsp: 1
+

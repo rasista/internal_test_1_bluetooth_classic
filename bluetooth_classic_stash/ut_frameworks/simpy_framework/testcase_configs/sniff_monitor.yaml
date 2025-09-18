@@ -1,0 +1,17 @@
+Models:
+  sniff:
+    python_handlers:
+      start_sniff : start_sniff
+      tx_complete : tx_complete_handler
+      rx_complete : rx_complete_handler
+      sleep_complete : sleep_complete_handler
+      set_sniff_duration : set_sniff_duration
+      set_sniff_attempts : set_sniff_attempts
+  activity_monitor:
+    python_handlers:
+      schedule_tx : schedule_tx_handler
+      schedule_rx : schedule_rx_handler
+      schedule_sleep : schedule_sleep_handler
+      set_tx_current : set_tx_current
+      set_rx_current : set_rx_current
+      set_em1p_current : set_em1p_current

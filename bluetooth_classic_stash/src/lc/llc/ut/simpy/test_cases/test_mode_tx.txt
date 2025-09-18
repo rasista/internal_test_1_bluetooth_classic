@@ -1,0 +1,56 @@
+TEST MODE Tx Testcases
+
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 1000 btc_dev_1 start_test_mode {"start_test_mode":{"bd_address":[11,22,33,44,55,66],"pkt_type":1,"pkt_len":1,"br_edr_mode":0,"channel_index":1,"link_type":1,"scrambler_seed":1,"no_of_pkts":10,"payload_type":1,"tx_power":20,"hopping_type":2,"loopback_mode":2,"transmit_mode":1,"lap_address":[11,22,33],"inter_packet_interval":4},"device_index":1}
+
+#invoke 1875 rail_1 expect "tx_start is 1875 in scheduled_activities"
+#invoke 1876 rail_1 expect "tx_end is 2011 in scheduled_activities"
+
+1st ID packet
+#invoke 3125 rail_1 expect "tx_start is 3125 in scheduled_activities"
+#invoke 3126 rail_1 expect "tx_end is 3261 in scheduled_activities"
+
+2nd ID packet
+#invoke 5625 rail_1 expect "tx_start is 5625 in scheduled_activities"
+#invoke 5626 rail_1 expect "tx_end is 5761 in scheduled_activities"
+
+3rd ID packet
+#invoke 8125 rail_1 expect "tx_start is 8125 in scheduled_activities"
+#invoke 8126 rail_1 expect "tx_end is 8261 in scheduled_activities"
+
+4th ID packet
+#invoke 10625 rail_1 expect "tx_start is 10625 in scheduled_activities"
+#invoke 10626 rail_1 expect "tx_end is 10761 in scheduled_activities"
+
+5th ID packet
+aborting tx 
+#invoke 13125 rail_1 expect "tx_start is 13125 in scheduled_activities"
+#invoke 13150 air_medium tx_end rail_1
+
+6th ID packet
+#invoke 15625 rail_1 expect "tx_start is 15625 in scheduled_activities"
+#invoke 15650 rail_1 expect "tx_end is 15761 in scheduled_activities"
+
+7th ID packet
+#invoke 18125 rail_1 expect "tx_start is 18125 in scheduled_activities"
+#invoke 18150 rail_1 expect "tx_end is 18261 in scheduled_activities"
+
+8th ID packet
+#invoke 20625 rail_1 expect "tx_start is 20625 in scheduled_activities"
+#invoke 20627 rail_1 expect "tx_end is 20761 in scheduled_activities"
+
+9th ID packet
+aborting tx 
+#invoke 23125 rail_1 expect "tx_start is 23125 in scheduled_activities"
+#invoke 23150 air_medium tx_end rail_1
+
+10th ID packet
+#invoke 25625 rail_1 expect "tx_start is 25625 in scheduled_activities"
+#invoke 25761 rail_1 expect "tx_end is 25761 in scheduled_activities"
+
+no_of_pkts= 10
+next schedule should not happen
+#invoke 28125 rail_1 do_not_expect "tx_start is 28125 in scheduled_activities"
+
+
+

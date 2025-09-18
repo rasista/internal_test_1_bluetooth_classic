@@ -1,0 +1,2 @@
+#invoke 259 model_s3_lll_master init_btc_device 001122334455
+#invoke 56325 model_s3_lll_master init_page 998877665544

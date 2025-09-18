@@ -1,0 +1,72 @@
+ACL Central Testcases
+
+Initialization of device, acl central and start of acl central
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_device_parameters_acl {"set_device_parameters_acl":{"connection_device_index":0,"lt_addr":2,"flow":1,"peer_role":1,"tx_pwr_index":29,"br_edr_mode":1},"device_index":1}
+#invoke 6000 btc_dev_1 set_afh_parameters_acl {"set_afh_parameters_acl":{"connection_device_index":0,"channel_map_in_use":[11,22,33,44,55,66,77,88,99,10],"afh_new_channel_map_instant":0,"afh_new_channel_map":[11,22,23,44,55,66,77,88,99,10],"no_of_valid_afh_channels":10,"piconet_type":0},"device_index":1}
+#invoke 7000 btc_dev_1 set_sniff_parameters_acl {"set_sniff_parameters_acl":{"connection_device_index":0,"sniff_instant":0,"sniff_interval":0,"sniff_attempt":0,"sniff_timeout":0},"device_index":1}
+#invoke 8000 rail_1 set_var packet_type central 3
+#invoke 9000 btc_dev_1 start_acl_central {"start_acl_central":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":72,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+States of ACL Central
+CENTRAL_TX_SCHEDULED
+CENTRAL_WAITING_FOR_RX_PKT_HEADER
+CENTRAL_WAITING_FOR_RX_COMPLETE
+
+Testcase 1(IDEAL TEST CASE)
+triggering all positive cases and sending RX_DONE and TX_DONE triggers respectively [3DH3 packet]
+#invoke 9002 rail_1 expect “tx_start is 10000 in scheduled_activities”
+#invoke 9003 rail_1 expect “tx_end is 13749 in scheduled_activities”
+#invoke 13751 air_medium rx_header_done rail_1  
+#invoke 13770 rail_1 set_var packet_type central 4
+#invoke 13780 air_medium rx_end rail_1
+
+Testcase 2(IDEAL TEST CASE)
+triggering all positive cases and sending RX_DONE and TX_DONE triggers respectively [3DH5 packet]
+#invoke 13782 rail_1 expect “tx_start is 15000 in scheduled_activities”
+#invoke 13783 rail_1 expect "tx_end is 21249 in scheduled_activities"
+#invoke 21251 air_medium rx_header_done rail_1 
+#invoke 21270 rail_1 set_var packet_type central 3
+#invoke 21280 air_medium rx_end rail_1
+
+Testcase 3
+triggerring TX_ABORT in CENTRAL_TX_SCHEDULED and triggerring rail_fail_status [TX_ABORT][3DH3]
+#invoke 21282 rail_1 expect “tx_start is 22500 in scheduled_activities”
+#invoke 22500 rail_1 set_var packet_type central 3
+#invoke 22501 rail_1 set_var rail_status -1 
+#invoke 22504 air_medium tx_end rail_1
+
+Testcase 4 
+triggerring timeout in CENTRAL_WAITING_FOR_RX_PKT_HEADER state and triggering the fail status [RX_TIMEOUT]
+#invoke 25000 rail_1 expect “tx_start is 25000 in scheduled_activities” 
+#invoke 25005 rail_1 expect “tx_end is 28749 in scheduled_activities”
+#invoke 28752 rail_1 set_var packet_type central 3
+#invoke 28753 rail_1 set_var rail_status -1
+#invoke 28755 air_medium rx_timeout rail_1
+
+Testcase 5
+triggerring timeout in CENTRAL_WAITING_FOR_RX_COMPLETE state and triggering the fail status [RX_TIMEOUT]
+#invoke 30000 rail_1 expect “tx_start is 30000 in scheduled_activities”
+#invoke 30005 rail_1 expect "tx_end is 33749 in scheduled_activities"
+#invoke 33751 air_medium rx_header_done rail_1 
+#invoke 33752 rail_1 set_var packet_type central 3
+#invoke 33754 rail_1 set_var rail_status -1
+#invoke 33755 air_medium rx_timeout rail_1
+
+Testcase 6 
+triggering rail fail_status for rx_done handler for 3dh3 packet
+#invoke 35000 rail_1 expect “tx_start is 35000 in scheduled_activities”
+#invoke 35005 rail_1 expect "tx_end is 38749 in scheduled_activities"
+#invoke 38751 rail_1 set_var rail_status -1
+#invoke 38752 air_medium rx_header_done rail_1 
+#invoke 38755 air_medium rx_end rail_1
+
+Testcase 7 
+triggering fail status for tx_done handler
+#invoke 40550 rail_1 set_var rail_status -1
+
+Testcase 8
+triggerring random tx abort
+#invoke 43000 air_medium tx_end rail_1
+
+#invoke 45000 btc_dev_1 stop_acl_peripheral {"stop_acl_peripheral":{"connection_device_index":0},"device_index":1}

@@ -1,0 +1,51 @@
+{
+    "version": 6,
+    "include": [
+        "../../../../../cmake/preset/compiler.json",
+        "../../../../../cmake/preset/die.json"
+    ],
+   "configurePresets": [
+    {"hidden": true, "name": "root", "environment": {"SLED_ROOT": "$env{GSDK}"}, "binaryDir": "build", "installDir": "lib"}, 
+    {"name": "gcc/sixg301-lpw0" , "inherits": ["root", "die-variant" , "gcc", "variant-x301-lpw"], "cacheVariables": {"RAIL_CHIP_NAME": "sixg301", "FLAVOR": "release", "COMPILATION": "CROSS"}},
+    {"name": "gcc/sixg301fpga-lpw0" , "inherits": ["root",  "die-variant" , "gcc", "variant-x301-lpw"], "cacheVariables": {"RAIL_CHIP_NAME": "sixg301fpga", "FLAVOR": "release", "COMPILATION": "CROSS"}},
+    {"name": "gcc/sixg300xilpwh72000fpga-lpw0" , "inherits": ["root",  "die-variant" ,"gcc", "variant-x300-lpw"], "cacheVariables": {"RAIL_CHIP_NAME": "sixg300xilpwh72000fpga", "FLAVOR": "release" , "COMPILATION": "CROSS"}},
+    {"name": "gcc/sixg300xilpwh74000fpga-lpw0" , "inherits": ["root","die-variant", "gcc", "variant-x300-lpw-74000"], "cacheVariables": {"RAIL_CHIP_NAME": "sixg300xilpwh74000fpga", "FLAVOR": "release", "COMPILATION": "CROSS"}},
+    {"name": "llc/debug", "inherits": ["root", "die-variant", "gcc", "variant-x301-lpw"], "cacheVariables": {"RAIL_CHIP_NAME": "sixg301fpga", "FLAVOR": "debug", "COMPILATION": "CROSS"}},
+    {"name": "llc/fpga/debug", "inherits": ["root", "die-variant","gcc", "variant-x301-lpw"], "cacheVariables": {"RAIL_CHIP_NAME": "sixg301fpga", "FLAVOR": "debug" ,"COMPILATION": "LLC_LIB_FPGA"}},
+    {"name": "llc/local", "inherits": ["root", "die-variant","gcc", "variant-x301-lpw"], "cacheVariables": {"RAIL_CHIP_NAME": "sixg301fpga","COMPILATION": "CROSS"}}
+    ],
+
+    "buildPresets": [
+    {"name": "llc/release/build", "configurePreset": "gcc/sixg301-lpw0", "configuration": "release", "targets": ["all"]},
+    {"name": "llc/release/build-slow", "configurePreset": "gcc/sixg301-lpw0", "configuration": "release", "targets": ["all"] , "jobs" :1},
+    {"name": "llc/release/install", "configurePreset": "gcc/sixg301-lpw0", "configuration": "release", "targets": ["install"]},
+    {"name": "llc/debug/build", "configurePreset": "llc/debug", "configuration": "debug", "targets": ["all"]},
+    {"name": "llc/debug/install", "configurePreset": "llc/debug", "configuration": "debug", "targets": ["install"]},
+    {"name": "llc/fpga/debug/build", "configurePreset": "llc/fpga/debug", "configuration": "debug", "targets": ["all"]},
+    {"name": "llc/fpga/debug/install", "configurePreset": "llc/fpga/debug", "configuration": "debug", "targets": ["install"]},
+    {"name": "llc/local/release/build", "configurePreset": "llc/local", "configuration": "release", "targets": ["all"]},
+    {"name": "llc/local/debug/build", "configurePreset": "llc/local", "configuration": "debug", "targets": ["all"]},
+    {"name": "llc/local/release/install", "configurePreset": "llc/local", "configuration": "release", "targets": ["install"]},
+    {"name": "llc/local/debug/install", "configurePreset": "llc/local", "configuration": "debug", "targets": ["install"]},
+    {"name": "gcc/sixg300xilpwh72000fpga-lpw0/release/build" , "configurePreset": "gcc/sixg300xilpwh72000fpga-lpw0" , "configuration" : "release" , "targets": ["all"]},
+    {"name": "gcc/sixg300xilpwh72000fpga-lpw0/debug/build" , "configurePreset": "gcc/sixg300xilpwh72000fpga-lpw0" , "configuration" : "debug" , "targets": ["all"]},
+    {"name": "gcc/sixg300xilpwh72000fpga-lpw0/release/install" , "configurePreset": "gcc/sixg300xilpwh72000fpga-lpw0" , "configuration" : "release" , "targets": ["install"]},
+    {"name": "gcc/sixg300xilpwh72000fpga-lpw0/debug/install" , "configurePreset": "gcc/sixg300xilpwh72000fpga-lpw0" , "configuration" : "debug" , "targets": ["install"]},
+    {"name": "gcc/sixg300xilpwh74000fpga-lpw0/release/build" , "configurePreset": "gcc/sixg300xilpwh74000fpga-lpw0" , "configuration" : "release" , "targets": ["all"]},
+    {"name": "gcc/sixg300xilpwh74000fpga-lpw0/debug/build" , "configurePreset": "gcc/sixg300xilpwh74000fpga-lpw0" , "configuration" : "debug" , "targets": ["all"] },
+    {"name": "gcc/sixg300xilpwh74000fpga-lpw0/release/install" , "configurePreset": "gcc/sixg300xilpwh74000fpga-lpw0" , "configuration" : "release" , "targets": ["install"]},
+    {"name": "gcc/sixg300xilpwh74000fpga-lpw0/debug/install" , "configurePreset": "gcc/sixg300xilpwh74000fpga-lpw0" , "configuration" : "debug" , "targets": ["install"]}
+
+    ],
+
+    "workflowPresets": [
+    {"name": "llc/release", "steps": [{"type": "configure", "name": "gcc/sixg301-lpw0"}, {"type": "build", "name": "llc/release/build"}, {"type": "build", "name": "llc/release/install"}]}, 
+    {"name": "llc/release-slow", "steps": [{"type": "configure", "name": "gcc/sixg301-lpw0"}, {"type": "build", "name": "llc/release/build-slow"}, {"type": "build", "name": "llc/release/install"}]}, 
+    {"name": "llc/debug", "steps": [{"type": "configure", "name": "llc/debug"}, {"type": "build", "name": "llc/debug/build"}, {"type": "build", "name": "llc/debug/install"}]}, 
+    {"name": "llc/fpga/debug", "steps": [{"type": "configure", "name": "llc/fpga/debug"}, {"type": "build", "name": "llc/fpga/debug/build"}, {"type": "build", "name": "llc/fpga/debug/install"}]},
+    {"name": "llc/local", "steps": [{"type": "configure", "name": "llc/local"}, {"type": "build", "name": "llc/local/release/build"}, {"type": "build", "name": "llc/local/debug/build"}, {"type": "build", "name": "llc/local/release/install"}, {"type": "build", "name": "llc/local/debug/install"}]},
+    {"name": "gcc/sixg300xilpwh72000fpga-lpw0" , "steps": [{"type" : "configure" , "name": "gcc/sixg300xilpwh72000fpga-lpw0"} , {"type": "build"  ,"name": "gcc/sixg300xilpwh72000fpga-lpw0/release/build"}  ,{"type": "build"  ,"name": "gcc/sixg300xilpwh72000fpga-lpw0/debug/build"},{"type": "build" , "name": "gcc/sixg300xilpwh72000fpga-lpw0/release/install"}, {"type": "build" , "name": "gcc/sixg300xilpwh72000fpga-lpw0/debug/install"}]},
+    {"name": "gcc/sixg300xilpwh74000fpga-lpw0" , "steps": [{"type" : "configure" , "name": "gcc/sixg300xilpwh74000fpga-lpw0"} , {"type": "build"  ,"name": "gcc/sixg300xilpwh74000fpga-lpw0/release/build"}  ,{"type": "build"  ,"name": "gcc/sixg300xilpwh74000fpga-lpw0/debug/build"},{"type": "build" , "name": "gcc/sixg300xilpwh74000fpga-lpw0/release/install"}, {"type": "build" , "name": "gcc/sixg300xilpwh74000fpga-lpw0/debug/install"}]}
+    ]
+    
+}

@@ -1,0 +1,19 @@
+set -e
+export BTC_ULC=$WORKSPACE_PATH/src/lc/ulc
+export BTC_UTILS=$WORKSPACE_PATH/src/utils
+export LINUX_UTILS=$WORKSPACE_PATH/ut_frameworks/c_utils/linux
+export BTC_BUILD=$WORKSPACE_PATH/bin/
+export HCI_JINJA_FILES=$WORKSPACE_PATH/src/lc/ulc/hci/jinja_files
+export HCI_YAML=$WORKSPACE_PATH/src/lc/ulc/hci/yaml_files
+export BTC_TOOLS=$WORKSPACE_PATH/tools
+export HCI_UTILS=$WORKSPACE_PATH/ut_frameworks/py_utils
+export COMPILATION="NATIVE"
+export FLAVOR="debug"
+export RAIL_CHIP_NAME="sixg300xilpwh72000fpga"
+export PYTEST_MODE=1
+
+# Set compiler flags
+# CMAKE_C_FLAGS="-fprofile-arcs -ftest-coverage -g -DLINUX_UTILS -Werror -Wall -DMONITORED_BY_VALGRIND"
+CMAKE_C_FLAGS="-fprofile-arcs -ftest-coverage -g -DLINUX_UTILS -Werror -Wall"
+
+cmake -B $WORKSPACE_PATH/bin/ -DCMAKE_C_FLAGS="$CMAKE_C_FLAGS" -DUTILS=$BTC_UTILS -DULC=$BTC_ULC -DLINUX_UTILS=$LINUX_UTILS -DHCI_JINJA_FILES=$HCI_JINJA_FILES -DHCI_YAML=$HCI_YAML -DTOOLS=$BTC_TOOLS -DHCI_UTILS=$HCI_UTILS -DJANSSON_BUILD_DOCS=OFF -DCOMPILATION=$COMPILATION -DCHIP=$CHIP -DFLAVOR=$FLAVOR -DCHIP_NAME=$RAIL_CHIP_NAME -DPYTEST_MODE=$PYTEST_MODE

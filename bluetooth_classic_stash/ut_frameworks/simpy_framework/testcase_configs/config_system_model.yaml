@@ -1,0 +1,7 @@
+Models:
+  model_system:
+    c_handlers:
+      tickevent:
+    triggers:
+      model_system:
+      tickevent:

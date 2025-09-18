@@ -1,0 +1,38 @@
+#include "procedure_triggers_autogen.h"
+#include "{{ sm_name }}_autogen.h"
+#include "state_machine.h"
+
+/*{{ sm_name }} Handlers*/
+sm_trigger_handler_t {{ sm_name }}_trigger_handler_entries[] = 
+{
+{% for handler in hashed_details["hashed_entries"] %}
+    {{'{'}}{{ handler }}{{'}'}},
+{% endfor%}
+};
+
+uint8_t {{ sm_name }}_trigger_handler_entries_bitmap[] = 
+{
+{% for bitmap in hashed_details["hashed_entries_bitmap"] %}
+    {{ bitmap }},
+{% endfor%}
+};
+
+uint8_t {{ sm_name }}_trigger_handler_entries_count[] = 
+{
+{% for count in hashed_details["hashed_entries_count"] %}
+    {{ count }},
+{% endfor%}
+};
+sm_t {{ sm_name }} = {
+#ifdef SIM
+   .sm_name = "{{ sm_name }}",
+#endif
+     .max_num_states = {{ sm_name }}_state_max,
+    .current_state = {{ sm_name }}_idle,
+    .current_state_machine = {{ sm_name }}_context,
+    .hashed_lut = {
+        .hashed_entries = {{ sm_name }}_trigger_handler_entries,
+        .hashed_entries_bitmap = {{ sm_name }}_trigger_handler_entries_bitmap,
+        .hashed_entries_count = {{ sm_name }}_trigger_handler_entries_count
+    }
+};

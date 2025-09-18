@@ -1,0 +1,754 @@
+elements:
+  hss_cmd_payload_start_procedure_payload_init_btc_device:
+    class: struct
+    alias : hss_cmd_init_btc_device
+    brief:
+      - command is used to initialize a BTC LPW device with parameters-
+      - bd_address of native device
+    bd_address: 
+      data_type: array
+      array_type: uint8_t
+      length: 6
+    sync_word:
+      data_type: array
+      array_type: uint8_t
+      length: 8
+  hss_cmd_payload_start_procedure_payload_page:
+    class: struct
+    alias : hss_cmd_start_page
+    brief:
+      - command is used to start page procedure with parameters
+      - clock_e_offset- estimated offset of clock to be used WRT native clock
+      - bd_address- bd_address of paging device
+      - remote_scan_rep_mode- ToDo Add description 
+    priority:
+      data_type: uint8_t
+    step_size:
+      data_type: uint8_t
+    end_tsf:
+      data_type: uint32_t
+  hss_cmd_payload_start_procedure_payload_page_scan:
+    class: struct
+    alias : hss_cmd_start_page_scan
+    priority:
+      data_type: uint8_t
+    step_size:
+      data_type: uint8_t
+    end_tsf:
+      data_type: uint32_t
+  hss_cmd_payload_start_procedure_payload_inquiry:
+    class: struct
+    alias : hss_cmd_start_inquiry
+    priority:
+      data_type: uint8_t
+    step_size:
+      data_type: uint8_t
+    end_tsf:
+      data_type: uint32_t
+  hss_cmd_payload_start_procedure_payload_inquiry_scan:
+    class: struct
+    alias : hss_cmd_start_inquiry_scan
+    priority:
+      data_type: uint8_t
+    step_size:
+      data_type: uint8_t
+    end_tsf:
+      data_type: uint32_t
+  hss_cmd_payload_start_procedure_payload_acl_central:
+    class: struct
+    alias : hss_cmd_start_acl_central
+    connection_device_index:
+      data_type: uint8_t
+    bd_address:
+      data_type: array
+      array_type: uint8_t
+      length: 6
+    sync_word:
+      data_type: array
+      array_type: uint8_t
+      length: 8
+    priority:
+      data_type: uint8_t
+    step_size:
+      data_type: uint8_t
+    end_tsf:
+      data_type: uint32_t
+  hss_cmd_payload_start_procedure_payload_acl_peripheral:
+    class: struct
+    alias : hss_cmd_start_acl_peripheral
+    connection_device_index:
+      data_type: uint8_t
+    bd_address:
+      data_type: array
+      array_type: uint8_t
+      length: 6
+    sync_word:
+      data_type: array
+      array_type: uint8_t
+      length: 8 
+    priority:
+      data_type: uint8_t
+    step_size:
+      data_type: uint8_t
+    end_tsf:
+      data_type: uint32_t
+  hss_cmd_payload_start_procedure_payload_esco_central:
+    class: struct
+    alias : hss_cmd_start_esco_central
+    connection_device_index:
+      data_type: uint8_t
+    bd_address:
+      data_type: array
+      array_type: uint8_t
+      length: 6
+    sync_word:
+      data_type: array
+      array_type: uint8_t
+      length: 8
+    priority:
+      data_type: uint8_t
+    step_size:
+      data_type: uint8_t
+    end_tsf:
+      data_type: uint32_t
+  hss_cmd_payload_start_procedure_payload_esco_peripheral:
+    class: struct
+    alias : hss_cmd_start_esco_peripheral
+    connection_device_index:
+      data_type: uint8_t
+    bd_address:
+      data_type: array
+      array_type: uint8_t
+      length: 6
+    sync_word:
+      data_type: array
+      array_type: uint8_t
+      length: 8
+    priority:
+      data_type: uint8_t
+    step_size:
+      data_type: uint8_t
+    end_tsf:
+      data_type: uint32_t
+  hss_cmd_payload_start_procedure_payload_roleswitch_central:
+    class: struct
+    alias : hss_cmd_start_roleswitch_central
+    connection_device_index:
+      data_type: uint8_t
+    bd_address:
+      data_type: array
+      array_type: uint8_t
+      length: 6
+    sync_word:
+      data_type: array
+      array_type: uint8_t
+      length: 8
+    priority:
+      data_type: uint8_t
+    step_size:
+      data_type: uint8_t
+    end_tsf:
+      data_type: uint32_t
+  hss_cmd_payload_start_procedure_payload_roleswitch_peripheral:
+    class: struct
+    alias : hss_cmd_start_roleswitch_peripheral
+    connection_device_index:
+      data_type: uint8_t
+    bd_address:
+      data_type: array
+      array_type: uint8_t
+      length: 6
+    sync_word:
+      data_type: array
+      array_type: uint8_t
+      length: 8
+    priority:
+      data_type: uint8_t
+    step_size:
+      data_type: uint8_t
+    end_tsf:
+      data_type: uint32_t
+  hss_cmd_payload_start_procedure_payload_test_mode:
+    class: struct
+    alias : hss_cmd_start_test_mode
+    bd_address:
+      data_type: array
+      array_type: uint8_t
+      length: 3
+    sync_word:
+      data_type: array
+      array_type: uint8_t
+      length: 8
+    br_edr_mode:
+      data_type: uint8_t
+    channel_index:
+      data_type: uint8_t
+    link_type:
+      data_type: uint8_t
+    inter_packet_gap:
+      data_type: uint8_t
+    scrambler_seed:
+      data_type: uint8_t
+    pkt_type:
+      data_type: uint8_t
+    pkt_len:
+      data_type: uint16_t
+    payload_type:
+      data_type: uint8_t
+    tx_power:
+      data_type: uint8_t
+    hopping_type:
+      data_type: uint8_t
+    loopback_mode:
+      data_type: uint8_t
+    transmit_mode:
+      data_type: uint8_t
+    encryption_mode:
+      data_type: uint8_t
+    no_of_pkts:
+      data_type: uint32_t
+    rx_window:
+      data_type: uint32_t
+  hss_cmd_payload_set_procedure_payload_page:
+    class: struct
+    alias : hss_cmd_set_page
+    clk_e_offset:
+      data_type: uint32_t
+    hci_trigger:
+      data_type: uint8_t
+    tx_pwr_index:
+      data_type: uint8_t
+    remote_scan_rep_mode:
+      data_type: uint8_t
+    bd_address:
+      data_type: array
+      array_type: uint8_t
+      length: 6
+    sync_word:
+      data_type: array
+      array_type: uint8_t
+      length: 8
+    lt_addr:
+      data_type: uint8_t
+  hss_cmd_payload_set_procedure_payload_page_scan:
+    class: struct
+    alias : hss_cmd_set_page_scan
+    window:
+      data_type: uint32_t
+    interval:
+      data_type: uint32_t
+    curr_scan_type:
+      data_type: uint8_t
+    tx_pwr_index:
+      data_type: uint8_t
+    bd_address:
+      data_type: array
+      array_type: uint8_t
+      length: 6
+    sync_word:
+      data_type: array
+      array_type: uint8_t
+      length: 8
+  hss_cmd_payload_set_procedure_payload_inquiry:
+    class: struct
+    alias : hss_cmd_set_inquiry
+    lap_address:
+      data_type: array
+      array_type: uint8_t
+      length: 3
+    sync_word:
+      data_type: array
+      array_type: uint8_t
+      length: 8
+    hci_trigger:
+      data_type: uint8_t
+    length:
+      data_type: uint32_t
+    EIR_value:
+      data_type: uint8_t 
+    tx_pwr_index:
+      data_type: uint8_t
+  
+  hss_cmd_payload_set_procedure_payload_E0_encryption:
+    class: struct
+    alias : hss_cmd_set_E0_encryption
+    masterClock:
+      data_type: uint32_t
+    encKey0:
+      data_type: uint32_t
+    encKey1:
+      data_type: uint32_t
+    encKey2:
+      data_type: uint32_t
+    encKey3:
+      data_type: uint32_t
+    bdAddr0:
+      data_type: uint32_t
+    bdAddr1:
+      data_type: uint16_t
+    keyLength:
+      data_type: uint8_t
+
+  hss_cmd_payload_set_procedure_payload_AES_encryption:
+    class: struct
+    alias : hss_cmd_set_AES_encryption
+    aesKeyBytes_0_3:
+      data_type: uint32_t
+    aesKeyBytes_4_7:
+      data_type: uint32_t
+    aesKeyBytes_8_11:
+      data_type: uint32_t
+    aesKeyBytes_12_15:
+      data_type: uint32_t
+    aesIv1:
+      data_type: uint32_t
+    aesIv2:
+      data_type: uint32_t
+    dayCountAndDir:
+      data_type: uint16_t
+    zeroLenAclW:
+      data_type: uint16_t
+    aesPldCntr1:
+      data_type: uint32_t
+    aesPldCntr2:
+      data_type: uint8_t
+
+  hss_cmd_payload_set_procedure_payload_encryption_parameters_aes:
+    class: struct
+    alias : hss_cmd_set_aes_encryption_parameters
+    connection_device_index:
+      data_type: uint8_t
+    encryption_mode:
+      data_type: uint8_t
+    aesKeyBytes_0_3:
+      data_type: uint32_t
+    aesKeyBytes_4_7:
+      data_type: uint32_t
+    aesKeyBytes_8_11:
+      data_type: uint32_t
+    aesKeyBytes_12_15:
+      data_type: uint32_t
+    aesIv1:
+      data_type: uint32_t
+    aesIv2:
+      data_type: uint32_t
+    dayCountAndDir:
+      data_type: uint16_t
+    zeroLenAclW:
+      data_type: uint16_t
+    aesPldCntr1:
+      data_type: uint32_t
+    aesPldCntr2:
+      data_type: uint8_t
+
+  hss_cmd_payload_set_procedure_payload_encryption_parameters_e0:
+    class: struct
+    alias : hss_cmd_set_e0_encryption_parameters
+    connection_device_index:
+      data_type: uint8_t
+    encryption_mode:
+      data_type: uint8_t
+    masterClock:
+      data_type: uint32_t
+    encKey0:
+      data_type: uint32_t
+    encKey1:
+      data_type: uint32_t
+    encKey2:
+      data_type: uint32_t
+    encKey3:
+      data_type: uint32_t
+    bdAddr0:
+      data_type: uint32_t
+    bdAddr1:
+      data_type: uint16_t
+    keyLength:
+      data_type: uint8_t
+
+  hss_cmd_payload_set_procedure_payload_inquiry_scan:
+    class: struct
+    alias : hss_cmd_set_inquiry_scan
+    window:
+      data_type: uint32_t
+    interval:
+      data_type: uint32_t
+    eir_data_length:
+      data_type: uint32_t
+    eir_data:
+      data_type: array
+      array_type: uint8_t
+      length: 260
+    EIR_value: 
+      data_type: uint8_t
+    lap_address:
+      data_type: array
+      array_type: uint8_t
+      length: 3
+    sync_word:
+      data_type: array
+      array_type: uint8_t
+      length: 8
+    curr_scan_type:
+      data_type: uint8_t
+  hss_cmd_payload_set_procedure_payload_afh_parameters_acl:
+    class: struct
+    alias : hss_cmd_set_afh_parameters_acl
+    connection_device_index:
+      data_type: uint8_t
+    no_of_valid_afh_channels:
+      data_type: uint8_t
+    piconet_type:
+      data_type: uint8_t
+    afh_new_channel_map:
+      data_type: array
+      array_type: uint8_t
+      length: 10
+    channel_map_in_use:
+      data_type: array
+      array_type: uint8_t
+      length: 10
+    afh_new_channel_map_instant:
+      data_type: uint32_t
+  hss_cmd_payload_set_procedure_payload_sniff_parameters_acl:
+    class: struct
+    alias : hss_cmd_set_sniff_parameters_acl
+    connection_device_index:
+      data_type: uint8_t
+    sniff_instant:
+      data_type: uint32_t
+    sniff_interval:
+      data_type: uint32_t
+    sniff_attempt:
+      data_type: uint32_t
+    sniff_timeout:
+      data_type: uint32_t
+  hss_cmd_payload_set_procedure_payload_device_parameters_acl:
+    class: struct
+    alias : hss_cmd_set_device_parameters_acl
+    connection_device_index:
+      data_type: uint8_t
+    peer_role:
+      data_type: uint8_t
+    tx_pwr_index:
+      data_type: uint8_t
+    flow:
+      data_type: uint8_t
+    br_edr_mode:
+      data_type: uint8_t
+  hss_cmd_payload_set_procedure_payload_test_mode_params:
+    class: struct
+    alias : hss_cmd_set_test_mode_params
+    test_scenario:
+      data_type: uint8_t
+    hopping_mode:
+      data_type: uint8_t
+    tx_freq:
+      data_type: uint8_t
+    rx_freq:
+      data_type: uint8_t
+    pwr_cntrl_mode:
+      data_type: uint8_t
+    poll_period:
+      data_type: uint8_t
+    pkt_type:
+      data_type: uint16_t
+    link_type:
+      data_type: uint8_t
+    test_lt_type:
+      data_type: uint8_t
+    test_started:
+      data_type: uint8_t
+    test_mode_type:
+      data_type: uint8_t 
+    sco_pkt_type:
+      data_type: uint8_t
+    len_of_seq:
+      data_type: uint16_t
+  hss_cmd_payload_set_procedure_payload_device_parameters_esco:
+    class: struct
+    alias : hss_cmd_set_device_parameters_esco
+    connection_device_index:
+      data_type: uint8_t
+    peer_role:
+      data_type: uint8_t
+    lt_addr:
+      data_type: uint8_t
+    flow:
+      data_type: uint8_t
+    t_esco:
+      data_type: uint32_t
+    d_esco:
+      data_type: uint32_t
+    w_esco:
+      data_type: uint32_t
+    is_esco:
+      data_type: uint8_t
+    is_edr:
+      data_type: uint8_t 
+  hss_cmd_payload_set_procedure_payload_device_parameters_roleswitch:
+    class: struct
+    alias : hss_cmd_set_device_parameters_roleswitch
+    connection_device_index:
+      data_type: uint8_t
+    peer_role:
+      data_type: uint8_t
+    lt_addr:
+      data_type: uint8_t
+    tx_pwr_index:
+      data_type: uint8_t
+    flow:
+      data_type: uint8_t
+    clk_e_offset:
+      data_type: uint32_t
+  hss_cmd_payload_set_procedure_payload_roleswitch_parameters:
+    class: struct
+    alias : hss_cmd_set_roleswitch_parameters
+    connection_device_index:
+      data_type: uint8_t
+    new_lt_addr:
+      data_type: uint8_t
+    roleswitch_slot_offset:
+      data_type: uint16_t
+    roleswitch_instant:
+      data_type: uint32_t
+  hss_cmd_payload_set_procedure_payload_set_fixed_btc_channel:
+    class: struct
+    alias : hss_cmd_set_fixed_btc_channel
+    channel:
+      data_type: uint8_t
+
+  hss_cmd_payload_stop_procedure_payload_page:
+    class: struct
+    alias : hss_cmd_stop_page
+    current_device_index:
+      data_type: uint8_t 
+  hss_cmd_payload_stop_procedure_payload_inquiry:
+    class: struct
+    alias : hss_cmd_stop_inquiry
+    current_device_index:
+      data_type: uint8_t 
+  hss_cmd_payload_stop_procedure_payload_page_scan:
+    class: struct
+    alias : hss_cmd_stop_page_scan
+    current_device_index:
+      data_type: uint8_t 
+  hss_cmd_payload_stop_procedure_payload_inquiry_scan:
+    class: struct
+    alias : hss_cmd_stop_inquiry_scan
+    current_device_index:
+      data_type: uint8_t 
+  hss_cmd_payload_stop_procedure_payload_acl_central:
+    class: struct
+    alias : hss_cmd_stop_acl_central
+    connection_device_index:
+      data_type: uint8_t
+  hss_cmd_payload_stop_procedure_payload_esco_central:
+    class: struct
+    alias : hss_cmd_stop_esco_central
+    connection_device_index:
+      data_type: uint8_t
+  hss_cmd_payload_stop_procedure_payload_roleswitch_central:
+    class: struct
+    alias : hss_cmd_stop_roleswitch_central
+    connection_device_index:
+      data_type: uint8_t
+  hss_cmd_payload_stop_procedure_payload_acl_peripheral:
+    class: struct
+    alias : hss_cmd_stop_acl_peripheral
+    connection_device_index:
+      data_type: uint8_t
+  hss_cmd_payload_stop_procedure_payload_esco_peripheral:
+    class: struct
+    alias : hss_cmd_stop_esco_peripheral
+    connection_device_index:
+      data_type: uint8_t
+  hss_cmd_payload_stop_procedure_payload_roleswitch_peripheral:
+    class: struct
+    alias : hss_cmd_stop_roleswitch_peripheral
+    connection_device_index:
+      data_type: uint8_t
+
+  hss_cmd_payload_start_procedure_payload:
+    class: union
+    init_btc_device:
+      data_type: hss_cmd_payload_start_procedure_payload_init_btc_device_t
+    page:
+      data_type: hss_cmd_payload_start_procedure_payload_page_t
+    page_scan:
+      data_type: hss_cmd_payload_start_procedure_payload_page_scan_t
+    inquiry:
+      data_type: hss_cmd_payload_start_procedure_payload_inquiry_t
+    inquiry_scan:
+      data_type: hss_cmd_payload_start_procedure_payload_inquiry_scan_t
+    esco_central:
+      data_type: hss_cmd_payload_start_procedure_payload_esco_central_t
+    esco_peripheral:
+      data_type: hss_cmd_payload_start_procedure_payload_esco_peripheral_t
+    roleswitch_central:
+      data_type: hss_cmd_payload_start_procedure_payload_roleswitch_central_t
+    roleswitch_peripheral:
+      data_type: hss_cmd_payload_start_procedure_payload_roleswitch_peripheral_t
+    acl_central:
+      data_type: hss_cmd_payload_start_procedure_payload_acl_central_t
+    acl_peripheral: 
+      data_type: hss_cmd_payload_start_procedure_payload_acl_peripheral_t
+    test_mode:
+      data_type: hss_cmd_payload_start_procedure_payload_test_mode_t
+
+  hss_cmd_payload_start_procedure:
+    class: struct
+    alias : hss_cmd_start_procedure
+    id: 
+      data_type: uint8_t
+    payload: 
+      data_type: hss_cmd_payload_start_procedure_payload_t
+  
+  hss_cmd_payload_get_procedure_payload:
+    class: struct
+    alias : hss_cmd_get_procedure_payload
+    id:
+      data_type: uint8_t
+
+  hss_cmd_payload_set_procedure_payload:
+    class: union
+    page:
+      data_type: hss_cmd_payload_set_procedure_payload_page_t
+    page_scan:
+      data_type: hss_cmd_payload_set_procedure_payload_page_scan_t
+    inquiry:
+      data_type: hss_cmd_payload_set_procedure_payload_inquiry_t
+    inquiry_scan:
+      data_type: hss_cmd_payload_set_procedure_payload_inquiry_scan_t
+    afh_parameters_acl:
+      data_type: hss_cmd_payload_set_procedure_payload_afh_parameters_acl_t
+    sniff_parameters_acl:
+      data_type: hss_cmd_payload_set_procedure_payload_sniff_parameters_acl_t
+    device_parameters_acl:
+      data_type: hss_cmd_payload_set_procedure_payload_device_parameters_acl_t
+    device_parameters_esco:
+      data_type: hss_cmd_payload_set_procedure_payload_device_parameters_esco_t
+    device_parameters_roleswitch:
+      data_type: hss_cmd_payload_set_procedure_payload_device_parameters_roleswitch_t
+    roleswitch_parameters:
+      data_type: hss_cmd_payload_set_procedure_payload_roleswitch_parameters_t
+    encryption_parameters_e0:
+      data_type: hss_cmd_payload_set_procedure_payload_encryption_parameters_e0_t
+    encryption_parameters_aes:
+      data_type: hss_cmd_payload_set_procedure_payload_encryption_parameters_aes_t
+    E0_encryption:
+      data_type: hss_cmd_payload_set_procedure_payload_E0_encryption_t
+    AES_encryption:
+      data_type: hss_cmd_payload_set_procedure_payload_AES_encryption_t
+    set_fixed_btc_channel:
+      data_type: hss_cmd_payload_set_procedure_payload_set_fixed_btc_channel_t
+    test_mode_params:
+      data_type: hss_cmd_payload_set_procedure_payload_test_mode_params_t
+
+  hss_cmd_payload_set_procedure:
+    class: struct
+    alias : hss_cmd_set_procedure
+    id:
+      data_type: uint8_t
+    payload: 
+      data_type: hss_cmd_payload_set_procedure_payload_t
+
+  hss_cmd_payload_stop_procedure_payload:
+    class: union
+    page:
+      data_type: hss_cmd_payload_stop_procedure_payload_page_t
+    inquiry:
+      data_type: hss_cmd_payload_stop_procedure_payload_inquiry_t
+    page_scan:
+      data_type: hss_cmd_payload_stop_procedure_payload_page_scan_t
+    inquiry_scan:
+      data_type: hss_cmd_payload_stop_procedure_payload_inquiry_scan_t
+    acl_central:
+      data_type: hss_cmd_payload_stop_procedure_payload_acl_central_t
+    esco_central:
+      data_type: hss_cmd_payload_stop_procedure_payload_esco_central_t
+    roleswitch_central:
+      data_type: hss_cmd_payload_stop_procedure_payload_roleswitch_central_t
+    acl_peripheral:
+      data_type: hss_cmd_payload_stop_procedure_payload_acl_peripheral_t
+    esco_peripheral:
+      data_type: hss_cmd_payload_stop_procedure_payload_esco_peripheral_t
+    roleswitch_peripheral:
+      data_type: hss_cmd_payload_stop_procedure_payload_roleswitch_peripheral_t
+
+  hss_cmd_payload_stop_procedure:
+    class: struct
+    alias : hss_cmd_stop_procedure
+    id: 
+      data_type: uint8_t
+    payload: 
+      data_type: hss_cmd_payload_stop_procedure_payload_t
+  
+  hss_cmd_payload_get_procedure:
+    class: struct
+    alias : hss_cmd_get_procedure
+    id:
+      data_type: uint8_t
+    payload:
+      data_type: hss_cmd_payload_get_procedure_payload_t
+
+  hss_cmd_payload:
+    class: union
+    start_procedure: 
+      data_type: hss_cmd_payload_start_procedure_t
+    stop_procedure: 
+      data_type: hss_cmd_payload_stop_procedure_t
+    get_procedure: 
+      data_type: hss_cmd_payload_get_procedure_t
+    set_procedure:
+      data_type: hss_cmd_payload_set_procedure_t
+
+  hss_cmd:
+    class: struct
+    cmd_type: 
+      data_type: uint8_t
+    payload: 
+      data_type: hss_cmd_payload_t
+
+  hss_event_payload_page_complete:
+    alias: hss_event_page_complete
+    class: struct
+    connection_info_idx:
+      data_type: uint8_t
+
+  hss_event_payload_page_scan_complete:
+    alias: hss_event_page_scan_complete
+    class: struct
+    connection_info_idx:
+      data_type: uint8_t
+    remote_bd_address:
+      data_type: array
+      array_type: uint8_t
+      length: 6
+
+  hss_event_payload_btc_slot_offset:
+    alias: hss_event_btc_slot_offset
+    class: struct
+    roleswitch_slot_offset:
+      data_type: uint16_t
+
+  hss_event_payload:
+    class: union
+    page_complete:
+      data_type: hss_event_payload_page_complete_t
+    page_scan_complete:
+      data_type: hss_event_payload_page_scan_complete_t
+    btc_slot_offset:
+      data_type: hss_event_btc_slot_offset_t
+
+  hss_event:
+    class: struct
+    event_type:
+      data_type: uint8_t
+    event_status:
+      data_type: uint8_t
+    payload: 
+      data_type: hss_event_payload_t
+
+intf_configs:
+  cmd_configs: sl_btc_seq_interface.h
+  intf_name: sl_btc_seq_interface

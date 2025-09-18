@@ -1,0 +1,12 @@
+#import {"Models" : {"wifi_xmit": {"aliases" : ["ap", "sta"]}}}
+#import {"Models" : {"wifi_receive": {"aliases" : ["ap", "sta"]}}}
+#import {"Models" : {"beacon_transmit": "1"}}
+#import {"Models" : {"beacon_receive": "1"}}
+#import {"Models" : {"command_channel": "1"}}
+#invoke 2 command_channel connect {"port" : "12345"}
+;invoke 5 wifi_xmit_ap register_listener {"receiver" : "wifi_receive_sta"}
+;invoke 6 wifi_xmit_sta register_listener {"receiver" : "wifi_receive_ap"}
+;invoke 7 wifi_receive_sta markov_parameters {"p_good_to_bad" : "0.499", "p_bad_to_good" : "0.499", "per_in_good" : ".1", "per_in_bad" : ".8"}
+;invoke 10 beacon_transmit configure_beacon {"tbtt" : "100000", "duration" : "350"}
+;invoke 11 beacon_receive configure_listen_window {"min_listen_window" : 4000, "max_listen_window" : 10000, "listen_window_step" : 2000, "pre_wakeup" : 1000}
+;invoke 12 beacon_receive sync_beacon {"next_beacon" : 100000, "per" : 3, "tbtt" : 100000, "skip_count" : 9}

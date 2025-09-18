@@ -1,0 +1,25 @@
+sm_name : roleswitch_peripheral_sm
+includes: 
+ - device_management/procedure_triggers.yaml
+  
+states:
+  roleswitch_peripheral_sm_idle:
+    START_PROCEDURE: roleswitch_peripheral_start_procedure_handler
+  FHS_TX_SCHEDULED:
+    TX_DONE: rs_peripheral_fhs_tx_done_handler
+    TX_ABORT: rs_peripheral_fhs_tx_abort_handler
+  ID_RX_SCHEDULED:
+    RX_DONE: rs_peripheral_id_rx_done_handler
+    RX_TIMEOUT: rs_peripheral_id_rx_timeout_handler
+  NEW_CENTRAL_TX_SCHEDULED:
+    TX_DONE: rs_peripheral_new_central_tx_done_handler
+    TX_ABORT: rs_peripheral_new_central_tx_abort_handler
+  NEW_CENTRAL_WAITING_FOR_RX_PACKET_HEADER:
+    RX_HEADER_RECEIVED: rs_peripheral_new_central_rx_header_received_handler
+    RX_DONE: rs_peripheral_rx_poll_null_done_handler
+    RX_TIMEOUT: rs_peripheral_new_central_rx_header_timeout_handler
+    RX_ABORT: rs_peripheral_new_central_rx_header_timeout_handler
+  NEW_CENTRAL_WAITING_FOR_RX_PKT_COMPLETE:
+    RX_DONE: rs_peripheral_new_central_rx_complete_handler
+    RX_TIMEOUT: rs_peripheral_new_central_rx_complete_timeout_handler
+    RX_ABORT: rs_peripheral_new_central_rx_complete_timeout_handler

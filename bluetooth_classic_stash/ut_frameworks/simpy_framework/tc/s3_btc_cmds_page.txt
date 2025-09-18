@@ -1,0 +1,7 @@
+#invoke 1000 btc_dev_1 init_device 1 11:22:33:44:55:66
+#invoke 1000 btc_dev_2 init_device 2 66:55:44:33:22:11
+#invoke 1100 btc_dev_1 init_page 1 0 66:55:44:33:22:11 0
+#invoke 1200 btc_dev_2 init_page_scan 1 1280000 10000 1
+#invoke 1250 btc_dev_1 start_page 1
+#invoke 1260 btc_dev_2 start_page_scan 2
+

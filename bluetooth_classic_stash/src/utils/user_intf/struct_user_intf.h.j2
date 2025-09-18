@@ -1,0 +1,38 @@
+#ifndef SL_STRUCTS_BTC_SEQ_INTERFACE_H
+#define SL_STRUCTS_BTC_SEQ_INTERFACE_H
+ 
+#include <stdint.h>
+void {{ intf_configs["intf_name"] }}_command_parser(uint8_t *out_buff, uint8_t *in_buff);
+ 
+{% for element, properties in elements.items() %}
+{% if properties.class == "struct" %}
+    {% if "brief" in properties.keys() %}
+    /****
+    {% for brief in properties["brief"] %}
+        {{ brief }}
+    {% endfor %}
+    ****/
+    {% endif %}
+    {% set struct_alias = properties.alias if properties.alias is defined and properties.alias else element %}
+ 
+typedef {{ properties["class"] }} {{ struct_alias }}_{{ properties["class"] }} {
+{% for field, field_properties in properties.items() %}
+    {% if field not in ["brief", "class", "alias"] %}
+        {% if field == "payload" %}
+            {# Skip payload field for all elements #}
+        {% else %}
+            {% if field_properties["data_type"] in ["uint8_t", "uint16_t", "uint32_t"] %}
+    {{ field_properties["data_type"] }} {{ field }};
+            {% elif field_properties["data_type"] == "array" %}
+    {{ field_properties["array_type"] }} {{ field }}[{{ field_properties["length"] }}];
+            {% else %}
+    {{ field_properties["data_type"] }} {{ field }};
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endfor %}
+} {{ struct_alias }}_t;
+{% endif %}
+{% endfor %}
+ 
+#endif

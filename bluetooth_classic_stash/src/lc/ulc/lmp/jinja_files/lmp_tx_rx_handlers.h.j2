@@ -1,0 +1,28 @@
+#ifndef __LMP_TX_RX_HANDLERS_AUTOGEN_H__
+#define  __LMP_TX_RX_HANDLERS_AUTOGEN_H__
+#include <lmp.h>
+
+{% for cmd, details in lmp_cmds.items() %}
+void {{cmd}}_tx_handler(ulc_t *ulc, uint32_t lmp_control_word, void *lmp_input_params);
+{% endfor %}
+
+{% for cmd, details in lmp_cmds.items() %}
+void {{cmd}}_rx_handler(ulc_t *ulc, pkb_t *pkb);
+{% endfor %}
+
+{% for cmd, details in lmp_accepted_cmd_events.items() %}
+void {{cmd}}_accepted_rx_handler(ulc_t *ulc, pkb_t *pkb);
+{% endfor %}
+
+{% for cmd, details in lmp_not_accepted_cmd_events.items() %}
+void {{cmd}}_not_accepted_rx_handler(ulc_t *ulc, pkb_t *pkb);
+{% endfor %}
+
+{% for cmd, details in lmp_accepted_ext_cmd_events.items() %}
+void {{cmd}}_accepted_ext_rx_handler(ulc_t *ulc, pkb_t *pkb);
+{% endfor %}
+
+{% for cmd, details in lmp_not_accepted_ext_cmd_events.items() %}
+void {{cmd}}_not_accepted_ext_rx_handler(ulc_t *ulc, pkb_t *pkb);
+{% endfor %}
+#endif

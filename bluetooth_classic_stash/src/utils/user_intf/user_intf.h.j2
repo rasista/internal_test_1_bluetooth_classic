@@ -1,0 +1,35 @@
+#ifndef SL_BTC_SEQ_INTERFACE_H
+#define SL_BTC_SEQ_INTERFACE_H
+#include <stdint.h>
+void {{ intf_configs["intf_name"] }}_command_parser(uint8_t *out_buff, uint8_t *in_buff);
+#define HSS_CMD(hss_cmd) (hss_cmd)
+#define HSS_EVENT(hss_cmd) (hss_cmd)
+{% for structure, properties in elements.items() | reverse %}
+   {% set offsets = namespace(current=0) %}
+// Original structure macros
+   {% for field, attributes in properties.items() %}
+       {% if field not in ["brief", "class", "alias"] %}
+           {% if attributes["data_type"] in ["uint8_t", "uint16_t", "uint32_t"] %}
+#define {{ structure|upper }}_{{ field|upper }}(hss_cmd) (({{ attributes["data_type"] }} *)({{ structure|upper }}(hss_cmd) + {{ offsets.current }}))
+           {% else %}
+#define {{ structure|upper }}_{{ field|upper }}(hss_cmd) ({{ structure|upper }}(hss_cmd) + {{ offsets.current }})
+           {% endif %}
+           {% if attributes["data_type"] == "array" %}
+               {% set offsets.current = (offsets.current + attributes["length"] + 3) // 4 * 4 %}
+           {% elif attributes["data_type"] in ["uint8_t", "uint16_t", "uint32_t"] %}
+               {% set size_in_bits = 8 if attributes["data_type"] == "uint8_t" else 16 if attributes["data_type"] == "uint16_t" else 32 %}
+               {% set size_in_bytes = size_in_bits // 8 %}
+               {% set offsets.current = (offsets.current + size_in_bytes + 3) // 4 * 4 %}
+           {% endif %}
+       {% endif %}
+   {% endfor %}
+   {% if "alias" in properties %}
+// Alias field macros
+       {% for field, attributes in properties.items() %}
+           {% if field not in ["brief", "class", "alias"] %}
+#define {{ properties["alias"]|upper }}_{{ field|upper }}(hss_cmd) {{ structure|upper }}_{{ field|upper }}(hss_cmd)
+           {% endif %}
+       {% endfor %}
+   {% endif %}
+{% endfor %}
+#endif

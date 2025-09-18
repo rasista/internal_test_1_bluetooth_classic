@@ -1,0 +1,4 @@
+Models:
+  test1:
+    python_handlers:
+      init_device : init_device_handler

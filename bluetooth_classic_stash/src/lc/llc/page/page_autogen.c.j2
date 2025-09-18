@@ -1,0 +1,26 @@
+#include "page_autogen.h"
+#include "state_machine.h"
+
+{% macro generate_sm_lut(state_details) %}
+{% for state in list_states %}
+    {% for trigger in list_triggers %}
+    {{ state_details[state][trigger] }},//![{{ state }}][{{ trigger }}]
+    {% endfor%}
+{% endfor%}
+{% endmacro %}
+
+/*Page State Machine Handlers*/
+sm_trigger_handler_t page_trigger_handler_lut[] = 
+{
+    {{ generate_sm_lut(state_details) -}}
+};
+
+
+sm_t page_sm_cb = {
+    "page_sm",
+    PAGE_SM_STATE_MAX,
+    PAGE_SM_TRIGGER_MAX,
+    PAGE_IDLE,
+    page_trigger_handler_lut
+    
+};

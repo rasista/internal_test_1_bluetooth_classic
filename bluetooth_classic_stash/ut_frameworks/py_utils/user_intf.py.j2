@@ -1,0 +1,72 @@
+import json
+import copy 
+
+{% set exclusion_list = ["brief", "class", "alias"] %}
+{% for element in elements.keys() %}
+class {{element}}_t():
+    device_index = int(-1)
+    {% for field in elements[element].keys() %}
+        {% if field not in exclusion_list %}
+            {% set data_type = elements[element][field]["data_type"] %}
+            {% if data_type == "uint8_t" or data_type == "uint16_t" or data_type == "uint32_t" %}
+    {{field}} = int(-1)
+            {% elif data_type == "array" and elements[element][field]["array_type"] == "uint8_t" %}
+    {{field}} = list(range({{elements[element][field]["length"]}}, -1))
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    
+    def jasonize(self):
+        base_cmd = f"lpw {{element}} {self.device_index}  "
+        json_string = "{\"{{element}}\":{"
+        {% for field in elements[element].keys() %}
+            {% if field not in exclusion_list %}
+                {% set data_type = elements[element][field]["data_type"] %}
+                {% if data_type == "uint8_t" or data_type == "uint16_t" or data_type == "uint32_t" or (data_type == "array" and elements[element][field]["array_type"] == "uint8_t") %}
+                    {% if not loop.last %}
+        string = "\"{{field}}\":%s," % self.{{field}}
+                    {% else %}
+        string = "\"{{field}}\":%s" % self.{{field}}
+                    {% endif %}
+        if(len(string)):
+            json_string += string
+        string = ''
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        json_string += "}}"
+        json_string = json_string.replace(" ","")
+        return base_cmd + json_string
+
+    def prep_payload_{{element}}(self, args):
+        json_cmd_string = json.loads(args)
+        key_list = list(json_cmd_string.keys())
+        for key in key_list:
+            if key == "device_index":
+                self.device_index = int(json_cmd_string["device_index"])
+            else:
+                {% for field in elements[element].keys() %}
+                    {% if field not in exclusion_list %}
+                        {% set data_type = elements[element][field]["data_type"] %}
+                        {% if data_type == "array" and elements[element][field]["array_type"] == "uint8_t" %}
+                self.{{field}} = copy.deepcopy(json_cmd_string[key]["{{field}}"])
+                        {% elif data_type == "uint8_t" or data_type == "uint16_t" or data_type == "uint32_t" %}
+                self.{{field}} = int(json_cmd_string[key]["{{field}}"])
+                        {% else %}
+                print("no data ")
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+        return self.jasonize()
+{% endfor %}
+
+if __name__ == "__main__":
+    init_btc_device = hss_cmd_payload_start_procedure_payload_init_btc_device_t()
+    init_btc_device.bd_address = [11, 22, 33, 44, 55, 66]
+    print(init_btc_device.jasonize())
+
+    start_page = hss_cmd_payload_start_procedure_payload_page_t()
+    start_page.priority = 1
+    start_page.step_size = 2
+    start_page.end_tsf = 123456
+    print(start_page.jasonize())

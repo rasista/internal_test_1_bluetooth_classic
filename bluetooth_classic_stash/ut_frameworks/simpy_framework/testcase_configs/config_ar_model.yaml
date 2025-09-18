@@ -1,0 +1,12 @@
+Models:
+  model_phy_layer:
+    python_handlers:
+      set_phy_params : handle_set_phy_params
+      datarate_to_phy_layer : handle_datarate_to_phy_layer
+    triggers:
+      datarate_to_phy_layer : 
+
+  model_rqm:
+    python_handlers:
+    c_handlers:
+      rateselection:

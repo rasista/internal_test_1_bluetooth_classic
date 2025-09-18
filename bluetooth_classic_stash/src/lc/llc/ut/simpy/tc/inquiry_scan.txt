@@ -1,0 +1,266 @@
+Testcase:
+#invoke 0 btc_dev_1 init_device 1 11:22:33:44:55:66                            
+#invoke 1250 btc_dev_1 init_inquiry_scan 1 2048 16 1
+#invoke 9000 btc_dev_1 start_inquiry_scan 1
+
+ 
+Test Case 1
+Recieving First ID packet and scheduling FHS and EIR accordingly
+
+Recieving First ID packet
+#invoke 10136 air_medium rx_end 1
+
+Scheduling FHS
+#invoke 10137 rail_1 expect "tx_start is 11250 in scheduled_activities"
+
+Not expecting the start the FHS at this point
+#invoke 10138 rail_1 do_not_expect "tx_start is 11875 in scheduled_activities"
+
+ 
+Scheduling EIR 
+#invoke 11803 rail_1 expect "tx_start is 13750 in scheduled_activities"
+
+  
+
+Test Case 2
+Reciving 2nd ID packet and scheduling FHS and EIR accordingly
+
+Expecting RX_START for second cycle for recieving ID packets 
+#invoke 15000 rail_1 expect "rx_start is 15000 in scheduled_activities"
+
+Reciving Second ID packet
+#invoke 15761 air_medium rx_end 1
+
+Not expecting FHS at this point
+#invoke 15762 rail_1 do_not_expect "tx_start is 16250 in scheduled_activities"
+
+Expecting FHS 
+#invoke 15763 rail_1 expect "tx_start is 16875 in scheduled_activities"
+#invoke 15764 rail_1 expect "tx_end is 17427 in scheduled_activities"
+
+Expecting EIR below
+#invoke 17428 rail_1 expect "tx_start is 19375 in scheduled_activities"
+
+ 
+
+ 
+
+Test Case 3 
+Receiving second ID packet and forcing FHS abort
+
+Expecting RX_START for 3rd cycle of Inquiry_scan
+#invoke 19928 rail_1 expect "rx_start is 20000 in scheduled_activities"
+
+Recieving 2nd ID Packet
+#invoke 20761 air_medium rx_end 1
+
+
+Forcing FHS timeout (it should've happened at 21875, forced at 21874)
+#invoke 20762 rail_1 expect "tx_start is 21875 in scheduled_activities"
+#invoke 20763 air_medium tx_end 1
+
+ 
+
+Test Case 4
+(Expecting time stamp of EIR when first ID packet is recieved)
+
+
+Expecting rx_start for 4th Cycle of Inquiry_Scan
+#invoke 20764 rail_1 expect "rx_start is 22500 in scheduled_activities"
+
+Receiving first ID packet
+#invoke 22636 air_medium rx_end 1
+
+Expecting FHS
+#invoke 22637 rail_1 expect "tx_start is 23750 in scheduled_activities"
+
+Not Expecting FHS
+#invoke 22638 rail_1 do_not_expect "tx_start is 24375 in scheduled_activities"
+
+ 
+Expecting EIR below
+#invoke 24303 rail_1 expect "tx_start is 26250 in scheduled_activities"
+
+Expecting TX_END for EIR 
+#invoke 24304 rail_1 expect "tx_end is 26802 in scheduled_activities"
+
+
+
+Test Case 5
+EXPECTING RX_START for the 5th cycle for inquiry_Scan
+#invoke 26803 rail_1 expect "rx_start is 27500 in scheduled_activities"
+
+Forcing RX_TIMEOUT before scan window ends
+#invoke 27550 air_medium rx_timeout 1
+
+RX starts again after timeout 
+#invoke 28000 rail_1 expect "rx_start is 30000 in scheduled_activities" 
+
+Recieving first ID packet 
+#invoke 30136 air_medium rx_end 1
+
+Expecting FHS when first ID packet was recieved
+#invoke 30137 rail_1 expect "tx_start is 31250 in scheduled_activities"
+
+Expecting EIR when first ID packet was recieved
+#invoke 31803 rail_1 expect "tx_start is 33750 in scheduled_activities"
+
+
+
+
+Test Case 6
+Forcing RX_TIMEOUT before scan window ends (Rx started at 35000)
+#invoke 36000 air_medium rx_timeout 1
+
+RX starts again after timeout 
+#invoke 36100 rail_1 expect "rx_start is 37500 in scheduled_activities"  
+
+Recieving second ID PACKET
+#invoke 38262 air_medium rx_end 1 
+
+ABORTING FHS packet with respect to second ID packet
+#invoke 39920 air_medium tx_end 1
+
+Expecting RX at 2NP0 wrt to second ID_PACKET
+#invoke 39921 rail_1 expect "rx_start is 40000 in scheduled_activities"
+
+
+
+
+Test case 7
+Forcing RX_ABORT (Trigger sent would be RX_TIMEOUT)
+#invoke 39922 air_medium rx_timeout 1 (It scheduled RX at 40000)
+#invoke 40001 air_medium rx_timeout 1 (It scheduled RX at 42500)
+
+
+Recieving FIRST ID PACKET(RX will start at 42500)
+#invoke 42637 air_medium rx_end 1 
+
+Scheduling FHS wrt First ID 
+#invoke 42638 rail_1 expect "tx_start is 43750 in scheduled_activities"
+
+Scheduling EIR wrt first ID
+#invoke 44303 rail_1 expect "tx_start is 46250 in scheduled_activities"
+
+
+
+Test Case 8
+ABORT FHS after second ID apcket is recieved
+#invoke 46803 rail_1 expect "rx_start is 47500 in scheduled_activities"
+
+ 
+Recieving 2nd ID packet
+#invoke 48262 air_medium rx_end 1
+
+Expecting FHS
+#invoke 48263 rail_1 expect "tx_start is 49375 in scheduled_activities"
+
+Aborting FHS
+#invoke 49376 air_medium tx_end 1
+
+
+
+Test Case 9 
+ABORT EIR when first ID packet is recieved
+
+Expecting RX_start for the next cycle of inquiry_scan
+#invoke 49377 rail_1 expect "rx_start is 50000 in scheduled_activities" 
+
+Reciving first ID packet
+#invoke 50136 air_medium rx_end 1 
+
+Expecting FHS packet when first ID packet is recieved 
+#invoke 50137 rail_1 expect "tx_start is 51250 in scheduled_activities"
+
+Forcing EIR abort
+#invoke 54300 air_medium tx_end 1 
+
+
+Test case 10 
+ABORT EIR when second ID packet is recieved 
+
+Expecting RX for next cycle
+#invoke 54301 rail_1 expect "rx_start is 55000 in scheduled_activities"  
+
+Recieving Second ID packet 
+#invoke 55761 air_medium rx_end 1
+
+Expecting FHS when second ID packet is recieved
+#invoke 55762 rail_1 expect "tx_start is 56875 in scheduled_activities" 
+
+Aborting EIR when second ID packet is recieved
+#invoke 59900 air_medium tx_end 1
+
+Expect RX_Start for the next cycle 
+#invoke 59901 rail_1 expect "rx_start is 60000 in scheduled_activities"
+
+
+Test Case 11
+Triggering BTC_RAIL_FAIL_STATUS for the On going RX cycle
+
+
+Recieving first ID packet
+#invoke 60004 air_medium rx_timeout 1
+
+#invoke 60005 rail_1 expect "rx_start is 62500 in scheduled_activities"
+
+TEST Case 12
+Triggering BTC_RAIL_FAIL_STATUS for Rx_start (control will go into rx_timeout handler)
+
+setting rail_status 
+#invoke 62010 air_medium rx_timeout 1
+
+Expecting RX_start for the next cycle in the same slot as timeout is before rx_start
+#invoke 62015 rail_1 expect "rx_start is 62500 in scheduled_activities"
+
+
+TEST Case 13
+Scheduling FHS wrt first ID packet but returning a rail_status for FHS so the control will go into FHS_ABORT handler
+#invoke 62636 air_medium rx_end 1
+
+Expecting FHS when first ID packet is recieved
+#invoke 62637 rail_1 expect "tx_start is 63750 in scheduled_activities"
+
+Setting rail_status for FHS 
+#invoke 64300 air_medium tx_end 1
+
+Expecting RX for the next cycle 
+#invoke 64303 rail_1 expect "rx_start is 65000 in scheduled_activities"
+
+Test case 14 
+Scheduling EIR wrt to first ID packet but returning a rail_status for EIR so the control goes to EIR abort handler
+
+Recieving first ID packet
+#invoke 65136 air_medium rx_end 1
+
+Expecting FHS after First ID packet is recieved
+#invoke 65137 rail_1 expect "tx_start is 66250 in scheduled_activities"
+
+Expecting EIR wrt to first ID packet
+#invoke 66803 rail_1 expect "tx_start is 68750 in scheduled_activities"
+
+Setting rail_status for EIR
+#invoke 69300 air_medium tx_end 1
+
+Expecting RX for the next cycle 
+#invoke 69301 rail_1 expect "rx_start is 70000 in scheduled_activities"
+
+
+
+Test Case 15 
+Going according to the flow where fhs and eir are scheduled acccordingly and in EIR done handler fail flag will be set
+
+Recieving first ID packet
+#invoke 70136 air_medium rx_end 1
+
+Expecting FHS
+#invoke 70137 rail_1 expect "tx_start is 71250 in scheduled_activities"
+
+Expecting EIR
+#invoke 71803 rail_1 expect "tx_start is 73750 in scheduled_activities"
+
+Setting rail_status before tx_done
+
+Expect RX_START for the next cycle
+#invoke 74304 rail_1 expect "rx_start is 75000 in scheduled_activities"
+

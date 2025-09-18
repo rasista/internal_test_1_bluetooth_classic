@@ -1,0 +1,27 @@
+#ifndef LL_HCI_EVNT_DEF_H
+#define LL_HCI_EVNT_DEF_H
+#include <stdint.h>
+
+{% for event, details in hci_events.items() %}
+/*{{event | upper}} PARAMETERS*/
+{% set offset = namespace(value=3) %}
+{% for  mem_var , length in details['event_params'].items()%}
+{% set size = length | int %}
+        {% if size == 1 %}
+#define SET_{{event | upper}}_{{mem_var | upper}}(buf ,value)  buf[{{offset.value}}] = value
+        {% elif size == 2 %}
+#define SET_{{event | upper}}_{{mem_var | upper}}(buf ,value)  *(uint16_t *)&buf[{{offset.value}}] = value
+        {% elif size == 3 %}
+#define SET_{{event | upper}}_{{mem_var | upper}}(buf ,value)  memcpy((uint8_t *)&buf[{{offset.value}}], &value, {{size}})
+        {% elif size == 4 %}
+#define SET_{{event | upper}}_{{mem_var | upper}}(buf ,value)  (*(uint32_t *)&buf[{{offset.value}}]) = value
+        {% else %}
+#define SET_{{event | upper}}_{{mem_var | upper}}(buf ,value)   memcpy((uint8_t *)&buf[{{offset.value}}], &value, {{size}})
+        {% endif %} 
+{% set offset.value = offset.value + size %}
+    {% endfor %}
+
+{% endfor %}
+
+
+#endif

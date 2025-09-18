@@ -1,0 +1,88 @@
+Roleswitch Peripheral Testcases
+
+Initialization of device,roleswitch peripheral and start of roleswitch peripheral
+
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_device_parameters_roleswitch {"set_device_parameters_roleswitch":{"connection_device_index":0,"lt_addr":1,"flow":0,"peer_role":1,"tx_pwr_index":23,"clk_e_offset":0},"device_index":1}
+#invoke 6000 btc_dev_1 set_roleswitch_parameters {"set_roleswitch_parameters":{"connection_device_index":0,"roleswitch_instant":16,"roleswitch_slot_offset":0,"new_lt_addr":2},"device_index":1}
+#invoke 8000 rail_1 set_var packet_type rs_peripheral 2
+#invoke 9000 btc_dev_1 start_roleswitch_peripheral {"start_roleswitch_peripheral":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":80,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+triggering timeout in NEW_CENTRAL_WAITING_FOR_RX_PKT_COMPLETE state using NEW_CONN_TIMEOUT [16 times] condition after which it goes to idle state
+#invoke 9002 rail_1 expect “tx_start is 10000 in scheduled_activities”
+#invoke 9003 rail_1 expect “tx_end is 11249 in scheduled_activities”
+#invoke 11250 rail_1 expect “rx_start is 11250 in scheduled_activities”
+#invoke 11252 rail_1 set_var packet_type rs_peripheral 2
+#invoke 11255 air_medium rx_end rail_1
+we are in stage 2 from here.
+#invoke 12499 rail_1 expect “tx_start is 12500 in scheduled_activities”
+#invoke 12502 rail_1 expect “tx_end is 13749 in scheduled_activities”
+#invoke 13750 rail_1 expect “rx_start is 13750 in scheduled_activities”
+#invoke 13751 rail_1 set_var packet_type rs_peripheral 2
+#invoke 13752 air_medium rx_header_done rail_1
+#invoke 13755 air_medium rx_timeout rail_1
+
+1st TX_ABORT trigger
+#invoke 14999 rail_1 expect “tx_start is 15000 in scheduled_activities”
+#invoke 15005 air_medium tx_end rail_1
+
+2nd TX_ABORT trigger
+#invoke 17499 rail_1 expect "tx_start is 17500 in scheduled_activities"
+#invoke 17505 air_medium tx_end rail_1
+
+3rd TX_ABORT trigger
+#invoke 19999 rail_1 expect "tx_start is 20000 in scheduled_activities"
+#invoke 20005 air_medium tx_end rail_1
+
+4th TX_ABORT trigger
+#invoke 22499 rail_1 expect "tx_start is 22500 in scheduled_activities"
+#invoke 22505 air_medium tx_end rail_1
+
+5th TX_ABORT trigger
+#invoke 24999 rail_1 expect "tx_start is 25000 in scheduled_activities"
+#invoke 25005 air_medium tx_end rail_1
+
+6th TX_ABORT trigger
+#invoke 27499 rail_1 expect "tx_start is 27500 in scheduled_activities"
+#invoke 27505 air_medium tx_end rail_1
+
+7th TX_ABORT trigger
+#invoke 29999 rail_1 expect "tx_start is 30000 in scheduled_activities"
+#invoke 30005 air_medium tx_end rail_1
+
+8th TX_ABORT trigger
+#invoke 32499 rail_1 expect "tx_start is 32500 in scheduled_activities"
+#invoke 32505 air_medium tx_end rail_1
+
+9th TX_ABORT trigger
+#invoke 34999 rail_1 expect "tx_start is 35000 in scheduled_activities"
+#invoke 35005 air_medium tx_end rail_1
+
+10th TX_ABORT trigger
+#invoke 37499 rail_1 expect "tx_start is 37500 in scheduled_activities"
+#invoke 37505 air_medium tx_end rail_1
+ 
+11th TX_ABORT trigger
+#invoke 39999 rail_1 expect “tx_start is 40000 in scheduled_activities” 
+#invoke 40005 air_medium tx_end rail_1
+
+12th TX_ABORT trigger
+#invoke 42499 rail_1 expect “tx_start is 42500 in scheduled_activities”  
+#invoke 42505 air_medium tx_end rail_1
+
+13th TX_ABORT trigger
+#invoke 44999 rail_1 expect “tx_start is 45000 in scheduled_activities” 
+#invoke 45005 air_medium tx_end rail_1
+
+14th TX_ABORT trigger
+#invoke 47499 rail_1 expect “tx_start is 47500 in scheduled_activities”  
+#invoke 47505 air_medium tx_end rail_1
+
+15th TX_ABORT trigger
+#invoke 49999 rail_1 expect “tx_start is 50000 in scheduled_activities” 
+#invoke 50005 air_medium tx_end rail_1
+
+going in idle state, checking do not expect:
+#invoke 52500 rail_1 do_not_expect "tx_start is 52500 in scheduled_activities"
+
+

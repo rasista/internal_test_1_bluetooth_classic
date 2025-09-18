@@ -1,0 +1,9 @@
+#ifndef SL_BTC_INIT_H_
+#define SL_BTC_INIT_H_
+
+
+{% for h in btc_init_hook[0].handler %}
+void {{h.name}}();
+{% endfor %}
+
+#endif // SL_BTC_HAL_H_

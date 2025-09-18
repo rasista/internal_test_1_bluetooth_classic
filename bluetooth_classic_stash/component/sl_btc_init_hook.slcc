@@ -1,0 +1,29 @@
+id: sli_btc_init_hook
+label: intialising btc init hooks  
+package: Bluetooth-Classic
+description: |-
+  Module intialising btc init hooks
+
+
+category: Bluetooth-Classic
+quality: internal
+root_path: protocol/bluetooth_classic
+
+
+provides:
+  - name: sli_btc_init_hook
+
+template_file:
+  - path: "src/lc/llc/ut/lite_controller/templates/sl_btc_init.c.jinja"
+  - path: "src/lc/llc/ut/lite_controller/templates/sl_btc_init.h.jinja"
+
+template_contribution:
+  - name: btc_init_hook
+    value:
+      handler:
+        - name: sl_btc_init
+          value:
+            handler:
+              - name: btc_sequencer_user_init
+              - name: fifo_manager_init
+               

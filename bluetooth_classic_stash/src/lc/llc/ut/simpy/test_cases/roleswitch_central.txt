@@ -1,0 +1,79 @@
+Roleswitch Central Testcases
+
+Initialization of device,roleswitch central and start of roleswitch central
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_device_parameters_roleswitch {"set_device_parameters_roleswitch":{"connection_device_index":0,"lt_addr":1,"flow":0,"peer_role":1,"tx_pwr_index":23,"clk_e_offset":0},"device_index":1}
+#invoke 6000 btc_dev_1 set_roleswitch_parameters {"set_roleswitch_parameters":{"connection_device_index":0,"roleswitch_instant":16,"roleswitch_slot_offset":0,"new_lt_addr":2},"device_index":1}
+#invoke 8000 rail_1 set_var packet_type rs_central 2
+#invoke 9000 btc_dev_1 start_roleswitch_central {"start_roleswitch_central":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":40,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+States of Roleswitch Central
+WAITING_FOR_FHS_RX_PKT_HEADER
+WAITING_FOR_FHS_RX_PKT_COMPLETE
+ID_PKT_TX_SCHEDULED
+NEW_PERIPHERAL_WAITING_FOR_RX_PKT_HEADER
+NEW_PERIPHERAL_WAITING_FOR_RX_PKT_COMPLETE
+NEW_PERIPHERAL_TX_SCHEDULED
+
+Testcase 1 
+triggering Rx timeout in FHS_PKT_HEADER state [RX_TIMEOUT]
+#invoke 9002 rail_1 expect “rx_start is 10000 in scheduled_activities”
+#invoke 10007 rail_1 set_var packet_type rs_central 2
+#invoke 10009 air_medium rx_timeout rail_1
+
+Testcase 2 
+triggering Rx timeout in FHS_PKT_COMPLETE state [RX_TIMEOUT]
+#invoke 12500 rail_1 expect “rx_start is 12500 in scheduled_activities”
+#invoke 12505 rail_1 set_var packet_type rs_central 2
+#invoke 12507 air_medium rx_header_done rail_1 
+#invoke 12509 air_medium rx_timeout rail_1
+
+Testcase 3
+triggering TX_ABORT in ID_PKT_TX_SCHEDULED state [TX_ABORT]
+#invoke 15000 rail_1 expect “rx_start is 15000 in scheduled_activities”
+#invoke 15005 rail_1 set_var packet_type rs_central 2
+#invoke 15007 air_medium rx_header_done rail_1 
+#invoke 15009 air_medium rx_end rail_1
+#invoke 16250 rail_1 expect "tx_start is 16250 in scheduled_activities"
+#invoke 16255 air_medium tx_end rail_1
+
+Testcase 4
+triggering timeout in NEW_PERIPHERAL_WAITING_FOR_RX_PKT_HEADER [RX_HEADER_TIMEOUT]
+#invoke 17500 rail_1 expect “rx_start is 17500 in scheduled_activities”
+#invoke 17505 air_medium rx_header_done rail_1 
+#invoke 17507 rail_1 set_var packet_type rs_central 2
+#invoke 17509 air_medium rx_end rail_1
+#invoke 18750 rail_1 expect "tx_start is 18750 in scheduled_activities"
+#invoke 18755 rail_1 expect “tx_end is 18886 in scheduled_activities”
+we are in stage 2 from here.
+#invoke 20000 rail_1 expect “rx_start is 20000 in scheduled_activities”
+#invoke 20005 rail_1 set_var packet_type rs_central 2
+#invoke 20007 air_medium rx_timeout rail_1
+
+Testcase 5
+triggering timeout in NEW_PERIPHERAL_WAITING_FOR_RX_PKT_COMPLETE [RX_HEADER_TIMEOUT]
+#invoke 22500 rail_1 expect “rx_start is 22500 in scheduled_activities”
+#invoke 22505 rail_1 set_var packet_type rs_central 2
+#invoke 22507 air_medium rx_header_done rail_1 
+#invoke 22509 air_medium rx_timeout rail_1
+
+Testcase 6
+triggering abort in NEW_PERIPHERAL_TX_SCHEDULED state [TX_ABORT]
+#invoke 24999 rail_1 expect “rx_start is 25000 in scheduled_activities” 
+#invoke 25005 rail_1 set_var packet_type rs_central 2
+#invoke 25007 air_medium rx_header_done rail_1 
+#invoke 25009 air_medium rx_end rail_1
+#invoke 26250 rail_1 expect "tx_start is 26250 in scheduled_activities"
+#invoke 26255 air_medium tx_end rail_1
+
+Testcase 7
+Ideal Testcase
+triggering all positive cases and sending RX_DONE and TX_DONE triggers respectively
+#invoke 27500 rail_1 expect “rx_start is 27500 in scheduled_activities”
+#invoke 27505 rail_1 set_var packet_type central 2
+#invoke 27507 air_medium rx_header_done rail_1 
+#invoke 27509 air_medium rx_end rail_1
+#invoke 28750 rail_1 expect "tx_start is 28750 in scheduled_activities"
+#invoke 28755 rail_1 expect "tx_end is 29999 in scheduled_activities"
+
+#invoke 30000 btc_dev_1 stop_roleswitch {"stop_roleswitch":{"connection_device_index":0},"device_index":1}

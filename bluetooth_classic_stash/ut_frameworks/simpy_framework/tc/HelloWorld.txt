@@ -1,0 +1,3 @@
+#import {"Models" : {"producer": "1"}}
+#import {"Models" : {"consumer": "1"}}
+#invoke 2 producer send_producer_hi

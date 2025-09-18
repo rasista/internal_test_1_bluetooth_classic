@@ -1,0 +1,11 @@
+FROM dkrhel001.silabs.com/toolchain/gsdk:24q2
+ 
+ENV APP_DIR=/app
+WORKDIR /home/
+ 
+COPY utf_core-1.33.0-py3-none-any.whl ./utf_core-1.33.0-py3-none-any.whl
+ 
+RUN build_deps='doxygen gnupg2 software-properties-common apt-transport-https ca-certificates   \
+    gdb build-essential socat valgrind' \
+&& apt-get update \
+&& apt-get install -y --no-install-recommends $build_deps

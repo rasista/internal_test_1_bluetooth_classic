@@ -1,0 +1,118 @@
+Testcase:
+
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_page_scan {"device_index":1,"set_page_scan":{"window":2048,"bd_address":[11,22,33,44,55,66],"interval":16,"curr_scan_type":0,"tx_pwr_index":-1,"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 9000 btc_dev_1 start_page_scan {"device_index":1,"start_page_scan":{"priority":1,"step_size":1,"end_tsf":122}}
+
+!# Test Case 1
+!# Receiving the first ID packet and scheduling id_tx according to the first ID packet and then aborting it
+#invoke 9999 rail_1  expect "rx_start is 10000 in scheduled_activities" 
+#invoke 10001 air_medium rx_end rail_1
+#invoke 11249 rail_1 expect "tx_start is 11250 in scheduled_activities"
+#invoke 11252 air_medium tx_end rail_1
+
+!# Test case 2 
+!# Receiving first ID packet and scheduling ID_tx according to the first ID packet and scheduling FHS rx
+#invoke 12499 rail_1 expect "rx_start is 12500 in scheduled_activities" 
+#invoke 12501 air_medium rx_end rail_1
+#invoke 13749 rail_1 expect "tx_start is 13750 in scheduled_activities"
+#invoke 14999 rail_1 expect "rx_start is 15000 in scheduled_activities"
+#invoke 15001 air_medium rx_end rail_1
+
+
+!#Test Case 3
+!# scheduling FHS tx and then aborting it 
+#invoke 16249 rail_1 expect "tx_start is 16250 in scheduled_activities"
+#invoke 16252 air_medium tx_end rail_1
+
+!#Test case 4 
+!# scheduling FHS RX scheduled and timedout
+#invoke 17549 rail_1 expect "rx_start is 17500 in scheduled_activities"
+
+!#Test case 5
+!# FHS RX_SCHEDULED and done 
+#invoke 19999 rail_1 expect "rx_start is 20000 in scheduled_activities"
+#invoke 20001 air_medium rx_end rail_1
+
+!#Test case 6 
+!# FHS TX_SCHEDULED and aborted 
+#invoke 21249 rail_1 expect "tx_start is 21250 in scheduled_activities"
+#invoke 21252 air_medium tx_end rail_1
+
+!#Test case 7
+!# id RX_SCHEDULED and timeout 
+#invoke 22499 rail_1 expect "rx_start is 22500 in scheduled_activities"
+#invoke +1 air_medium rx_end rail_1
+
+#invoke 23750 rail_1 expect "tx_start is 23750 in scheduled_activities"
+#invoke +1 air_medium tx_end rail_1
+
+!# Test case 8
+!# FHS tx done according to first ID packet
+#invoke 24999 rail_1 expect "rx_start is 25000 in scheduled_activities"
+#invoke 25001 air_medium rx_end rail_1
+#invoke 26249 rail_1 expect "tx_start is 26250 in scheduled_activities"
+#invoke 27499 rail_1 expect "rx_start is 27500 in scheduled_activities"
+#invoke 27501 air_medium rx_end rail_1
+#invoke 28749 rail_1 expect "tx_start is 28750 in scheduled_activities"
+
+!#Test case 9  poll rx_timeout ----1st Try
+#invoke 29999 rail_1 expect "rx_start is 30000 in scheduled_activities"
+
+!# Test case 10 poll rx_timeout  ---2nd Try 
+#invoke 32499 rail_1 expect "rx_start is 32500 in scheduled_activities"
+
+
+!# test case 11 poll rx_timeout --3rd Try 
+#invoke 34999 rail_1 expect "rx_start is 35000 in scheduled_activities"
+
+!# test case 12 poll rx_timeout --4th try 
+#invoke 37499 rail_1 expect "rx_start is 37500 in scheduled_activities"
+
+!# test case 13 poll rx_timeout --5th try 
+#invoke 39999 rail_1 expect "rx_start is 40000 in scheduled_activities"
+
+--6th try 
+#invoke 42499 rail_1 expect "rx_start is 42500 in scheduled_activities"
+
+--7th Try 
+#invoke 44999 rail_1 expect "rx_start is 45000 in scheduled_activities"
+
+--8th try 
+#invoke 47499 rail_1 expect "rx_start is 47500 in scheduled_activities"
+
+--9th try 
+#invoke 49999 rail_1 expect "rx_start is 50000 in scheduled_activities"
+
+--10th try 
+#invoke 52499 rail_1 expect "rx_start is 52500 in scheduled_activities"
+
+--11th try 
+#invoke 54999 rail_1 expect "rx_start is 55000 in scheduled_activities"
+
+--12th try 
+#invoke 57499 rail_1 expect "rx_start is 57500 in scheduled_activities"
+
+--13th try 
+#invoke 59999 rail_1 expect "rx_start is 60000 in scheduled_activities"
+
+--14th try
+#invoke 62499 rail_1 expect "rx_start is 62500 in scheduled_activities"
+
+--15th try 
+#invoke 64999 rail_1 expect "rx_start is 65000 in scheduled_activities"
+
+--16th try 
+#invoke 67499 rail_1 expect "rx_start is 67500 in scheduled_activities"
+
+
+#invoke 69999 rail_1 expect "rx_start is 70000 in scheduled_activities"
+#invoke 70001 air_medium rx_end rail_1
+
+#invoke 71249 rail_1 expect "tx_start is 71250 in scheduled_activities"
+!#invoke 72499 rail_1 expect "rx_start is 72500 in scheduled_activities"
+!#invoke 72501 air_medium rx_end rail_1
+!#invoke 73749 rail_1 expect "tx_start is 73750 in scheduled_activities"
+!#invoke 74999 rail_1 expect "rx_start is 75000 in scheduled_activities"
+!invoke 75001 air_medium rx_end rail_1
+

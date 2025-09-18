@@ -1,0 +1,17 @@
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 0 btc_dev_2 init_device {"device_index":2,"init_device":{"bd_address":[66,55,44,33,22,11]}}
+#invoke 9000 btc_dev_1 start_inquiry {"device_index":1,"start_inquiry":{"lap_address":[11,22,33],"length":48,"num_response":3,"clk_e_offset":0,"EIR_value":1}}
+#invoke 9000 btc_dev_2 start_inquiry_scan {"device_index":2,"start_inquiry_scan":{"window":2048,"interval":16,"EIR_value":1}}
+
+Testcase 1 
+1st ID and receiving 1st ID
+
+#invoke 10000 rail_1 expect "tx_start is 10000 in scheduled_activities"
+#invoke 10001 rail_1 expect "tx_end is 10136 in scheduled_activities"
+
+2nd ID 
+#invoke 10137 rail_1 expect "tx_start is 10625 in scheduled_activities"
+#invoke 10138 rail_1 expect "tx_end is 10761 in scheduled_activities"
+
+Scheduling FHS according to first ID 
+#invoke 10762 rail_2 expect "tx_start is 11250 in scheduled_activities"

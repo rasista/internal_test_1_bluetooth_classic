@@ -1,0 +1,16 @@
+Models:
+  hfp_esco:
+    python_handlers:
+      start_streaming : start_streaming
+      tx_complete : tx_complete_handler
+      rx_complete : rx_complete_handler
+      sleep_complete : sleep_complete_handler
+      lpwss_sleep_start : lpwss_sleep_start_handler
+  activity_monitor:
+    python_handlers:
+      schedule_tx : schedule_tx_handler
+      schedule_rx : schedule_rx_handler
+      lpwss_schedule_sleep : lpwss_schedule_sleep_handler
+      hss_schedule_sleep : hss_schedule_sleep_handler
+      set_tx_power : set_tx_power
+      set_rx_power : set_rx_power

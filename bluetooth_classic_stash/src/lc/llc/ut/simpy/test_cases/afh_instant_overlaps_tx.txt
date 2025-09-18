@@ -1,0 +1,14 @@
+Testcase:
+ 
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_device_parameters_acl {"set_device_parameters_acl":{"connection_device_index":0,"lt_addr":3,"flow":1,"peer_role":2,"tx_pwr_index":1},"device_index":1}
+#invoke 6000 btc_dev_1 set_afh_parameters_acl {"set_afh_parameters_acl":{"connection_device_index":0,"channel_map_in_use":[11,22,33,44,55,66,77,88,99,10],"afh_new_channel_map_instant":59,"afh_new_channel_map":[11,22,23,44,55,66,77,88,99,10],"no_of_valid_afh_channels":10,"piconet_type":0},"device_index":1}
+#invoke 7000 btc_dev_1 set_sniff_parameters_acl {"set_sniff_parameters_acl":{"connection_device_index":0,"sniff_instant":0,"sniff_interval":0,"sniff_attempt":0,"sniff_timeout":0},"device_index":1}
+invoke 8000 rail_1 set_var packet_type central 4
+#invoke 9000 btc_dev_1 start_acl_central {"start_acl_central":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":40,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+for 3dh5 packet
+!# Case where a 3dh5 packet is intersecting afh instant, to test this, afh instant (x) value should be 33 <= x <= 42
+#invoke 19001 rail_1 set_var packet_type central 4
+#invoke 20000 rail_1 expect “tx_start is 20000 in scheduled_activities”
+#invoke 20001 rail_1 expect “tx_end is 26249 in scheduled_activities”

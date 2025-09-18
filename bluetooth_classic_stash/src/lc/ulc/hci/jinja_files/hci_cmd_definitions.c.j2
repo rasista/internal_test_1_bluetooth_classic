@@ -1,0 +1,15 @@
+#include "stdint.h"
+#include "string.h"
+#include "hci_handlers_autogen.h"
+
+{% for cmd, details in hci_cmds.items() %}
+
+/* -------------------{{cmd}}_handlers---------------------*/
+
+{% for sub_cmd, sub_details in details['cmds'].items() %}
+void hci_cmd_{{sub_cmd}}_handler(void *ctx, pkb_t* pkb){
+    //Reserved For Future
+}
+{% endfor %}
+
+{% endfor %}

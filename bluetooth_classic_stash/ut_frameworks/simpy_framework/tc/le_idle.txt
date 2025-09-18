@@ -1,0 +1,5 @@
+#invoke 1 activity_monitor set_rx_power 3.5
+#invoke 2 activity_monitor set_tx_power 20
+#invoke 4 le_idle_mode set_tx_length 80
+#invoke 5 le_idle_mode set_rx_length 180
+#invoke 100 le_idle_mode start_ci

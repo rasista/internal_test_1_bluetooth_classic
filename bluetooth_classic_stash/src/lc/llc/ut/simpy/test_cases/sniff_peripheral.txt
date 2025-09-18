@@ -1,0 +1,39 @@
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_device_parameters_acl {"set_device_parameters_acl":{"connection_device_index":0,"lt_addr":2,"flow":1,"peer_role":1,"tx_pwr_index":18,"br_edr_mode":1},"device_index":1}
+#invoke 6000 btc_dev_1 set_afh_parameters_acl {"set_afh_parameters_acl":{"connection_device_index":0,"channel_map_in_use":[11,22,33,44,55,66,77,88,99,10],"afh_new_channel_map_instant":59,"afh_new_channel_map":[11,22,23,44,55,66,77,88,99,10],"no_of_valid_afh_channels":10,"piconet_type":0},"device_index":1}
+#invoke 7000 btc_dev_1 set_sniff_parameters_acl {"set_sniff_parameters_acl":{"connection_device_index":0,"sniff_instant":16,"sniff_interval":20,"sniff_attempt":2,"sniff_timeout":0},"device_index":1}
+#invoke 8000 rail_1 set_var packet_type peripheral 3
+#invoke 9000 btc_dev_1 start_acl_peripheral {"start_acl_peripheral":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":72,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+Testcase 1
+3DH3 packet [1st RX-TX] Sniff Attempt-1
+#invoke 9002 rail_1 expect “rx_start is 10000 in scheduled_activities”
+#invoke 10002 air_medium rx_header_done rail_1 
+#invoke 10003 rail_1 set_var packet_type peripheral 3
+#invoke 13740 air_medium rx_end rail_1
+#invoke 13749 rail_1 expect "tx_start is 13750 in scheduled_activities"
+#invoke 13750 rail_1 set_var packet_type peripheral 4
+
+Testcase 2
+3DH5 packet [2nd RX-TX] Sniff Attempt-2
+#invoke 14303 rail_1 expect “rx_start is 15000 in scheduled_activities”
+#invoke 15002 air_medium rx_header_done rail_1 
+#invoke 21248 air_medium rx_end rail_1
+#invoke 21249 rail_1 expect "tx_start is 21250 in scheduled_activities"
+#invoke 32505 rail_1 set_var packet_type peripheral 2
+
+Testcase 3
+3DH1 packet Packet transmitted after sniff interval of 20 full slots [Sniff Attempt-1]
+#invoke 35000 rail_1 expect “rx_start is 35000 in scheduled_activities”
+#invoke 35005 air_medium rx_header_done rail_1 
+#invoke 35007 rail_1 set_var packet_type peripheral 2
+#invoke 36240 air_medium rx_end rail_1
+#invoke 36250 rail_1 expect "tx_start is 36250 in scheduled_activities"
+
+Testcase 4
+3DH1 packet [Sniff Attempt-2]
+#invoke 37500 rail_1 expect “rx_start is 37500 in scheduled_activities”
+#invoke 37505 air_medium rx_header_done rail_1 
+#invoke 37507 rail_1 set_var packet_type peripheral 2
+#invoke 38740 air_medium rx_end rail_1
+#invoke 38750 rail_1 expect "tx_start is 38750 in scheduled_activities"

@@ -1,0 +1,86 @@
+user_interface:
+  root:
+    system:
+      commands:
+        restart:
+          ui_handler: restart_cmd_handler
+        update_sys_tick : 
+          ui_handler : update_sys_tick_handler
+        end:
+          ui_handler : end_cmd_handler
+    lpw:
+      commands:
+        tx_end:
+          ui_handler : tx_end_handler
+        rx_done:
+          ui_handler : rx_done_handler
+        rx_timeout:
+          ui_handler : rx_timeout_handler
+        rx_abort:
+          ui_handler : rx_abort_handler
+        backoff:
+          ui_handler : backoff_done_handler
+        tx_abort:
+          ui_handler : tx_abort_handler
+        var_status:
+          ui_handler : var_status_handler
+        rx_header_received:
+          ui_handler : rx_header_received_handler
+        set_payload:
+          ui_handler : set_payload_handler
+        hss_cmd_payload_start_procedure_payload_init_btc_device:
+          ui_handler : hss_cmd_payload_start_procedure_payload_init_btc_device_handler
+        hss_cmd_payload_start_procedure_payload_page:
+          ui_handler : hss_cmd_payload_start_procedure_payload_page_handler
+        hss_cmd_payload_start_procedure_payload_page_scan:
+          ui_handler : hss_cmd_payload_start_procedure_payload_page_scan_handler
+        hss_cmd_payload_start_procedure_payload_inquiry:
+          ui_handler : hss_cmd_payload_start_procedure_payload_inquiry_handler
+        hss_cmd_payload_start_procedure_payload_inquiry_scan:
+          ui_handler : hss_cmd_payload_start_procedure_payload_inquiry_scan_handler
+        hss_cmd_payload_start_procedure_payload_esco_central:
+          ui_handler : hss_cmd_payload_start_procedure_payload_esco_central_handler
+        hss_cmd_payload_start_procedure_payload_esco_peripheral:
+          ui_handler : hss_cmd_payload_start_procedure_payload_esco_peripheral_handler
+        hss_cmd_payload_start_procedure_payload_roleswitch_central:
+          ui_handler : hss_cmd_payload_start_procedure_payload_roleswitch_central_handler
+        hss_cmd_payload_start_procedure_payload_roleswitch_peripheral:
+          ui_handler : hss_cmd_payload_start_procedure_payload_roleswitch_peripheral_handler
+        hss_cmd_payload_start_procedure_payload_acl_central:
+          ui_handler : hss_cmd_payload_start_procedure_payload_acl_central_handler
+        hss_cmd_payload_start_procedure_payload_acl_peripheral:
+          ui_handler : hss_cmd_payload_start_procedure_payload_acl_peripheral_handler
+        hss_cmd_payload_start_procedure_payload_test_mode:
+          ui_handler : hss_cmd_payload_start_procedure_payload_test_mode_handler
+        hss_cmd_payload_set_procedure_payload_page:
+          ui_handler : hss_cmd_payload_set_procedure_payload_page_handler
+        hss_cmd_payload_set_procedure_payload_inquiry:
+          ui_handler : hss_cmd_payload_set_procedure_payload_inquiry_handler
+        hss_cmd_payload_set_procedure_payload_page_scan:
+          ui_handler : hss_cmd_payload_set_procedure_payload_page_scan_handler
+        hss_cmd_payload_set_procedure_payload_inquiry_scan:
+          ui_handler : hss_cmd_payload_set_procedure_payload_inquiry_scan_handler
+        hss_cmd_payload_set_procedure_payload_afh_parameters_acl:
+          ui_handler : hss_cmd_payload_set_procedure_payload_afh_parameters_acl_handler
+        hss_cmd_payload_set_procedure_payload_sniff_parameters_acl:
+          ui_handler : hss_cmd_payload_set_procedure_payload_sniff_parameters_acl_handler
+        hss_cmd_payload_set_procedure_payload_device_parameters_acl:
+          ui_handler : hss_cmd_payload_set_procedure_payload_device_parameters_acl_handler
+        hss_cmd_payload_set_procedure_payload_device_parameters_esco:
+          ui_handler : hss_cmd_payload_set_procedure_payload_device_parameters_esco_handler
+        hss_cmd_payload_set_procedure_payload_device_parameters_roleswitch:
+          ui_handler : hss_cmd_payload_set_procedure_payload_device_parameters_roleswitch_handler
+        hss_cmd_payload_set_procedure_payload_roleswitch_parameters:
+          ui_handler : hss_cmd_payload_set_procedure_payload_roleswitch_parameters_handler
+        hss_cmd_payload_stop_procedure_payload_acl_central:
+          ui_handler : hss_cmd_payload_stop_procedure_payload_acl_central_handler
+        hss_cmd_payload_stop_procedure_payload_esco_central:
+          ui_handler : hss_cmd_payload_stop_procedure_payload_esco_central_handler
+        hss_cmd_payload_stop_procedure_payload_roleswitch_central:
+          ui_handler : hss_cmd_payload_stop_procedure_payload_roleswitch_central_handler
+        hss_cmd_payload_stop_procedure_payload_acl_peripheral:
+          ui_handler : hss_cmd_payload_stop_procedure_payload_acl_peripheral_handler
+        hss_cmd_payload_stop_procedure_payload_esco_peripheral:
+          ui_handler : hss_cmd_payload_stop_procedure_payload_esco_peripheral_handler
+        hss_cmd_payload_stop_procedure_payload_roleswitch_peripheral:
+          ui_handler : hss_cmd_payload_stop_procedure_payload_roleswitch_peripheral_handler

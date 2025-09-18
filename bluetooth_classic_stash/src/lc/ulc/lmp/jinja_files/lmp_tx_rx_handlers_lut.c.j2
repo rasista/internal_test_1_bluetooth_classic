@@ -1,0 +1,238 @@
+#include "lmp_tx_rx_handlers_autogen.h"
+#include <lmp.h>
+
+{% set regular_opcodes = [] %}
+{% set extended_opcodes = [] %}
+{% for cmd, details in lmp_cmds.items() %}
+    {% if details['OPCODE']['value'] == 127 %}
+        {% do extended_opcodes.append((cmd, details['EXTENDED_OPCODE']['value'])) %}
+    {% else %}
+        {% do regular_opcodes.append((cmd, details['OPCODE']['value'])) %}
+    {% endif %}
+{% endfor %}
+{% set regular_opcodes = regular_opcodes|sort(attribute=1) %}
+{% set extended_opcodes = extended_opcodes|sort(attribute=1) %}
+{% set valid_commands = [] %}
+{% for cmd, _ in regular_opcodes %}
+    {% do valid_commands.append(cmd) %}
+{% endfor %}
+{% for cmd, _ in extended_opcodes %}
+    {% do valid_commands.append(cmd) %}
+{% endfor %}
+
+{% macro increment_count(count) %}
+    {% set count.value = count.value + 1 %}
+{% endmacro %}
+{% macro handler_exists(name) %}
+    {% if name in valid_commands %}true{% else %}false{% endif %}
+{% endmacro %}
+
+{% set myList = [] %}
+{% set count = namespace(value=1) %}
+const lmp_rx_handler_t lmp_rx_lut[] = {
+NULL, /* Index 0 is reserved */
+{% for cmd, opcode_value in regular_opcodes %}
+    {% if opcode_value == count.value %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_rx_handler{% else %}NULL /* {{ cmd }} handler not defined */{% endif %}, // RX handler {{ increment_count(count) }}
+    {% else %}
+        {% for _ in range(count.value, opcode_value) %}
+NULL, /* Opcode {{ count.value }} not used */ {{ increment_count(count) }}
+        {% endfor %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_rx_handler{% else %}NULL /* {{ cmd }} handler not defined */{% endif %}, // RX handler for opcode {{ opcode_value }}
+        {% set count.value = opcode_value + 1 %}
+    {% endif %}
+{% endfor %}
+{% do myList.append(count.value) %}
+};
+
+{% set myList = [] %}
+{% set count = namespace(value=1) %}
+const lmp_rx_handler_t lmp_rx_ext_lut[] = {
+NULL, /* Index 0 is reserved */
+{% for cmd, opcode_value in extended_opcodes %}
+    {% if opcode_value == count.value %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_rx_handler{% else %}NULL /* {{ cmd }} handler not defined */{% endif %}, // RX handler {{ increment_count(count) }}
+    {% else %}
+        {% for _ in range(count.value, opcode_value) %}
+NULL, /* Extended opcode {{ count.value }} not used */ {{ increment_count(count) }}
+        {% endfor %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_rx_handler{% else %}NULL /* {{ cmd }} handler not defined */{% endif %}, // RX handler for extended opcode {{ opcode_value }}
+        {% set count.value = opcode_value + 1 %}
+    {% endif %}
+{% endfor %}
+{% do myList.append(count.value) %}
+};
+
+{% set myList = [] %}
+{% set count = namespace(value=1) %}
+const lmp_tx_handler_t lmp_tx_lut[] = {
+NULL, /* Index 0 is reserved */
+{% for cmd, opcode_value in regular_opcodes %}
+    {% if opcode_value == count.value %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_tx_handler{% else %}NULL /* {{ cmd }} handler not defined */{% endif %}, // TX handler {{ increment_count(count) }}
+    {% else %}
+        {% for _ in range(count.value, opcode_value) %}
+NULL, /* Opcode {{ count.value }} not used */ {{ increment_count(count) }}
+        {% endfor %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_tx_handler{% else %}NULL /* {{ cmd }} handler not defined */{% endif %}, // TX handler for opcode {{ opcode_value }}
+        {% set count.value = opcode_value + 1 %}
+    {% endif %}
+{% endfor %}
+{% do myList.append(count.value) %}
+};
+
+{% set myList = [] %}
+{% set count = namespace(value=1) %}
+lmp_tx_handler_t lmp_tx_ext_lut[] = {
+NULL, /* Index 0 is reserved */
+{% for cmd, opcode_value in extended_opcodes %}
+    {% if opcode_value == count.value %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_tx_handler{% else %}NULL /* {{ cmd }} handler not defined */{% endif %}, // TX handler {{ increment_count(count) }}
+    {% else %}
+        {% for _ in range(count.value, opcode_value) %}
+NULL, /* Extended opcode {{ count.value }} not used */ {{ increment_count(count) }}
+        {% endfor %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_tx_handler{% else %}NULL /* {{ cmd }} handler not defined */{% endif %}, // TX handler for extended opcode {{ opcode_value }}
+        {% set count.value = opcode_value + 1 %}
+    {% endif %}
+{% endfor %}
+{% do myList.append(count.value) %}
+};
+
+
+
+
+{% set accepted_opcodes = [] %}
+{% for cmd, details in lmp_accepted_cmd_events.items() %}
+    {% if details['OPCODE']['value'] != 127 %}
+        {% do accepted_opcodes.append((cmd, details['OPCODE']['value'])) %}
+    {% endif %}
+{% endfor %}
+{% set accepted_opcodes = accepted_opcodes|sort(attribute=1) %}
+{% set valid_commands = [] %}
+{% for cmd, _ in accepted_opcodes %}
+    {% do valid_commands.append(cmd) %}
+{% endfor %}
+
+{% macro increment_count(count) %}
+    {% set count.value = count.value + 1 %}
+{% endmacro %}
+{% macro handler_exists(name) %}
+    {% if name in valid_commands %}true{% else %}false{% endif %}
+{% endmacro %}
+
+{% set count = namespace(value=1) %}
+const lmp_accepted_rx_handler_t lmp_accepted_lut[] = {
+NULL, /* Index 0 is reserved */
+{% for cmd, opcode_value in accepted_opcodes %}
+    {% if opcode_value == count.value %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_accepted_rx_handler{% else %}NULL /* {{ cmd }} accepted handler not defined */{% endif %}, // Accepted handler {{ increment_count(count) }}
+    {% else %}
+        {% for _ in range(count.value, opcode_value) %}
+NULL, /* Opcode {{ count.value }} not used */ {{ increment_count(count) }}
+        {% endfor %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_accepted_rx_handler{% else %}NULL /* {{ cmd }} accepted handler not defined */{% endif %}, // Accepted handler for opcode {{ opcode_value }}
+        {% set count.value = opcode_value + 1 %}
+    {% endif %}
+{% endfor %}
+};
+
+{% set not_accepted_opcodes = [] %}
+{% for cmd, details in lmp_not_accepted_cmd_events.items() %}
+    {% if details['OPCODE']['value'] != 127 %}
+        {% do not_accepted_opcodes.append((cmd, details['OPCODE']['value'])) %}
+    {% endif %}
+{% endfor %}
+{% set not_accepted_opcodes = not_accepted_opcodes|sort(attribute=1) %}
+{% set valid_commands = [] %}
+{% for cmd, _ in not_accepted_opcodes %}
+    {% do valid_commands.append(cmd) %}
+{% endfor %}
+
+{% macro increment_count(count) %}
+    {% set count.value = count.value + 1 %}
+{% endmacro %}
+{% macro handler_exists(name) %}
+    {% if name in valid_commands %}true{% else %}false{% endif %}
+{% endmacro %}
+
+{% set count = namespace(value=1) %}
+const lmp_not_accepted_rx_handler_t lmp_not_accepted_lut[] = {
+NULL, /* Index 0 is reserved */
+{% for cmd, opcode_value in not_accepted_opcodes %}
+    {% if opcode_value == count.value %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_not_accepted_rx_handler{% else %}NULL /* {{ cmd }} accepted handler not defined */{% endif %}, // Not Accepted handler {{ increment_count(count) }}
+    {% else %}
+        {% for _ in range(count.value, opcode_value) %}
+NULL, /* Opcode {{ count.value }} not used */ {{ increment_count(count) }}
+        {% endfor %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_not_accepted_rx_handler{% else %}NULL /* {{ cmd }} accepted handler not defined */{% endif %}, // Not Accepted handler for opcode {{ opcode_value }}
+        {% set count.value = opcode_value + 1 %}
+    {% endif %}
+{% endfor %}
+};
+
+{% set not_accepted_ext_opcodes = [] %}
+{% for cmd, details in lmp_not_accepted_ext_cmd_events.items() %}
+    {% if details['OPCODE']['value'] == 127 %}
+        {% do not_accepted_ext_opcodes.append((cmd, details['EXTENDED_OPCODE']['value'])) %}
+    {% endif %}
+{% endfor %}
+{% set not_accepted_ext_opcodes = not_accepted_ext_opcodes|sort(attribute=1) %}
+{% set valid_commands = [] %}
+{% for cmd, _ in not_accepted_ext_opcodes %}
+    {% do valid_commands.append(cmd) %}
+{% endfor %}
+
+{% set count = namespace(value=1) %}
+const lmp_not_accepted_ext_rx_handler_t lmp_not_accepted_ext_lut[] = {
+NULL, /* Index 0 is reserved */
+{% for cmd, opcode_value in not_accepted_ext_opcodes %}
+    {% if opcode_value == count.value %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_not_accepted_ext_rx_handler{% else %}NULL /* {{ cmd }} not accepted handler not defined */{% endif %}, // Not Accepted handler {{ increment_count(count) }}
+    {% else %}
+        {% for _ in range(count.value, opcode_value) %}
+NULL, /* Extended opcode {{ count.value }} not used */ {{ increment_count(count) }}
+        {% endfor %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_not_accepted_ext_rx_handler{% else %}NULL /* {{ cmd }} not accepted handler not defined */{% endif %}, // Not Accepted handler for extended opcode {{ opcode_value }}
+        {% set count.value = opcode_value + 1 %}
+    {% endif %}
+{% endfor %}
+};
+
+{% set accepted_ext_opcodes = [] %}
+{% for cmd, details in lmp_accepted_ext_cmd_events.items() %}
+    {% if details['OPCODE']['value'] == 127 %}
+        {% do accepted_ext_opcodes.append((cmd, details['EXTENDED_OPCODE']['value'])) %}
+    {% endif %}
+{% endfor %}
+{% set accepted_ext_opcodes = accepted_ext_opcodes|sort(attribute=1) %}
+{% set valid_commands = [] %}
+{% for cmd, _ in accepted_ext_opcodes %}
+    {% do valid_commands.append(cmd) %}
+{% endfor %}
+
+{% macro increment_count(count) %}
+    {% set count.value = count.value + 1 %}
+{% endmacro %}
+{% macro handler_exists(name) %}
+    {% if name in valid_commands %}true{% else %}false{% endif %}
+{% endmacro %}
+
+{% set count = namespace(value=1) %}
+const lmp_accepted_ext_rx_handler_t lmp_accepted_ext_lut[] = {
+NULL, /* Index 0 is reserved */
+{% for cmd, opcode_value in accepted_ext_opcodes %}
+    {% if opcode_value == count.value %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_accepted_ext_rx_handler{% else %}NULL /* {{ cmd }} handler not defined */{% endif %}, // RX handler {{ increment_count(count) }}
+    {% else %}
+        {% for _ in range(count.value, opcode_value) %}
+NULL, /* Extended opcode {{ count.value }} not used */ {{ increment_count(count) }}
+        {% endfor %}
+        {% if handler_exists(cmd) == 'true' %}{{ cmd }}_accepted_ext_rx_handler{% else %}NULL /* {{ cmd }} handler not defined */{% endif %}, // RX handler for extended opcode {{ opcode_value }}
+        {% set count.value = opcode_value + 1 %}
+    {% endif %}
+{% endfor %}
+{% do myList.append(count.value) %}
+};
+

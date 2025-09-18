@@ -1,0 +1,63 @@
+ACL TEST CASES CENTRAL
+
+Testcase:
+#invoke 0 btc_dev_1 init_device 1 11:22:33:44:55:66                            
+#invoke 1250 btc_dev_1 init_acl 1 11:22:33:44:55:66 1 1 0
+#invoke 8000 rail_1 set_var packet_type central 2
+invoke 8001 rail_1 set_var rail_status -1
+#invoke 9000 btc_dev_1 start_acl 1
+
+Test Case 1(IDEAL TEST CASE)
+!# FOR 3DH3 packet 
+#invoke 9002 rail_1 expect “tx_start is 10000 in scheduled_activities”
+#invoke 9003 rail_1 expect “tx_end is 13749 in scheduled_activities”
+#invoke 13751 air_medium rx_header_done  
+#invoke 13770 rail_1 set_var packet_type central 3
+#invoke 13780 air_medium rx_end 1
+
+
+Test Case 2(IDEAL TEST CASE)
+!# FOR 3DH5 packet
+#invoke 13782 rail_1 expect “tx_start is 15000 in scheduled_activities”
+#invoke 13783 rail_1 expect "tx_end is 21249 in scheduled_activities"
+#invoke 21251 air_medium rx_header_done 
+#invoke 21270 rail_1 set_var packet_type central 2
+#invoke 21280 air_medium rx_end 1
+
+Test Case 3
+!# Doing TX_ABORT from central and  triggering the rail_fail_status as well 
+!# FOR 3DH3
+#invoke 21282 rail_1 expect “tx_start is 22500 in scheduled_activities”
+#invoke 22500 rail_1 set_var packet_type central 2
+invoke 22501 rail_1 set_var rail_status -1 
+#invoke 22504 air_medium tx_end 1
+Next TX scheduled at next 2npo.
+
+Test Case 4 
+!# For 3DH3 packet(Doing Timeout for Rx_header and triggering the fail status for rx_header_timeout handler as well)
+#invoke 22600 rail_1 expect “tx_start is 25000 in scheduled_activities” 
+#invoke 23000 rail_1 expect “tx_end is 28749 in scheduled_activities”
+#invoke 28752 rail_1 set_var packet_type central 2
+invoke 28753 rail_1 set_var rail_status -1
+!#3 Tx start for next cycle
+
+Test Case 5
+!# triggering rx_abort handler by sending rx_timeout to CENTRAL_WAITING_FOR_RX_COMPLETE handler for 3dh3 packet and triggering the fail status for the same 
+#invoke 28771 rail_1 expect “tx_start is 30000 in scheduled_activities”
+#invoke 29000 rail_1 expect "tx_end is 33749 in scheduled_activities"
+#invoke 33751 air_medium rx_header_done 
+#invoke 33752 rail_1 set_var packet_type central 2
+#invoke 33754 rail_1 set_var rail_status -1
+#invoke 33755 air_medium rx_timeout 1
+
+Test case 6 
+!# triggering rail fail_status for rx_done handler for 3dh3 packet
+#invoke 33800 rail_1 expect “tx_start is 35000 in scheduled_activities”
+#invoke 33900 rail_1 expect "tx_end is 38749 in scheduled_activities"
+#invoke 38751 rail_1 set_var rail_status -1
+#invoke 38752 air_medium rx_header_done 
+#invoke 38755 air_medium rx_end 1
+
+Test case 7 
+!# triggering fail status for tx_done handler
+invoke 40550 rail_1 set_var rail_status -1

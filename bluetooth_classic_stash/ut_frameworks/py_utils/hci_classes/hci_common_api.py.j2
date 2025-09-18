@@ -1,0 +1,80 @@
+import threading
+import os
+import sys
+import time
+from typing import Optional
+import numpy as np
+from utf.devices import Device
+from utf_lib_btdm.interfaces.hci import HCI
+BUILD_PATH = os.getenv("BUILD_PATH")
+sys.path.append(f"{BUILD_PATH}/../src/lc/ulc/autogen")
+from hci_intf_autogen import *
+
+class HciCommonApi(HCI):
+    def __init__(self, device: Device, config: Optional[dict], cli_transport: str):
+        super().__init__(device, config, cli_transport)
+
+    def setFileName(self, fileName):
+        self.fileName = fileName
+        with open(self.fileName, "w") as f:
+            f.write("")
+
+    def convert_mac_to_bytes(self, mac_address):
+        """Convert MAC address string to list of bytes"""
+        if isinstance(mac_address, str):
+            # Remove colons and convert hex string to bytes, then to list
+            mac_hex = mac_address.replace(':', '')
+            mac_bytes = bytes.fromhex(mac_hex)
+            return list(mac_bytes)
+        elif isinstance(mac_address, bytes):
+            return list(mac_address)
+        elif isinstance(mac_address, list):
+            return mac_address
+        else:
+            raise ValueError(f"Unsupported MAC address format: {type(mac_address)}")
+
+    def swap_bytes_16(self, value):
+        """Swap bytes for 16-bit values (little-endian to big-endian or vice versa)"""
+        return (((value & 0xFF00) >> 8) | ((value & 0x00FF) << 8))
+
+    def swap_bytes_32(self, value):
+        """Swap bytes for 32-bit values (little-endian to big-endian or vice versa)"""
+        return (((value & 0xFF000000) >> 24) | 
+                ((value & 0x00FF0000) >> 8) | 
+                ((value & 0x0000FF00) << 8) | 
+                ((value & 0x000000FF) << 24))
+
+{% for cmd_group, cmd_details in hci_cmds.items() %}
+{% for cmd_name, cmd_info in cmd_details['cmds'].items() %}
+    def {{cmd_name}}(self{% if cmd_info['parameters'] is mapping %}{% for param_name, param_size in cmd_info['parameters'].items() %}, {{param_name}}{% endfor %}{% endif %}):
+        """
+        {{cmd_name | upper}} HCI Command
+        {% if cmd_info['parameters'] is mapping %}
+        Parameters:
+        {% for param_name, param_size in cmd_info['parameters'].items() %}
+        - {{param_name}}: {{param_size}} bytes
+        {% endfor %}
+        {% endif %}
+        """
+        self.logger.info(f'{{cmd_name}} - {threading.get_ident()}')
+        test_data_flow = {{cmd_name}}_t()
+        # Handle parameter assignments
+        {% if cmd_info['parameters'] is mapping %}
+        {% for param_name, param_size in cmd_info['parameters'].items() %}
+        {% if param_name == 'bd_addr' %}
+        test_data_flow.{{param_name}} = self.convert_mac_to_bytes({{param_name}})
+        {% elif param_size == 2 %}
+        test_data_flow.{{param_name}} = self.swap_bytes_16({{param_name}})
+        {% elif param_name == 'numeric_value' %}
+        test_data_flow.{{param_name}} = self.swap_bytes_32({{param_name}})
+        {% else %}
+        test_data_flow.{{param_name}} = {{param_name}}
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+        hci_cmd = test_data_flow.prep_hci()
+        self.logger.info(f"{{cmd_name}} sending {hci_cmd} in thread - {threading.get_ident()}")
+        self.issue_command(hci_cmd)
+
+{% endfor %}
+{% endfor %}

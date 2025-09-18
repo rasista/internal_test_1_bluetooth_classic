@@ -1,0 +1,8 @@
+#ifndef LL_HCI_EVNT_PTL_H
+#define LL_HCI_EVNT_PTL_H
+
+{% for event, details in hci_events.items() %}
+#define SET_PTL_OF_{{event | upper}}_EVENT  {{details['length']['value']}}
+{% endfor %}
+
+#endif

@@ -1,0 +1,15 @@
+#ifndef LL_HCI_CMD_SET_DEF_STATUS_EVENT_H
+#define LL_HCI_CMD_SET_DEF_STATUS_EVENT_H
+
+/* Note - These macros are to be used while preparing a status event packet*/
+/* SE in the macro name stands for Status Event */
+
+{% for cmd, details in hci_cmds.items() %}
+/* {{cmd | upper}} */
+    {% for sub_cmd, sub_details in details['cmds'].items() %}
+        {% set offset = namespace(value=3) %}
+#define SET_SE_{{sub_cmd | upper}}_STATUS(buf, value)  buf[{{offset.value}}] = value 
+
+    {% endfor %}
+{% endfor%}
+#endif

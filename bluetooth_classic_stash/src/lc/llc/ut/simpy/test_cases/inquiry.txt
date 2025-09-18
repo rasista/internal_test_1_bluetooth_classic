@@ -1,0 +1,276 @@
+Testcase:
+ 
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_inquiry {"device_index":1,"set_inquiry":{"tx_pwr_index":100,"lap_address":[11,22,33],"length":1,"hci_trigger":1,"EIR_value":1,"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 9000 btc_dev_1 start_inquiry {"device_index":1,"start_inquiry":{"priority":1,"step_size":1,"end_tsf":2048}}
+ 
+Testcase 1
+1st ID
+#invoke 10000 rail_1 expect "tx_start is 10000 in scheduled_activities"
+#invoke 10001 rail_1 expect "tx_end is 10136 in scheduled_activities"
+2nd ID
+#invoke 10137 rail_1 expect "tx_start is 10625 in scheduled_activities"
+#invoke 10138 rail_1 expect "tx_end is 10761 in scheduled_activities"
+1st ID FHS
+#invoke 10762 rail_1 expect "rx_start is 11250 in scheduled_activities"
+#invoke 11265 air_medium rx_end rail_1
+2st ID FHS
+#invoke 11803 rail_1 do_not_expect "rx_start is 11875 in scheduled_activities"
+1st id EIR
+#invoke 11876 rail_1 expect "rx_start is 13750 in scheduled_activities"
+#invoke 13765 air_medium rx_end rail_1  
+ 
+ 
+Testcase 2
+Schedule ID packets again (forcing 1st ID to abort)
+#invoke 13766 rail_1 expect "tx_start is 15000 in scheduled_activities"
+#invoke 15135 air_medium tx_end rail_1
+#invoke 15136 rail_1 expect "tx_start is 15625 in scheduled_activities"
+#invoke 15137 rail_1 expect "tx_end is 15761 in scheduled_activities"
+(after forcing tx_abort for 1st ID packet, we do not expect rx for FHS)
+#invoke 15762 rail_1 do_not_expect "rx_start is 16250 in scheduled_activities"
+#invoke 15763 rail_1 expect "rx_start is 16875 in scheduled_activities"
+#invoke 17150 air_medium rx_end rail_1
+(after forcing tx_abort for 1st ID packet, we do not expect rx for EIR)
+#invoke 17429 rail_1 do_not_expect "rx_start is 18750 in scheduled_activities"
+#invoke 17430 rail_1 expect "rx_start is 19375 in scheduled_activities"
+#invoke 19650 air_medium rx_end rail_1
+(we need to invoke rx_end to get to next step)
+
+ 
+Testcase 3
+Case 2 forcing 2nd ID to abort
+#invoke 19999 rail_1 expect "tx_start is 20000 in scheduled_activities"
+tx for ID2 starts at 15625, we abort it
+#invoke 20626 air_medium tx_end rail_1
+Expect fhs for first id packet
+#invoke 20627 rail_1 expect "rx_start is 21250 in scheduled_activities"
+#invoke 21525 air_medium rx_end rail_1
+we do not expect id response of 2nd packet since we recieved fhs    
+#invoke 21803 rail_1 do_not_expect "rx_start is 21875 in scheduled_activities"
+expecting eir for id1, not expecting for id2
+#invoke 21804 rail_1 expect "rx_start is 23750 in scheduled_activities"
+#invoke 21805 rail_1 do_not_expect "rx_start is 24375 in scheduled_activities"
+#invoke 24026 air_medium rx_end rail_1
+ 
+ 
+Testcase 4
+now we abort both the id packets
+#invoke 24928 rail_1 expect "tx_start is 25000 in scheduled_activities"
+#invoke 25001 air_medium tx_end rail_1
+#invoke 25002 rail_1 expect "tx_start is 25625 in scheduled_activities"
+#invoke 25626 air_medium tx_end rail_1
+
+ 
+Testcase 5
+Both id packets were aborted start tx again (abort first id packet and fhs timeout)
+#invoke 25627 rail_1 expect "tx_start is 27500 in scheduled_activities"
+#invoke 27635 air_medium tx_end rail_1
+#invoke 27636 rail_1 expect "tx_start is 28125 in scheduled_activities"
+#invoke 27637 rail_1 expect "tx_end is 28261 in scheduled_activities"
+#invoke 27638 rail_1 do_not_expect "rx_start is 28750 in scheduled_activities"
+#invoke 28262 rail_1 expect "rx_start is 29375 in scheduled_activities"
+#invoke 29999 rail_1 expect "tx_start is 30000 in scheduled_activities"
+
+ 
+Testcase 6
+Both id packets were aborted start tx again (abort first id packet and Eir timeout)
+#invoke 30135 air_medium tx_end rail_1
+#invoke 30136 rail_1 expect "tx_start is 30625 in scheduled_activities"
+#invoke 30137 rail_1 expect "tx_end is 30761 in scheduled_activities"
+#invoke 30138 rail_1 do_not_expect "rx_start is 31250 in scheduled_activities"
+#invoke 30762 rail_1 expect "rx_start is 31875 in scheduled_activities"
+#invoke 32150 air_medium rx_end rail_1
+#invoke 32429 rail_1 do_not_expect "rx_start is 33750 in scheduled_activities"
+#invoke 32430 rail_1 expect "rx_start is 34375 in scheduled_activities"
+ 
+
+Invoking through set var starts from here
+
+Testcase 7
+#invoke 34744 rail_1 set_var rail_status -1
+invoke 34999 rail_1 expect "tx_start is 35000 in scheduled_activities"
+#invoke 35625 rail_1 expect "tx_start is 35625 in scheduled_activities"
+ 
+Testcase 8
+#invoke 39999 rail_1 expect "tx_start is 40000 in scheduled_activities"
+#invoke 40002 rail_1 set_var rail_status -1
+#invoke 40020 air_medium tx_end rail_1
+ 
+!#scheduling ID packets again 
+!# invoking fail status of inquiry_id_2_tx_done_handler
+#invoke 42500 rail_1 expect "tx_start is 42500 in scheduled_activities"
+#invoke 43125 rail_1 expect "tx_start is 43125 in scheduled_activities"
+#invoke 43126 rail_1 set_var rail_status -1
+
+!#scheduling fail_status of inquiry_id_2_tx_abort_handler
+!#scheduling ID packets again 
+#invoke 45000 rail_1 expect "tx_start is 45000 in scheduled_activities"
+#invoke 45625 rail_1 expect "tx_start is 45625 in scheduled_activities"
+#invoke 45627 rail_1 set_var rail_status -1
+#invoke 45628 air_medium tx_end rail_1
+
+!#invoking  fail_Status of inquiry_rx_1_done_handler
+!#scheduling ID packets again 
+#invoke 50000 rail_1 expect "tx_start is 50000 in scheduled_activities"
+#invoke 50625 rail_1 expect "tx_start is 50625 in scheduled_activities"
+#invoke 51250 rail_1 expect "rx_start is 51250 in scheduled_activities"
+#invoke 51251 rail_1 set_var rail_status -1
+#invoke 51252 air_medium rx_end rail_1
+
+!#invoking fail_status of inquiry_rx_1_timeout_handler
+!#scheduling ID Packets again
+#invoke 52500 rail_1 expect "tx_start is 52500 in scheduled_activities"
+#invoke 53125 rail_1 expect "tx_start is 53125 in scheduled_activities"
+#invoke 53750 rail_1 expect "rx_start is 53750 in scheduled_activities"
+#invoke 53751 rail_1 set_var rail_status -1
+
+!#invoking fail status of inquiry_rx_2_done_handler
+!# scheduling ID packets again 
+#invoke 55000 rail_1 expect "tx_start is 55000 in scheduled_activities"
+#invoke 55625 rail_1 expect "tx_start is 55625 in scheduled_activities"
+#invoke 56250 rail_1 expect "rx_start is 56250 in scheduled_activities"
+#invoke 56875 rail_1 expect "rx_start is 56875 in scheduled_activities"
+#invoke 56877 rail_1 set_var rail_status -1
+#invoke 56878 air_medium rx_end rail_1
+
+!invoking fail status of inquiry_rx_2_timeout_handler
+!# scheduling ID packets again 
+#invoke 57500 rail_1 expect "tx_start is 57500 in scheduled_activities"
+#invoke 58125 rail_1 expect "tx_start is 58125 in scheduled_activities"
+#invoke 58750 rail_1 expect "rx_start is 58750 in scheduled_activities"
+#invoke 59375 rail_1 expect "rx_start is 59375 in scheduled_activities"
+#invoke 59377 rail_1 set_var rail_status -1
+
+!#invoking fail_status of inquiry_EIR_rx_done_handler
+!# scheduling ID packets again 
+#invoke 62500 rail_1 expect "tx_start is 62500 in scheduled_activities"
+#invoke 63125 rail_1 expect "tx_start is 63125 in scheduled_activities"
+#invoke 63750 rail_1 expect "rx_start is 63750 in scheduled_activities"
+#invoke 63751 air_medium rx_end rail_1
+#invoke 66250 rail_1 expect "rx_start is 66250 in scheduled_activities"
+#invoke 66251 rail_1 set_var rail_status -1
+#invoke 66252 air_medium rx_end rail_1
+
+!#invoking fail status of inquiry_EIR_rx_timeout_handler
+!# scheduling ID packets again 
+#invoke 70000 rail_1 expect "tx_start is 70000 in scheduled_activities"
+#invoke 70625 rail_1 expect "tx_start is 70625 in scheduled_activities"
+#invoke 71250 rail_1 expect "rx_start is 71250 in scheduled_activities"
+#invoke 71251 air_medium rx_end rail_1
+#invoke 73750 rail_1 expect "rx_start is 73750 in scheduled_activities"
+#invoke 73751 rail_1 set_var rail_status -1
+
+#invoke 100000 rail_1 expect "tx_start is 100000 in scheduled_activities"
+#invoke +1 air_medium tx_end rail_1
+#invoke 100625 rail_1 expect "tx_start is 100625 in scheduled_activities"
+#invoke 100627 rail_1 set_var rail_status -1
+#invoke 100628 air_medium tx_end rail_1
+
+!invoking fail status of inquiry_rx_1_timeout_handler
+!# scheduling ID packets again 
+#invoke 105000 rail_1 expect "tx_start is 105000 in scheduled_activities"
+#invoke 105625 rail_1 expect "tx_start is 105625 in scheduled_activities"
+#invoke 105626 air_medium tx_end rail_1
+#invoke 106250 rail_1 expect "rx_start is 106250 in scheduled_activities"
+#invoke 106251 rail_1 set_var rail_status -1
+
+!invoking fail status of inquiry_rx_2_timeout_handler
+!# scheduling ID packets again 
+#invoke 120000 rail_1 expect "tx_start is 120000 in scheduled_activities"
+#invoke 120136 rail_1 expect "tx_end is 120136 in scheduled_activities"
+#invoke 120625 rail_1 expect "tx_start is 120625 in scheduled_activities"
+#invoke 120626 rail_1 set_var rail_status -1
+#invoke 120627 air_medium tx_end rail_1
+
+!#scheduling ID packets again 
+!# invoking fail status of inquiry_id_1_tx_done_handler
+#invoke 125000 rail_1 expect "tx_start is 125000 in scheduled_activities"
+#invoke 125001 rail_1 set_var rail_status -1
+
+
+
+!invoking fail status of inquiry_rx_1_timeout_handler
+!# scheduling ID packets again 
+#invoke 1287500 rail_1 expect "tx_start is 1287500 in scheduled_activities"
+#invoke +625 rail_1 expect "tx_start is 1288125 in scheduled_activities"
+#invoke +5 air_medium tx_end rail_1
+#invoke +623 rail_1 expect "rx_start is 1288750 in scheduled_activities"
+
+
+#invoke 1297000 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 1298000 btc_dev_1 start_inquiry {"device_index":1,"start_inquiry":{"priority":1,"step_size":1,"end_tsf":2050}}
+
+!#else condition for rx2_timeout
+#invoke 2577000 rail_1 expect "tx_start is 2577000 in scheduled_activities"
+#invoke +5 air_medium tx_end rail_1
+#invoke 2577625 rail_1 expect "tx_start is 2577625 in scheduled_activities"
+#invoke 2578875 rail_1 expect "rx_start is 2578875 in scheduled_activities"
+
+
+#invoke 2587000 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 2588000 btc_dev_1 start_inquiry {"device_index":1,"start_inquiry":{"priority":1,"step_size":1,"end_tsf":2050}}
+
+!#invoking else in inquiry_EIR_rx_timeout_handler
+
+
+!# scheduling ID packets again 
+#invoke 3867000 rail_1 expect "tx_start is 3867000 in scheduled_activities"
+#invoke 3867625 rail_1 expect "tx_start is 3867625 in scheduled_activities"
+#invoke 3868250 rail_1 expect "rx_start is 3868250 in scheduled_activities"
+#invoke 3868875 rail_1 expect "rx_start is 3868875 in scheduled_activities"
+#invoke +1 air_medium rx_end rail_1
+
+#invoke 3878000 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 3879000 btc_dev_1 start_inquiry {"device_index":1,"start_inquiry":{"priority":1,"step_size":1,"end_tsf":2050}}
+
+#invoke 5158000 rail_1 expect "tx_start is 5158000 in scheduled_activities"
+#invoke 5158625 rail_1 expect "tx_start is 5158625 in scheduled_activities"
+#invoke +1 air_medium tx_end rail_1
+
+#invoke 5159250 rail_1 expect "rx_start is 5159250 in scheduled_activities"
+#invoke +1 air_medium rx_end rail_1
+
+#invoke 5161750 rail_1 expect "rx_start is 5161750 in scheduled_activities"
+#invoke +1 air_medium rx_end rail_1
+
+
+
+#invoke 5170000 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke +9000 btc_dev_1 start_inquiry {"device_index":1,"start_inquiry":{"priority":1,"step_size":1,"end_tsf":2050}}
+
+!#invoking  fail_Status of inquiry_rx_1_done_handler
+!#scheduling ID packets again 
+#invoke 5180000 rail_1 expect "tx_start is 5180000 in scheduled_activities"
+#invoke 5180625 rail_1 expect "tx_start is 5180625 in scheduled_activities"
+#invoke 5181250 rail_1 expect "rx_start is 5181250 in scheduled_activities"
+#invoke 5181251 rail_1 set_var rail_status -1
+#invoke 5181252 air_medium rx_end rail_1
+
+
+
+
+!#invoking fail status of inquiry_rx_2_done_handler
+!# scheduling ID packets again 
+#invoke 5185000 rail_1 expect "tx_start is 5185000 in scheduled_activities"
+#invoke 5185625 rail_1 expect "tx_start is 5185625 in scheduled_activities"
+#invoke 5186250 rail_1 expect "rx_start is 5186250 in scheduled_activities"
+#invoke 5186875 rail_1 expect "rx_start is 5186875 in scheduled_activities"
+#invoke 5186876 rail_1 set_var rail_status -1
+#invoke 5186877 air_medium rx_end rail_1
+
+
+
+
+
+
+
+
+!#invoking  fail_Status of inquiry_rx_1_done_handler, else
+!#scheduling ID packets again 
+#invoke 6457500 rail_1 expect "tx_start is 6457500 in scheduled_activities"
+#invoke 6458125 rail_1 expect "tx_start is 6458125 in scheduled_activities"
+#invoke +1 air_medium tx_end rail_1
+#invoke 6458750 rail_1 expect "rx_start is 6458750 in scheduled_activities"
+#invoke 6458752 air_medium rx_end rail_1
+

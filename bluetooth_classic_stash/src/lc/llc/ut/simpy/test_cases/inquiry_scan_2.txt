@@ -1,0 +1,17 @@
+Testcase:
+
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_inquiry_scan {"device_index":1,"set_inquiry_scan":{"tx_pwr_index":0,"window":2048,"interval":16,,"curr_scan_type":0,"EIR_value":1,"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 9000 btc_dev_1 start_inquiry_scan {"device_index":1,"start_inquiry_scan":{"priority":1,"step_size":1,"end_tsf":40}}
+
+Test Case 1
+Recieving First ID packet and scheduling FHS and EIR accordingly
+
+Recieving First ID packet
+#invoke 10136 air_medium rx_end rail_1
+
+Scheduling FHS
+#invoke 10137 rail_1 expect "tx_start is 11250 in scheduled_activities"
+#invoke 11251 rail_1 set_var rail_status -1
+
+

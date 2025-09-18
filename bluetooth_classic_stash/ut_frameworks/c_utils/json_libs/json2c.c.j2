@@ -1,0 +1,104 @@
+#include <stdint.h>
+#include "jansson_binaries/include/jansson_config.h"
+#include "jansson_binaries/include/jansson.h"
+#include "string.h"
+#include "{{intf_configs["cmd_configs"]}}"
+#include <stdlib.h>
+
+// Function declarations for parsing elements
+{% for element, properties in elements.items() %}
+    {% if properties.class == "struct" and properties.values() | selectattr('data_type', 'ne', 'None') | list %}
+void json2c_{{element}}(json_t *json_obj, uint8_t *hss_cmd);
+    {% endif %}
+{% endfor %}
+
+// Function prototypes for JSON-to-C field parsing
+void json2c_uint8_t(uint8_t *field, json_t *json_obj, uint8_t length);
+void json2c_array_uint8_t(uint8_t *field, json_t *json_obj, json_t *value, uint16_t length);
+void json2c_uint16_t(uint16_t *field, json_t *json_obj, uint8_t length);
+void json2c_uint32_t(uint32_t *field, json_t *json_obj, uint8_t length);
+
+{% for element, properties in elements.items() %}
+    {% if properties.class == "struct" and properties.values() | selectattr('data_type', 'ne', 'None') | list %}
+// Implementation for parsing the {{element}} element
+void json2c_{{element}}(json_t *json_obj, uint8_t *hss_cmd)
+{
+    const char *json_key;
+    json_t *json_value;
+    json_object_foreach(json_obj, json_key, json_value) {
+        {% for field, field_properties in properties.items() %}
+            {% if field not in ["brief", "class", "alias"] %}
+                {% set field_lower = field %}
+                {% set macro_name = (properties.alias if "alias" in properties else element) | upper + "_" + field_lower | upper %}
+                {% set data_type = field_properties.data_type %}
+                {% if data_type in ["uint8_t", "uint16_t", "uint32_t", "array"] %}
+        if (!strcmp(json_key, "{{field}}")) {
+            {% if data_type != "array" %}
+            // Process the macro directly here
+            json2c_{{data_type}}({{macro_name}}(hss_cmd), json_value, 1);
+            {% else %}
+            json_t *array = json_object_get(json_obj, json_key);
+            json2c_array_{{field_properties.array_type}}({{macro_name}}(hss_cmd), array, json_value, {{field_properties.length}});
+            {% endif %}
+        } else
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        {
+            printf("Rail Fail at file: %s, line: %d\n", __FILE__, __LINE__); // Print error message
+            exit(EXIT_FAILURE);
+        }
+    }
+}
+    {% endif %}
+{% endfor %}
+
+// Parser function for the command hss_cmd (main entry point)
+void {{ intf_configs["intf_name"] }}_command_parser(uint8_t *out_hss_cmd, uint8_t *in_hss_cmd)
+{
+    json_t *json_obj = json_loads((char *)in_hss_cmd, 0, NULL);
+    if (json_obj == NULL) {
+        fprintf(stderr, "Error loading JSON\n");
+    }
+    const char *json_key;
+    json_t *json_value;
+    json_object_foreach(json_obj, json_key, json_value) {
+        {% for element, properties in elements.items() %}
+            {% if properties.class == "struct" and properties.values() | selectattr('data_type', 'ne', 'None') | list %}
+        if (!strcmp(json_key, "{{element}}")) {
+            json2c_{{element}}(json_value, out_hss_cmd);
+        } else
+            {% endif %}
+        {% endfor %}
+        {
+            printf("Rail Fail at file: %s, line: %d\n", __FILE__, __LINE__); // Print error message
+            exit(EXIT_FAILURE);
+        }
+    }
+    json_decref(json_obj);
+}
+
+// Basic functions to convert JSON data to C types (used by macros)
+void json2c_uint8_t(uint8_t *field, json_t *json_obj, uint8_t length)
+{
+    *field = (uint8_t)json_integer_value(json_obj);
+}
+
+void json2c_array_uint8_t(uint8_t *field, json_t *json_obj, json_t *value, uint16_t length)
+{
+    size_t index;
+    json_array_foreach(json_obj, index, value)
+    {
+        *(field + index) = (uint8_t)json_integer_value(value);
+    }
+}
+
+void json2c_uint16_t(uint16_t *field, json_t *json_obj, uint8_t length)
+{
+    *field = (uint16_t)json_integer_value(json_obj);
+}
+
+void json2c_uint32_t(uint32_t *field, json_t *json_obj, uint8_t length)
+{
+    *field = (uint32_t)json_integer_value(json_obj);
+}

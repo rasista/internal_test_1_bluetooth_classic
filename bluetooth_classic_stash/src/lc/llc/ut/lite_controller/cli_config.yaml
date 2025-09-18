@@ -1,0 +1,213 @@
+commands:
+  init_device:
+    parameters:
+      bd_address:
+        - 11  # bd_address[0]
+        - 22  # bd_address[1]
+        - 33  # bd_address[2]
+        - 44  # bd_address[3]
+        - 55  # bd_address[4]
+        - 66  # bd_address[5]
+    order: ["bd_address"]
+
+  set_inquiry:
+    parameters:
+      length: 1
+      hci_trigger: 0
+      EIR_value: 1
+      tx_pwr_index: 100
+      lap_address:
+        - "0x00"  # lap_address[0]
+        - "0x8B"  # lap_address[1]
+        - "0x9E"  # lap_address[2]
+    order: ["length", "hci_trigger", "EIR_value", "tx_pwr_index", "lap_address"]
+
+  start_inquiry:
+    parameters:
+      priority: 1
+      step_size: 1
+      end_tsf: 8192
+    order: ["priority", "step_size", "end_tsf"]
+
+  set_inquiry_scan:
+    parameters:
+      window: 16
+      interval: 2048
+      host_eir_data: 0
+      EIR_value: 0
+      tx_pwr_index: 100
+      curr_scan_type: 0
+      lt_addr: 1
+      lap_address:
+        - "0x00"  # lap_address[0]
+        - "0x8B"  # lap_address[1]
+        - "0x9E"  # lap_address[2]
+    order: ["window", "interval", "host_eir_data", "EIR_value", "tx_pwr_index", "curr_scan_type", "lt_addr", "lap_address"]
+
+  start_inquiry_scan:
+    parameters:
+      priority: 1
+      step_size: 1
+      end_tsf: 8192
+    order: ["priority", "step_size", "end_tsf"]
+
+  set_page:
+    parameters:
+      length: 1
+      clk_e_offset: 0
+      hci_trigger: 0
+      EIR_value: 1
+      tx_pwr_index: 100
+      lap_address:
+        - "0x00"
+        - "0x8B"
+        - "0x9E"
+    order: ["length", "clk_e_offset", "hci_trigger", "EIR_value", "tx_pwr_index", "lap_address"]
+
+  start_page:
+    parameters:
+      priority: 1
+      step_size: 1
+      end_tsf: 8192
+    order: ["priority", "step_size", "end_tsf"]
+
+  set_page_scan:
+    parameters:
+      window: 16
+      interval: 2048
+      host_eir_data: 0
+      EIR_value: 0
+      tx_pwr_index: 100
+      curr_scan_type: 0
+      lt_addr: 1
+      lap_address:
+        - "0x00"
+        - "0x8B"
+        - "0x9E"
+    order: ["window", "interval", "host_eir_data", "EIR_value", "tx_pwr_index", "curr_scan_type", "lt_addr", "lap_address"]
+
+  start_page_scan:
+    parameters:
+      priority: 1
+      step_size: 1
+      end_tsf: 8192
+    order: ["priority", "step_size", "end_tsf"]
+
+  set_device_parameters_acl:
+    parameters:
+      connection_device_index: 1
+      peer_role: 1
+      lt_addr: 2
+      tx_pwr_index: 29
+      flow: 1
+      br_edr_mode: 1
+      clk_e_offset: 0
+    order: ["connection_device_index", "peer_role", "lt_addr", "tx_pwr_index", "flow", "br_edr_mode", "clk_e_offset"]
+
+  set_afh_parameters_acl:
+    parameters:
+      connection_device_index: 0
+      no_of_valid_afh_channels: 10
+      piconet_type: 0
+      afh_new_channel_map_instant: 0
+      afh_new_channel_map: [10]
+      channel_map_in_use: [10]
+    order: ["connection_device_index", "no_of_valid_afh_channels", "piconet_type", "afh_new_channel_map_instant", "afh_new_channel_map", "channel_map_in_use"]
+
+  set_sniff_parameters_acl:
+    parameters:
+      connection_device_index: 0
+      sniff_instant: 0
+      sniff_interval: 0
+      sniff_attempt: 0
+      sniff_timeout: 0
+    order: ["connection_device_index", "sniff_instant", "sniff_interval", "sniff_attempt", "sniff_timeout"]
+
+  start_acl_central:
+    parameters:
+      connection_device_index: 0
+      current_device_index: 1
+      priority: 1
+      step_size: 1
+      end_tsf: 72
+      bd_address: [11, 22, 33, 44, 55, 66]
+    order: ["connection_device_index", "current_device_index", "priority", "step_size", "end_tsf", "bd_address"]
+
+  start_acl_peripheral:
+    parameters:
+      connection_device_index: 0
+      current_device_index: 1
+      priority: 1
+      step_size: 1
+      end_tsf: 72
+      bd_address: [11, 22, 33, 44, 55, 66]
+    order: ["connection_device_index", "current_device_index", "priority", "step_size", "end_tsf", "bd_address"]
+
+  set_device_parameters_esco:
+    parameters:
+      connection_device_index: 0
+      lt_addr: 2
+      flow: 1
+      peer_role: 1
+      t_esco: 6
+      d_esco: 0
+      w_esco: 2
+    order: ["connection_device_index", "lt_addr", "flow", "peer_role", "t_esco", "d_esco", "w_esco"]
+
+  start_esco_central:
+    parameters:
+      connection_device_index: 0
+      current_device_index: 1
+      priority: 1
+      step_size: 1
+      end_tsf: 72
+      bd_address: [11, 22, 33, 44, 55, 66]
+    order: ["connection_device_index", "current_device_index", "priority", "step_size", "end_tsf", "bd_address"]
+
+  start_esco_peripheral:
+    parameters:
+      connection_device_index: 0
+      current_device_index: 1
+      priority: 1
+      step_size: 1
+      end_tsf: 72
+      bd_address: [11, 22, 33, 44, 55, 66]
+    order: ["connection_device_index", "current_device_index", "priority", "step_size", "end_tsf", "bd_address"]
+
+  set_device_parameters_roleswitch:
+    parameters:
+      connection_device_index: 1
+      peer_role: 1
+      lt_addr: 1
+      tx_pwr_index: 23
+      flow: 0
+      clk_e_offset: 0
+    order: ["connection_device_index", "peer_role", "lt_addr", "tx_pwr_index", "flow", "clk_e_offset"]
+
+  set_roleswitch_parameters:
+    parameters:
+      connection_device_index: 0
+      new_lt_addr: 2
+      roleswitch_slot_offset: 0
+      roleswitch_instant: 16
+    order: ["connection_device_index", "new_lt_addr", "roleswitch_slot_offset", "roleswitch_instant"]
+
+  start_roleswitch_central:
+    parameters:
+      connection_device_index: 0
+      current_device_index: 1
+      priority: 1
+      step_size: 1
+      end_tsf: 72
+      bd_address: [11, 22, 33, 44, 55, 66]
+    order: ["connection_device_index", "current_device_index", "priority", "step_size", "end_tsf", "bd_address"]
+
+  start_roleswitch_peripheral:
+    parameters:
+      connection_device_index: 0
+      current_device_index: 1
+      priority: 1
+      step_size: 1
+      end_tsf: 72
+      bd_address: [11, 22, 33, 44, 55, 66]
+    order: ["connection_device_index", "current_device_index", "priority", "step_size", "end_tsf", "bd_address"]

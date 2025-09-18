@@ -1,0 +1,3 @@
+#import {"Models" : {"btc_usched": "1", "btc_llc": "1"}}
+
+#invoke 0 btc_usched start_pi_scan {"usched_api_start_pi_scan":{"start_priority":100,"end_priority":200,"pi_scan_window":500,"role":4}}

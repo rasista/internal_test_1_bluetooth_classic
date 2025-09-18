@@ -1,0 +1,17 @@
+Testcase:
+
+triggerring two esco with different parameters
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+
+Initialization of esco parameters of connection device index [0]
+#invoke 1000 btc_dev_1 set_device_parameters_esco {"set_device_parameters_esco":{"is_edr":1,"is_esco":1,"connection_device_index":0,"lt_addr":2,"flow":1,"peer_role":1,"tx_pwr_index":0,"clk_e_offset":0,"t_esco":48,"d_esco":0,"w_esco":0,"crc_status":0},"device_index":1}
+#invoke 2000 rail_1 set_var packet_type central 2
+#invoke 11000 btc_dev_1 start_esco_central {"start_esco_central":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":6,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+Initialization of esco parameters of connection device index [1]
+invoke 11550 btc_dev_1 set_device_parameters_esco {"set_device_parameters_esco":{"is_edr":1,"is_esco":1,"connection_device_index":1,"lt_addr":2,"flow":1,"peer_role":1,"tx_pwr_index":0,"clk_e_offset":0,"t_esco":6,"d_esco":2,"w_esco":0,"crc_status":0},"device_index":1}
+invoke 11580 rail_1 set_var packet_type central 2
+invoke 12000 btc_dev_1 start_esco_central {"start_esco_central":{"connection_device_index":1,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":6,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+
+ 

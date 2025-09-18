@@ -1,0 +1,36 @@
+sm_name : page_sm
+includes: 
+  - device_management/procedure_triggers.yaml
+  
+states:
+  page_sm_idle:
+    START_PROCEDURE: page_start_procedure_handler
+  PAGE_SM_FIRST_ID_TX_SCHEDULED: 
+    TX_DONE: page_first_id_tx_done_handler
+    TX_ABORT: page_first_id_tx_abort_handler
+  PAGE_SM_SECOND_ID_TX_SCHEDULED: 
+    TX_DONE: page_second_id_tx_done_handler
+    TX_ABORT: page_second_id_tx_abort_handler
+  PAGE_SM_FIRST_ID_RX_SCHEDULED: 
+    RX_DONE: page_first_id_rx_done_handler
+    RX_ABORT: page_first_id_rx_timeout_handler
+    RX_TIMEOUT: page_first_id_rx_timeout_handler
+  PAGE_SM_SECOND_ID_RX_SCHEDULED: 
+    RX_DONE: page_second_id_rx_done_handler
+    RX_ABORT: page_second_id_rx_timeout_handler
+    RX_TIMEOUT: page_second_id_rx_timeout_handler
+  PAGE_SM_FHS_TX_SCHEDULED: 
+    TX_DONE: page_fhs_tx_done_handler
+    TX_ABORT: page_fhs_tx_abort_handler
+  PAGE_SM_PERIPHERAL_RESPONSE_ID_RX_SCHEDULED: 
+    RX_DONE: page_peripheral_response_id_rx_done_handler
+    RX_ABORT: page_peripheral_response_id_rx_timeout_handler
+    RX_TIMEOUT: page_peripheral_response_id_rx_timeout_handler
+  PAGE_SM_CENTRAL_RESPONSE_POLL_TX_SCHEDULED: 
+    TX_DONE: page_central_response_poll_tx_done_handler
+    TX_ABORT: page_central_response_poll_tx_abort_handler
+  PAGE_SM_PERIPHERAL_RESPONSE_NULL_RX_SCHEDULED: 
+    RX_DONE: page_peripheral_response_null_rx_done_handler
+    RX_ABORT: page_peripheral_response_null_rx_timeout_handler
+    RX_TIMEOUT: page_peripheral_response_null_rx_timeout_handler
+

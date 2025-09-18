@@ -1,0 +1,5 @@
+#invoke 1000 btc_dev_1 init_device 1 11:22:33:44:55:66
+#invoke 1100 btc_dev_1 init_inquiry 1 11:22:33 61440000 3
+#invoke 1200 btc_dev_1 start_inquiry 1
+#invoke 1200 rail_1 expect "tx_start is 3500 in scheduled_activities"
+#invoke 3566 air_medium tx_end 1

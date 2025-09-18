@@ -1,0 +1,153 @@
+#invoke 0 btc_dev_1 init_device 1 11:22:33:44:55:66
+#invoke 1100 btc_dev_1 init_page 1 0 66:55:44:33:22:11 0
+#invoke 9000 btc_dev_1 start_page 1
+
+Test Case 1 
+!# generic test case with no response from page scan device
+
+#invoke 9999 rail_1 expect "tx_start is 10000 in scheduled_activities"
+#invoke 10624 rail_1 expect "tx_start is 10625 in scheduled_activities"
+#invoke 11249 rail_1 expect "rx_start is 11250 in scheduled_activities"
+#invoke 11873 rail_1 expect "rx_start is 11875 in scheduled_activities"
+
+Test Case 2
+!# test case with aborting 1st id packet and do not expect first id rx
+
+#invoke 12499 rail_1 expect "tx_start is 12500 in scheduled_activities"
+#invoke 12500 rail_1 expect "tx_start is 12500 in scheduled_activities"
+#invoke +2 air_medium tx_end 1
+#invoke +620 rail_1 expect "tx_start is 13125 in scheduled_activities"
+#invoke 13125 rail_1 expect "tx_start is 13125 in scheduled_activities"
+#invoke +623 rail_1 do_not_expect "rx_start is 13750 in scheduled_activities"
+#invoke 13750 rail_1 do_not_expect "rx_start is 13750 in scheduled_activities"
+#invoke +2 rail_1 expect "rx_start is 14375 in scheduled_activities"
+
+Test Case 3
+!# test case with aborting 2nd id packet and do not expect second id rx scheduled
+
+#invoke 14998 rail_1 expect "tx_start is 15000 in scheduled_activities"
+#invoke 15000 rail_1 expect "tx_start is 15000 in scheduled_activities"
+#invoke +626 air_medium tx_end 1
+#invoke +2 rail_1 expect "rx_start is 16250 in scheduled_activities"
+#invoke 16251 rail_1 do_not_expect "rx_start is 16875 in scheduled_activities"
+
+Test Case 4
+!# test case with rx done to first id rx expect fhs at 20000
+
+#invoke 17499 rail_1 expect "tx_start is 17500 in scheduled_activities"
+#invoke 17500 rail_1 expect "tx_start is 17500 in scheduled_activities"
+#invoke +624 rail_1 expect "tx_start is 18125 in scheduled_activities"
+#invoke +627 rail_1 expect "rx_start is 18750 in scheduled_activities"
+#invoke 18752 air_medium rx_end 1 
+#invoke 18753 rail_1 do_not_expect "rx_start is 19375 in scheduled_activities"
+#invoke 18754 rail_1 expect "tx_start is 20000 in scheduled_activities"
+#invoke 20000 rail_1 expect "tx_start is 20000 in scheduled_activities"
+
+Test Case 5
+//aborting fhs - reschedules FHS after 2500 
+#invoke +2 air_medium tx_end 1  
+#invoke +3 rail_1 expect "tx_start is 22500 in scheduled_activities"
+#invoke 22500 rail_1 expect "tx_start is 22500 in scheduled_activities"
+#invoke +624 rail_1 expect "rx_start is 23750 in scheduled_activities"
+
+//no rx_end - hence fhs tx reschedules at 25000
+#invoke 24990 rail_1 expect "tx_start is 25000 in scheduled_activities" 
+#invoke 25000 rail_1 expect "tx_start is 25000 in scheduled_activities"
+
+//aborting tx - fhs reschedules at 27500
+#invoke +3 air_medium tx_end 1
+
+#invoke 27499 rail_1 expect "tx_start is 27500 in scheduled_activities"
+#invoke 27500 rail_1 expect "tx_start is 27500 in scheduled_activities"
+
+Test Case 6
+//aborting tx - expect first id at 30000
+#invoke +3 air_medium tx_end 1
+
+#invoke 29999 rail_1 expect "tx_start is 30000 in scheduled_activities"
+#invoke 30000 rail_1 expect "tx_end is 30552 in scheduled_activities"
+
+//rx_end to second id rx
+#invoke 32499 rail_1 expect "tx_start is 32500 in scheduled_activities"
+#invoke 32500 rail_1 expect "tx_start is 32500 in scheduled_activities"
+//#invoke 33124 rail_1 expect "tx_start is 33125 in scheduled_activities"
+#invoke +(1250+2) air_medium rx_end 1 
+
+//expect FHS Packet at 35000
+#invoke 34999 rail_1 expect "tx_start is 35000 in scheduled_activities"
+#invoke +2 rail_1 expect "tx_end is 35552 in scheduled_activities"
+
+//expect FHS RX Scheduled at 36250 and RX_DONE
+#invoke 36249 rail_1 expect "rx_start is 36250 in scheduled_activities"
+invoke +3 rail_1 expect "rx_end is 36802 in scheduled_activities"
+#invoke +4 air_medium rx_end 1 
+
+//expect POLL Packet at 37500 and TX done
+#invoke 37549 rail_1 expect "tx_start is 37500 in scheduled_activities"
+
+//expect NULL response at 38750 and RX done
+#invoke 38749 rail_1 expect "rx_start is 38750 in scheduled_activities"
+#invoke +10 air_medium rx_end 1
+
+//expect poll packet again at 40000
+#invoke +1 rail_1 expect "tx_start is 40000 in scheduled_activities"
+
+//expect NULL packet at 41250 
+#invoke 41249 rail_1 expect "rx_start is 41250 in scheduled_activities"
+#invoke 41255 air_medium rx_end 1
+
+//expect POLL packet at 42500
+#invoke 42499 rail_1 expect "tx_start is 42500 in scheduled_activities"
+#invoke +3 air_medium tx_end 1 
+
+#invoke 99999 rail_1 expect "tx_start is 100000 in scheduled_activities"
+#invoke +2 air_medium tx_end 1 
+#invoke +1 rail_1 expect "tx_start is 100625 in scheduled_activities"
+#invoke 100627 air_medium tx_end 1 
+
+#invoke 101249 rail_1 do_not_expect "rx_start is 101250 in scheduled_activities"
+#invoke 101874 rail_1 do_not_expect "rx_start is 101875 in scheduled_activities"
+#invoke +1 rail_1 expect "tx_start is 102500 in scheduled_activities"
+
+#invoke 103750 rail_1 expect "rx_start is 103750 in scheduled_activities"
+#invoke +1 air_medium rx_end 1 
+
+//fhs scheduled 
+#invoke +2 rail_1 expect "tx_start is 105000 in scheduled_activities"
+//aborted for firt time
+#invoke 105002 air_medium tx_end 1 
+//aborted for second time
+#invoke +2500 air_medium tx_end 1
+//aborted for third time 
+#invoke +2500 air_medium tx_end 1 
+//aborted for fourth time
+#invoke +2500 air_medium tx_end 1 
+//expect  
+#invoke +1 rail_1 expect "tx_start is 115000 in scheduled_activities"
+#invoke 115000 rail_1 expect "tx_end is 115552 in scheduled_activities"
+#invoke 116251 air_medium rx_end 1
+
+
+//poll tx_aborting 
+#invoke 150000 rail_1 expect "tx_start is 150000 in scheduled_activities"
+#invoke +1252 air_medium rx_end 1 
+#invoke +2500 air_medium rx_end 1 
+//expect poll packet 
+#invoke +1250 rail_1 expect "tx_start is 155000 in scheduled_activities"
+#invoke +1 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +2500 air_medium tx_end 1 
+#invoke +1 rail_1 expect "tx_start is 195000 in scheduled_activities"

@@ -1,0 +1,43 @@
+#ifndef LL_HCI_CMD_SET_DEF_COMPLETE_EVENT_H
+#define LL_HCI_CMD_SET_DEF_COMPLETE_EVENT_H
+
+/* Note - These macros are to be used while preparing a complete event packet only*/
+/* Do not use these macros while preparing status event packet */
+/* CE in the macro name stands for Complete Event*/
+{% for cmd, details in hci_cmds.items() %}
+/* {{cmd | upper}} RETURN_PARAMETERS */
+
+{% for sub_cmd, sub_details in details['cmds'].items() %}
+{% set offset = namespace(value=6) %}
+    {% if sub_details['return_parameters'] != 0 %}
+        {% if sub_details['return_parameters'] is mapping %}
+            {% for mem_var, size in sub_details['return_parameters'].items() %}
+                {% if size == 1 %}
+#define SET_CE_{{sub_cmd | upper}}_{{mem_var | upper}}(buf,value)  buf[{{offset.value}}] = value
+                {% elif size == 2 %}
+#define SET_CE_{{sub_cmd | upper}}_{{mem_var | upper}}(buf,value)  *(uint16_t *)&buf[{{offset.value}}] =value
+                {% elif size == 3 %}
+#define SET_CE_{{sub_cmd | upper}}_{{mem_var | upper}}(buf,value)  *(uint32_t *)&buf[{{offset.value}}] & 0xFFFFFF = value
+                {% elif size == 4 %}
+#define SET_CE_{{sub_cmd | upper}}_{{mem_var | upper}}(buf,value)  *(uint32_t *)&buf[{{offset.value}}] = value
+                {% else %}
+#define SET_CE_{{sub_cmd | upper}}_{{mem_var | upper}}(buf,value)  memcpy((uint8_t *)&buf[{{offset.value}}], &value, {{size}})
+                {% endif %}
+{% set offset.value = offset.value + size %}
+//{{sub_cmd | upper}}_{{mem_var}} {{size}}
+            {% endfor %}
+#define {{sub_cmd | upper}}_EVENT_PARAM_LENGTH {{offset.value - 6 }} 
+        {% else %}
+#define SET_CE_{{sub_cmd | upper}}_STATUS(buf,value)  buf[{{offset.value}}] = value
+#define {{sub_cmd | upper}}_EVENT_PARAM_LENGTH {{offset.value - 6 }} 
+        {% endif %}
+    {% else %}
+#define SET_CE_{{sub_cmd | upper}}_STATUS(buf,value)  buf[{{offset.value}}] = value
+#define {{sub_cmd | upper}}_EVENT_PARAM_LENGTH {{offset.value - 6 }} 
+    {% endif %}
+
+{% endfor %}
+
+{% endfor %}
+
+#endif

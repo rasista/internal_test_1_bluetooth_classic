@@ -1,0 +1,8 @@
+pytest
+utf_core
+gcovr
+scapy
+jinja2
+pyyaml
+numpy
+xmltodict

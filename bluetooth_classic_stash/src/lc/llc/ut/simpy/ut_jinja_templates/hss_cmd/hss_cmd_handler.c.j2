@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+#include "sl_btc_seq_interface.h"
+#include "sl_host_to_lpw_interface.h"
+#include "hss_cmd_handler_autogen.h"
+#include "rail_simulation.h"
+#include "message_decode.h"
+#include "btc_plt_deps.h"
+#include "sl_btc_seq_interface.h"
+btc_dev_t btc_dev[MAX_NUMBER_BTC_DEVICES];
+extern uint32_t current_device_index;
+shared_mem_t queue;
+
+{% set bypass_handlers = ['hss_cmd_handler', 'hss_cmd_start_procedure_handler', 'hss_cmd_stop_procedure_handler', 'hss_cmd_set_configs_handler', 'hss_cmd_payload_set_procedure_payload_E0_encryption_handler', 'hss_cmd_payload_set_procedure_payload_AES_encryption_handler' , 'hss_event_payload_btc_slot_offset_handler'] %}
+{% for element, properties in elements.items() %}
+    {% if properties.class == 'struct' and properties is not none and properties is mapping and properties.values() | selectattr('data_type', 'ne', 'None') | list %}
+        {% set handler_name = element + '_handler' %}
+        {% if handler_name not in bypass_handlers %}
+void {{element}}_handler(uint32_t argc, uint8_t *argv[])
+{
+    char c_out_payload[1024] = {0};
+    char c_in_payload[1024] = {0};
+    current_device_index = atoi((char*)argv[0]);
+    int i = 1;
+    int offset = 0;
+    while (i < argc) {
+        strcpy(c_in_payload + offset, (char*)argv[i]);
+        offset += strlen((char*)argv[i]);
+        i++;
+        offset++;
+    }
+    {% if element == "hss_cmd_payload_start_procedure_payload_init_btc_device" %}
+    queue.pending_queue.plt_lock.acquire_lock = btc_plt_acquire_lock;
+    queue.pending_queue.plt_lock.release_lock = btc_plt_release_lock;
+    queue.processed_queue.plt_lock.acquire_lock = btc_plt_acquire_lock;
+    queue.processed_queue.plt_lock.release_lock = btc_plt_release_lock;
+    // Adding a huge offset for now, this will be provided by host
+    queue.metadata_size = PKB_DATA_OFFSET;
+    {% endif %}
+    c_in_payload[offset] = '\0';
+    memset(c_out_payload, '\0', sizeof(char) * 1000);
+    {% if 'start' in element or 'init' in element %}
+    *HSS_CMD_CMD_TYPE((uint8_t *)(c_out_payload + PKB_DATA_OFFSET)) = hss_cmd_start_procedure;
+    *HSS_CMD_START_PROCEDURE_ID((uint8_t *)(c_out_payload + PKB_DATA_OFFSET)) = {{properties.alias | default(element)}};
+    {% elif 'stop' in element %}
+    *HSS_CMD_CMD_TYPE((uint8_t *)(c_out_payload + PKB_DATA_OFFSET)) = hss_cmd_stop_procedure;
+    *HSS_CMD_STOP_PROCEDURE_ID((uint8_t *)(c_out_payload + PKB_DATA_OFFSET)) = {{properties.alias | default(element)}};
+    {% elif 'set' in element %}
+    *HSS_CMD_CMD_TYPE((uint8_t *)(c_out_payload + PKB_DATA_OFFSET)) = hss_cmd_set_procedure;
+    *HSS_CMD_SET_PROCEDURE_ID((uint8_t *)(c_out_payload + PKB_DATA_OFFSET)) = {% if element == "hss_cmd_payload_set_procedure_payload_encryption_parameters_e0" or element == "hss_cmd_payload_set_procedure_payload_encryption_parameters_aes" %}hss_cmd_set_encryption{% else %}{{properties.alias | default(element)}}{% endif %};
+    {% endif %}
+    sl_btc_seq_interface_command_parser((uint8_t *)(c_out_payload + PKB_DATA_OFFSET), (uint8_t*)c_in_payload);
+    pkb_t *pnd_cmd = (pkb_t *)c_out_payload;
+    enqueue(&queue.pending_queue, &pnd_cmd->queue_node);
+    lpw_mailbox_handler(&queue, &btc_dev[current_device_index]);
+}
+        {% endif %}
+    {% endif %}
+{% endfor %}

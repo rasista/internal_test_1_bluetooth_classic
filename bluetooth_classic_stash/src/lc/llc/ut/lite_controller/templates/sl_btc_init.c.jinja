@@ -1,0 +1,11 @@
+#include "sl_btc_init.h"
+
+{% for h in btc_init_hook[0].handler %}
+void {{h.name}}()
+{
+  {% for handler_name in h['value']['handler'] %}
+    {{handler_name['name']}}();
+  {% endfor %}
+    btc_app_init();
+}
+{% endfor %}

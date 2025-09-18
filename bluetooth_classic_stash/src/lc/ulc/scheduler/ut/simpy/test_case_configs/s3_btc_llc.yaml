@@ -1,0 +1,33 @@
+
+udp_config:
+  ip: localhost
+  port: 5005
+
+Models:
+  btc_llc_interface:
+    secondary_init_function : secondary_init_function
+    python_handlers:
+      start_procedure : start_procedure_handler
+      send delayed message : send_delayed_message_handler
+      stop_procedure : stop_procedure_handler
+      procedure_stopped: procedure_stopped_handler
+
+  timer:
+    secondary_init_function: secondary_init_function
+    python_handlers:
+      start_timer : start_timer_handler
+      stop_timer : stop_timer_handler 
+      timer_expired : timer_expired_handler
+
+  llc_model:
+    secondary_init_function: secondary_init_function
+    python_handlers:
+      start_llc_procedure : start_llc_procedure_handler
+      stop_llc_procedure : stop_llc_procedure_handler
+      procedure_stopped: procedure_stopped_handler
+
+    c_handlers:
+  gdb_console:
+    secondary_init_function: secondary_init_function
+    python_handlers:
+      expect_gdb : expect_gdb_handler

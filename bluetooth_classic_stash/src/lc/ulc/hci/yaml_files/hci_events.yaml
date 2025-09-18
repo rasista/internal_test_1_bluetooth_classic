@@ -1,0 +1,515 @@
+#this file contains the details of HCI events for BT-Classic controller
+#the abbreviation    ptl stands for parameters total length
+
+hci_events:
+  inquiry_complete:
+    event_code: 0x01
+    length:
+      ptl: 1 #   ptl field is 1 octet
+      value: 1
+    event_params:
+      status: 1
+  inquiry_result:
+    event_code: 0x02
+    length:
+      ptl: 1 #assuming it takes only 1 octet, subjected to change
+      value: 15
+    event_params:
+      num_resp: 1 
+      bd_addr: 6 #num_resp * 6 
+      page_scan_rep_mode: 1 #num_resp * 1
+      reserved: 2 #num_resp * 2
+      class_of_device: 3 #num_resp * 3
+      clock_offset: 2 #num_resp * 2
+  conn_complete:
+    event_code: 0x03
+    length:
+      ptl: 1
+      value: 11
+    event_params:
+      status: 1
+      conn_handle: 2
+      bd_addr: 6
+      link_type: 1
+      encryption_enable: 1
+  conn_request:
+    event_code: 0x04
+    length:
+      ptl: 1
+      value: 10
+    event_params:
+      bd_addr: 6
+      class_of_device: 3
+      link_type: 1
+  disconnection_complete:
+    event_code: 0x05
+    length:
+      ptl: 1
+      value: 4
+    event_params:
+      status: 1
+      conn_handle: 2
+      reason: 1
+  authentication_complete:
+    event_code: 0x06
+    length:
+      ptl: 1
+      value: 3
+    event_params: 
+      status: 1
+      conn_handle: 2
+  remote_name_request_complete:
+    event_code: 0x07
+    length:
+      ptl: 1
+      value: 255
+    event_params:
+      status: 1
+      bd_addr: 6
+      remote_name: 248
+  encrytpion_change_v1:
+    event_code: 0x08
+    length:
+      ptl: 1
+      value: 4
+    event_params:
+      status: 1
+      conn_handle: 2
+      encryption_enable: 1
+  encrytpion_change_v2:
+    event_code: 0x59
+    length:
+      ptl: 1
+      value: 5
+    event_params:
+      status: 1
+      conn_handle: 2
+      encryption_enable: 1
+      encryption_key_size: 1
+  change_connection_link_key_complete:
+    event_code: 0x09
+    length:
+      ptl: 1
+      value: 3
+    event_params:
+        status: 1
+        conn_handle: 2
+  link_key_type_changed:
+    event_code: 0x0A
+    length:
+      ptl: 1
+      value: 4
+    event_params:
+      status: 1
+      conn_handle: 2
+      key_flag: 1
+  read_remote_supported_features_complete:
+    event_code: 0x0B
+    length:
+      ptl: 1
+      value: 11
+    event_params:
+      status: 1
+      conn_handle: 2
+      lmp_features: 8
+  read_remote_version_info_complete:
+    event_code: 0x0C
+    length: 
+      ptl: 1
+      value: 8
+    event_params:
+      status: 1
+      conn_handle: 2
+      version: 1
+      company_identifier: 2
+      sub_version: 2
+  qos_setup_complete:
+    event_code: 0x0D
+    length:
+      ptl: 1
+      value: 21
+    event_params:
+      status: 1
+      conn_handle: 2
+      unused: 1
+      service_type: 1
+      token_rate: 4
+      peak_bandwidth: 4
+      latency: 4
+      delay_variation: 4
+  cmd_complete: 
+    event_code: 0x0E
+    length:
+      ptl: 1
+      value: 3 #TODO should fill the return params
+    event_params:
+      num_hci_cmd_pkts: 1
+      cmd_opcode: 2
+      return_params: 
+  cmd_status:
+    event_code: 0x0F
+    length:
+      ptl: 1
+      value: 4
+    event_params:
+      status: 1
+      num_hci_cmd_pkts: 1
+      cmd_opcode: 2
+  hardware_error:
+    event_code: 0x10
+    length:
+      ptl: 1
+      value: 1
+    event_params: 
+      hw_code: 1
+  flush_occurred:
+    event_code: 0x11
+    length: 
+      ptl: 1
+      value: 2
+    event_params:
+      handle: 2
+  role_change:
+    event_code: 0x12
+    length: 
+      ptl: 1
+      value: 8
+    event_params:
+      status: 1
+      bd_addr: 6
+      new_role: 1
+  num_of_completed_pkts:
+    event_code: 0x13
+    length:
+      ptl: 1
+      value: 5
+    event_params:
+      num_handles: 1
+      conn_handle: 2 #num_handles * 2
+      num_completed_pkts: 2 #num_handles * 2
+  mode_change:
+    event_code: 0x14
+    length:
+      ptl: 1
+      value: 5
+    event_params:
+      status: 1
+      conn_handle: 2
+      current_mode: 1
+      interval: 1
+  return_link_keys:
+    event_code: 0x15
+    length:
+      ptl: 1
+      value: 23
+    event_params:
+      num_keys: 1
+      bd_addr: 6 #num_keys * 6
+      link_key: 16 #num_keys * 16
+  pin_code_request:
+    event_code: 0x16
+    length:
+      ptl: 1
+      value: 6
+    event_params:
+      bd_addr: 6
+  link_key_request: 
+    event_code: 0x17
+    length:
+      ptl: 1
+      value: 6
+    event_params:
+      bd_addr: 6
+  link_key_notification:
+    event_code: 0x18
+    length:
+      ptl: 1
+      value: 23
+    event_params:
+      bd_addr: 6
+      link_key: 16
+      key_type: 1
+  loopback_cmd:
+    event_code: 0x19
+    length:
+      ptl: 1
+      value: #TODO depends on the event_params
+    event_params: 
+        hci_cmd_pkts: #TODO depends on the command
+  data_buffer_overflow:
+    event_code: 0x1A
+    length:
+      ptl: 1
+      value: 1
+    event_params:
+      link_type: 1
+  max_slots_change:
+    event_code: 0x1B
+    length:
+      ptl: 1
+      value: 3
+    event_params:
+      conn_handle: 2
+      lmpmax_slots: 1
+  read_clock_offset_complete:
+    event_code: 0x1C
+    length:
+      ptl: 1
+      value: 5
+    event_params: 
+      status: 1
+      conn_handle: 2
+      clock_offset: 2
+  conn_pkt_type_changed:
+    event_code: 0x1D
+    length:
+      ptl: 1
+      value: 5
+    event_params: 
+      status: 1
+      conn_handle: 2
+      pkt_type: 2
+  qos_violation:
+    event_code: 0x1E
+    length:
+      ptl: 1
+      value: 2
+    event_params:
+      handle: 2
+  page_scan_rep_mode_change:
+    event_code: 0x20
+    length:
+      ptl: 1
+      value: 7
+    event_params:
+      bd_addr: 6
+      page_scan_rep_mode: 1
+  flow_specification_complete:
+    event_code: 0x21
+    length:
+      ptl: 1
+      value: 22
+    event_params:
+      status: 1
+      conn_handle: 2
+      unused: 1
+      flow_direction: 1
+      service_type: 1
+      token_rate: 4
+      token_bucket_size: 4
+      peak_bandwidth: 4
+      access_latency: 4
+  inquiry_result_rssi:
+    event_code: 0x22
+    length:
+      ptl: 1
+      value: 15
+    event_params:
+      num_resp: 1
+      bd_addr: 6 #num_resp * 6
+      page_scan_repition_mode: 1 #num_resp * 1
+      reserved: 1 #num_resp * 1
+      class_of_device: 3 #num_resp * 3
+      clock_offset: 2 #num_resp * 2
+      rssi: 1 #num_resp * 1
+  read_remote_extended_features_complete:
+    event_code: 0x23
+    length:
+      ptl: 1
+      value: 13
+    event_params:
+      status: 1
+      conn_handle: 2
+      pg_num: 1
+      max_page_num: 1
+      extended_lmp_features: 8
+  sync_conn_complete:
+    event_code: 0x2C
+    length:
+      ptl: 1
+      value: 16
+    event_params:
+      status: 1
+      conn_handle: 2
+      bd_addr: 6
+      link_type: 1
+      transmission_interval: 1
+      retransmissionWindow: 1
+      rx_pkt_length: 2
+      tx_pkt_length: 2
+      air_mode: 1
+  sync_conn_changed:
+    event_code: 0x2D
+    length:
+      ptl: 1
+      value: 9
+    event_params:
+      status: 1
+      conn_handle: 2
+      transmission_interval: 1
+      retransmissionWindow: 1
+      rx_pkt_length: 2
+      tx_pkt_length: 2
+  sniff_subrating:
+    event_code: 0x2E
+    length:
+      ptl: 1
+      value: 11
+    event_params:
+      status: 1
+      conn_handle: 2
+      max_txlatency: 2
+      max_rx_latency: 2
+      min_remote_timeout: 2
+      min_local_timeout: 2
+  extended_inquiry_result:
+    event_code: 0x2F
+    length:
+      ptl: 1
+      value: 255
+    event_params:
+      num_resp: 1
+      bd_addr: 6
+      page_scan_repition_mode: 1
+      reserved: 1
+      class_of_device: 3
+      clock_offset: 2
+      rssi: 1
+      extended_inquiry_resp: 240
+  encryption_key_refresh_complete:
+    event_code: 0x30
+    length:
+      ptl: 1
+      value: 3
+    event_params:
+      status: 1
+      conn_handle: 2
+  io_capability_req:
+    event_code: 0x31
+    length:
+      ptl: 1
+      value: 6
+    event_params: 
+      bd_addr: 6
+  io_capability_resp: 
+    event_code: 0x32
+    length:
+      ptl: 1
+      value: 9
+    event_params:
+      bd_addr: 6
+      io_capability: 1
+      oob_data_present: 1
+      authentication_requirements: 1
+  user_confirmation_request:
+    event_code: 0x33
+    length:
+      ptl: 1
+      value: 10
+    event_params:
+      bd_addr: 6
+      numeric_value: 4
+  user_passkey_request:
+    event_code: 0x34
+    length: 
+      ptl: 1
+      value: 6
+    event_params:
+      bd_addr: 6
+  remote_oob_data_request: 
+    event_code: 0x35
+    length:
+      ptl: 1
+      value: 6
+    event_params:
+      bd_addr: 6
+  simple_pairing_complete:
+    event_code: 0x36
+    length: 
+      ptl: 1
+      value: 7
+    event_params:
+      status: 1
+      bd_addr: 6
+  link_supervision_timeout_changed:
+    event_code: 0x38
+    length:
+      ptl: 1
+      value: 4
+    event_params:
+      conn_handle: 2
+      link_supervision_timeout: 2
+  enhanced_flush_complete:
+    event_code: 0x39
+    length:
+      ptl: 1
+      value: 2
+    event_params:
+      handle: 2
+  user_passkey_notification:
+    event_code: 0x3B
+    length:
+      ptl: 1
+      value: 10
+    event_params: 
+      bd_addr: 6
+      passkey: 4
+  keypress_notification: 
+    event_code: 0x3C
+    length:
+      ptl: 1
+      value: 7
+    event_params:
+      bd_addr: 6
+      notification_type: 1
+  remote_host_supported_features_notification:
+    event_code: 0x3D
+    length:
+      ptl: 1
+      value: 14
+    event_params:
+      bd_addr: 6
+      host_supported_features: 8
+  num_of_completed_data_blocks:
+    event_code: 0x48
+    length:
+      ptl: 1
+      value: 9
+    event_params:
+      total_num_data_blocks: 2
+      num_handles: 1
+      conn_handle: 2 #num_handles * 2
+      num_completed_pkts: 2 #num_handles * 2
+      num_completed_blocks: 2 #num_handles * 2
+  vendor_event:
+    event_code: 0xFF
+    length:
+      ptl: 1
+      value: 10  # Maximum possible length for vendor-specific data
+    event_params:
+      subevent_code: 1
+      vendor_specific_params: 9 # Remaining bytes for vendor-specific data
+  virtual_connect_complete:
+    event_code: 0xFC
+    length:
+      ptl: 1
+      value: 15
+    event_params:
+      vendor_id: 2 #Vendor ID (2 octets) - typically 0x0000 for generic vendor
+      sub_event_code: 0x01 #Sub-event code for virtual connect
+      virtual_conn_handle: 2 #Virtual connection handle
+      bd_addr: 6 #Bluetooth device address
+      virtual_link_type: 1 #Type of virtual link
+      status: 1 #Connection status
+      reserved: 3 #Reserved for future use
+  virtual_disconnect_complete:
+    event_code: 0xFD
+    length:
+      ptl: 1
+      value: 8
+    event_params:
+      vendor_id: 2 #Vendor ID (2 octets) - typically 0x0000 for generic vendor
+      sub_event_code: 0x02 #Sub-event code for virtual disconnect
+      virtual_conn_handle: 2 #Virtual connection handle
+      reason: 1 #Disconnection reason
+      reserved: 3 #Reserved for future use

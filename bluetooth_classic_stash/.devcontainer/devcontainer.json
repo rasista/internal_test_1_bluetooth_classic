@@ -1,0 +1,17 @@
+{
+    "image": "artifactory-local.silabs.net/iotwifi-docker-production/wifi/rs911x-everest:v1",
+    "postStartCommand": "",
+    "remoteUser": "jenkins",
+    "updateRemoteUserUID": true,
+    "containerEnv": {
+        "HOME": "/home/jenkins"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "hashicorp.hcl",
+                "redhat.vscode-yaml"
+            ]
+        }
+    }
+}

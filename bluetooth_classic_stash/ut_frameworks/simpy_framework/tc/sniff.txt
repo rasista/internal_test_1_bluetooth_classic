@@ -1,0 +1,5 @@
+#invoke 1 activity_monitor set_rx_power 9
+#invoke 2 activity_monitor set_tx_power 45
+#invoke 4 sniff set_sniff_duration 500000
+#invoke 5 sniff set_sniff_attemots 4
+#invoke 100 sniff start_sniff 200

@@ -1,0 +1,21 @@
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_device_parameters_esco {"set_device_parameters_esco":{"is_edr":1,"is_esco":1,"connection_device_index":0,"lt_addr":2,"flow":1,"peer_role":1,"t_esco":6,"d_esco":0,"w_esco":2},"device_index":1}
+#invoke 6000 rail_1 set_var packet_type central 2
+#invoke 8000 btc_dev_1 start_esco_central {"start_esco_central":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":40,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+!# FOR DH1 packet scheduling TX and expecting Rx 
+#invoke 9002 rail_1 expect “tx_start is 15000 in scheduled_activities”
+#invoke 9003 rail_1 expect “tx_end is 16249 in scheduled_activities”
+#invoke 16350 air_medium rx_header_done rail_1
+#invoke 16355 rail_1 set_var packet_type central 3
+#invoke 16615 air_medium rx_end rail_1
+ 
+Test case 2 (Testing for DH3 packet and triggering rail_fail status of tx_done handler)
+#invoke 22000 rail_1 expect “tx_start is 22500 in scheduled_activities”
+#invoke 22501 rail_1 set_var rail_status -1
+#invoke 22502 rail_1 set_var packet_type central 4 
+#invoke 26000 rail_1 expect “tx_end is 26249 in scheduled_activities”
+ 
+Test case 3(testing for DH5 packet and triggering tx_abort handler and its fail status)
+#invoke 30000 rail_1 expect “tx_start is 30000 in scheduled_activities”
+#invoke 30002 rail_1 set_var rail_status -1
+#invoke 30005 air_medium tx_end rail_1

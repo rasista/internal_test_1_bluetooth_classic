@@ -1,0 +1,38 @@
+Models:
+  model_ull:
+    python_handlers:
+      add_process_request: add_process_request_handler
+      remove_process_request: remove_process_request_handler
+      resume_protocol: resume_protocol_handler
+      next_schedule : next_schedule_handler
+      set_invalid : set_invalid_handler
+      tx_done: handle_tx_done
+      rx_done: handle_rx_done
+      start_streaming: handle_start_streaming
+    
+  model_coex_manager:
+    python_handlers:
+      sleep_request: radio_sleep_handler
+    
+  model_pre_slot_isr:
+    python_handlers:
+      radio_on: radio_on_handler
+      radio_off: radio_off_handler
+    
+  model_post_slot_isr:
+    python_handlers:
+      schedule_isr: schedule_isr_handler
+    
+  model_tx:
+    python_handlers:
+      tx_done: handle_tx_done
+      rx_done: handle_rx_done
+      start_tx: handle_start_tx
+    
+  model_rx :
+    python_handlers:
+      set_phy_params: handle_set_phy_params
+      tx_done: handle_tx_done
+      rx_done: handle_rx_done
+      start_rx: handle_start_rx
+    

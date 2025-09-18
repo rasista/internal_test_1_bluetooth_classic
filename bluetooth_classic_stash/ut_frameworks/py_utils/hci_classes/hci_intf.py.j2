@@ -1,0 +1,139 @@
+import copy 
+import ctypes
+import json 
+import numpy as np
+import serial
+import logging
+
+logger = logging.getLogger()
+
+
+
+def padded_bin(i, width):
+	final = ""
+	param_type = type(i)
+	if(param_type == list):
+		width = 8
+		for j in range(len(i)):
+			s = bin(i[j])
+			z = (s[:2] + s[2:].zfill(width))[2:]
+			final = final + z
+		return final
+	elif(param_type == str):
+		return_str = ''.join(format(x, 'b').zfill(8) for x in bytearray(i, 'utf-8'))
+		return return_str[0:width]
+	else:
+		s = bin(i)
+		return((s[:2] + s[2:].zfill(width))[2:])
+
+
+
+
+{% for cmd, details in hci_cmds.items() %}
+        {% for sub_cmd, sub_details in details['cmds'].items() %}
+                {% if sub_details['length'] != 0 %}
+##command : {{sub_cmd}}
+class {{sub_cmd}}_t():
+                    {% if 'parameters' in sub_details %}
+    def __init__(self, **kwargs):
+        self.cmd_type = int(1)
+        self.ogf = {{details['OGF']}}
+        self.ocf = {{sub_details['OCF']}}
+                        {% for sub_sub_cmd, sub_octet in sub_details['parameters'].items() %}
+                            {% if type_check(sub_octet, 'dict')==True %}
+        self.{{sub_sub_cmd}} = kwargs.get('{{sub_sub_cmd}}', int(0))
+                                {% for i in range(sub_octet['default']) %}
+                                    {% for sub_sub_params, sub_sub_octet in sub_octet['params'].items() %}
+        self.{{sub_sub_params}}_{{i}} = kwargs.get('{{sub_sub_params}}_{{i}}', int(0))
+                                    {% endfor %}
+                                {% endfor %}
+                            {% else %}
+        self.{{sub_sub_cmd}} = kwargs.get('{{sub_sub_cmd}}', int(0))
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+
+    def prep_hci(self):
+        write_bytes = self.linearize()
+        return write_bytes
+        pass
+    
+    def linearize(self):
+        logger = logging.getLogger()
+        padded_ocf = padded_bin(self.ocf, 10)
+        linear_buffer = padded_bin(1, 8) + padded_ocf[2:10] + padded_bin(self.ogf, 6) + padded_ocf[0:2]
+        {% if sub_details['length']['value'] == -1 %}
+        self.payload_len = 0
+			{% for a, b in sub_details['parameters'].items() %}
+				{% if b == -1 %}
+        self.payload_len += len(self.{{a}})
+				{% else %}
+        self.payload_len += {{b}}
+				{% endif %}
+			{% endfor %}
+		{% else %}
+        self.payload_len = {{sub_details['length']['value']}}
+		{% endif %}
+        linear_buffer += padded_bin(self.payload_len, 8)
+                    {% for mem_var, size in sub_details['parameters'].items() %}
+                        {% if type_check(size, 'dict') == True %}
+        linear_buffer += padded_bin(self.{{mem_var}}, {{size['octets'] * 8}})
+                            {% for i in range(size['default']) %}
+                                {% for sub_sub_params, sub_sub_octet in size['params'].items() %}
+        linear_buffer += padded_bin(self.{{sub_sub_params}}_{{i}}, {{sub_sub_octet * 8}})
+                                {% endfor %}
+                            {% endfor %}
+                        {% else %}
+        {% if size==-1 %}
+        linear_buffer += padded_bin(self.{{mem_var}} , len(self.{{mem_var}})*8)
+		{% else %}
+        linear_buffer += padded_bin(self.{{mem_var}} , {{size*8}})
+		{% endif %}
+                        {% endif %}
+                    {% endfor %}
+        #logger.info(f"linear_buffer --> {linear_buffer}")
+        #logger.info(f"linear_buffer --> {linear_buffer}")
+        chunks = [linear_buffer[i:i+8] for i in range(0, len(linear_buffer), 8)]
+        #logger.info(f"chunks --> {chunks}")
+        hex_array = [int(chunk, 2) for chunk in chunks] #[2:] for chunk in chunks
+        return np.array(hex_array, dtype=np.uint8).tobytes()
+                    {% else %}
+
+class {{sub_cmd}}_t():
+    def __init__(self, **kwargs):
+        self.cmd_type = int(1)
+        self.ogf = {{details['OGF']}}
+        self.ocf = {{sub_details['OCF']}}
+        
+    def prep_hci(self):
+        write_bytes = self.linearize()
+        return write_bytes
+    
+    def linearize(self):
+        logger = logging.getLogger()
+        padded_ocf = padded_bin(self.ocf, 10)
+        linear_buffer = padded_bin(1,8) + padded_ocf[2:10] + padded_bin(self.ogf,6) + padded_ocf[0:2]
+        linear_buffer += padded_bin({{sub_details['length']}}, 8)
+        #logger.info(f"linear_buffer --> {linear_buffer}")
+        chunks = [linear_buffer[i:i+8] for i in range(0, len(linear_buffer), 8)]
+        #logger.info(f"chunks --> {chunks}")
+        hex_array = [int(chunk, 2) for chunk in chunks] #[2:] for chunk in chunks
+        return np.array(hex_array, dtype=np.uint8).tobytes()
+                {% endif %}
+
+    def prep_payload_{{sub_cmd}}(self, args):
+        json_cmd_string = json.loads(args)
+        print(f"json_cmd_string --> {json_cmd_string}")
+        key_list = list(json_cmd_string.keys())
+        for key in key_list:
+            self.cmd_type = copy.deepcopy(json_cmd_string[key]["cmd_type"])
+            self.ogf = copy.deepcopy(json_cmd_string[key]["OGF"])
+            self.ocf = copy.deepcopy(json_cmd_string[key]["OCF"]) 
+                {% if 'parameters' in sub_details %}
+                    {% for mem_var, size in sub_details['parameters'].items() %}  
+            self.{{mem_var}} = copy.deepcopy(json_cmd_string[key]["{{mem_var}}"])
+                    {% endfor %}                        
+                {% endif %}
+        return self.linearize(args)  
+        {% endfor %}
+{% endfor %}

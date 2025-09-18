@@ -1,0 +1,58 @@
+#ifndef _LMP_SET_DEF_H_
+#define _LMP_SET_DEF_H_
+
+{% for cmd, details in lmp_cmds.items() -%}
+/* {{cmd | upper }} */
+{% set offset = namespace(value = 3) -%}
+{% set fieldsize = namespace(value = 0) -%}  {# Initialize fieldsize with a default value #}
+#define SET_{{cmd | upper}}_TID(buf,tid)  {\
+                buf[3]= (tid << 7)|(buf[3]);\
+        }
+        {% if details['EXTENDED_OPCODE'] != 0 -%}
+#define SET_{{cmd | upper}}_OPCODE(buf)  *((uint16_t *)&buf[{{offset.value}}])= ((buf[{{offset.value}}] & (BIT(15)))|((0x{{'%0x' % details['EXTENDED_OPCODE']['value']}} << 8) | (0x{{'%0x' % details['OPCODE']['value']}})))
+        {% set offset.value = offset.value + 2 -%}
+{% if details['parameters'] != 0 -%}
+                {% for key, size in details['parameters'].items()-%}
+                        {% if type_check(size, 'dict') %}
+#define SET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf, value, len)  memcpy((uint8_t *)&buf[{{offset.value}}], &value, MIN({{size['var_length']}},len))
+        {% set fieldsize.value = size["var_length"] -%}  {# Update fieldsize only for dynamic sizes #}
+                        {% elif size == 1 -%}
+#define SET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf, value)  buf[{{offset.value}}] = value
+                        {% elif size == 2 -%}
+#define SET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf, value)  *((uint16_t *)&buf[{{offset.value}}]) = value
+                        {% elif size == 3 -%}
+#define SET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf, value)  *((uint32_t *)&buf[{{offset.value}}]) & ~(BIT(24)) = value
+                        {% elif size == 4 -%}
+#define SET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf, value)  *((uint32_t *)&buf[{{offset.value}}]) = value
+                        {% else -%}
+#define SET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf, value)  memcpy((uint8_t *)&buf[{{offset.value}}], &value, {{size}})
+                        {% endif-%}
+        {% set offset.value = offset.value + (0 if type_check(size, 'dict') else size) + fieldsize.value -%} 
+                {% endfor -%}  
+        {% endif -%}
+
+       {%else-%}
+#define SET_{{cmd | upper}}_OPCODE(buf) *((uint8_t *)&buf[{{offset.value}}])  = ((*((uint8_t *)&buf[{{offset.value}}])) & (BIT(7)))|(0x{{'%0x' % details['OPCODE']['value']}})
+       {% set offset.value = offset.value + 1 -%}
+       {% if details['parameters'] != 0 -%}
+                {% for key, size in details['parameters'].items()-%}
+                        {% if type_check(size, 'dict') %}
+#define SET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf, value, len)  memcpy((uint8_t *)&buf[{{offset.value}}], &value, MIN({{size['var_length']}},len))
+        {% set fieldsize.value = size["var_length"] -%}  {# Update fieldsize only for dynamic sizes #}
+                        {% elif size == 1 -%}
+#define SET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf, value)  buf[{{offset.value}}] = value
+                        {% elif size == 2 -%}
+#define SET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf, value)  *((uint16_t *)&buf[{{offset.value}}]) = value
+                        {% elif size == 3 -%}
+#define SET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf, value)  *((uint32_t *)&buf[{{offset.value}}]) & ~(BIT(24)) = value
+                        {% elif size == 4 -%}
+#define SET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf, value)  *((uint32_t *)&buf[{{offset.value}}]) = value
+                        {% else -%}
+#define SET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf, value)  memcpy((uint8_t *)&buf[{{offset.value}}], value, {{size}})
+                        {% endif-%}
+        {% set offset.value = offset.value + (0 if type_check(size, 'dict') else size) + fieldsize.value -%} 
+                {% endfor -%}  
+        {% endif-%}
+  {% endif-%}
+{% endfor -%}
+#endif

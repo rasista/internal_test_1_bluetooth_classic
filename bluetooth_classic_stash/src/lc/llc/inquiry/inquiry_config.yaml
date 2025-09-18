@@ -1,0 +1,24 @@
+sm_name : inquiry_sm
+includes: 
+  - device_management/procedure_triggers.yaml
+states:
+  inquiry_sm_idle:
+    START_PROCEDURE: inquiry_start_procedure_handler
+  INQUIRY_ID_1_TX_SCHEDULED: 
+    TX_DONE: inquiry_id_1_tx_done_handler
+    TX_ABORT: inquiry_id_1_tx_abort_handler
+  INQUIRY_ID_2_TX_SCHEDULED:
+    TX_DONE: inquiry_id_2_tx_done_handler
+    TX_ABORT: inquiry_id_2_tx_abort_handler
+  INQUIRY_RX_1_SCHEDULED: 
+    RX_DONE: inquiry_rx_1_done_handler
+    RX_ABORT: inquiry_rx_1_abort_handler
+    RX_TIMEOUT: inquiry_rx_1_timeout_handler
+  INQUIRY_RX_2_SCHEDULED: 
+    RX_DONE: inquiry_rx_2_done_handler
+    RX_ABORT: inquiry_rx_2_timeout_handler
+    RX_TIMEOUT: inquiry_rx_2_timeout_handler
+  INQUIRY_EIR_RX_SCHEDULED: 
+    RX_DONE: inquiry_EIR_rx_done_handler
+    RX_ABORT: inquiry_EIR_rx_timeout_handler
+    RX_TIMEOUT: inquiry_EIR_rx_timeout_handler

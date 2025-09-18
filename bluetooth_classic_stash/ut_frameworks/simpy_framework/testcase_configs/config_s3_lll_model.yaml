@@ -1,0 +1,17 @@
+Models:
+  model_s3_lll_master:
+    python_handlers:
+      init_btc_device : init_btc_device_handler
+      init_page : init_page_handler
+      tx_started : tx_started_handler
+      tx_completed : tx_end_handler
+      rx_started : rx_started_handler
+      rx_completed : rx_end_handler
+    c_handlers:
+  model_rail:
+    python_handlers:
+      schedule_tx : schedule_tx_handler
+      schedule_rx : schedule_rx_handler
+  model_slot_counter:
+    python_handlers:
+      device_init_done : device_init_done_handler

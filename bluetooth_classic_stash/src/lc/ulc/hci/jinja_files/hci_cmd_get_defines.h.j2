@@ -1,0 +1,35 @@
+#ifndef LL_HCI_CMD_GET_DEF_H
+#define LL_HCI_CMD_GET_DEF_H
+#include <stdint.h>
+
+{% for cmd, details in hci_cmds.items() %}
+/*{{cmd | upper}} PARAMETERS */
+
+{% for sub_cmd, sub_details in details['cmds'].items() %}
+{% if sub_details['length'] != 0 %}
+// Command: {{ sub_cmd | upper}}
+{% if 'parameters' in sub_details %}
+{% set offset = namespace(value=4) %}
+{% for  mem_var , size in sub_details['parameters'].items()%}
+{% if size == 1 %}
+#define GET_{{sub_cmd | upper}}_{{mem_var | upper}}(buf)  buf[{{offset.value}}]
+{% elif size == 2 %}
+#define GET_{{sub_cmd | upper}}_{{mem_var | upper}}(buf)  *((uint16_t *)(&buf[{{offset.value}}]))
+{% elif size == 3 %}
+#define GET_{{sub_cmd | upper}}_{{mem_var | upper}}(buf)   (uint32_t *)(&buf[{{offset.value}}])
+{% elif size == 4 %}
+#define GET_{{sub_cmd | upper}}_{{mem_var | upper}}(buf)  (uint32_t *)(&buf[{{offset.value}}])
+{% else %}
+#define GET_{{sub_cmd | upper}}_{{mem_var | upper}}(buf)  (uint8_t *)(&buf[{{offset.value}}])
+{% endif %}
+{% set offset.value = offset.value + size %}
+//{{sub_cmd | upper}}_{{mem_var}} {{size}}
+{% endfor %}
+
+{% endif %}
+{% endif %}
+{% endfor %}
+
+{% endfor %}
+
+#endif

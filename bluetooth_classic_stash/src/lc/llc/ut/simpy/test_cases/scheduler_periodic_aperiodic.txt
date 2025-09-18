@@ -1,0 +1,13 @@
+Testcase:
+periodic->aperiodic->periodic
+test periodic to aperiodic transitions
+
+Initializations of device and esco parameters
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 6000 btc_dev_1 set_device_parameters_esco {"set_device_parameters_esco":{"is_edr":1,"is_esco":1,"connection_device_index":0,"lt_addr":2,"flow":1,"peer_role":1,"tx_pwr_index":0,"clk_e_offset":0,"t_esco":6,"d_esco":0,"w_esco":2,"crc_status":0},"device_index":1}
+#invoke 8000 rail_1 set_var packet_type central 2
+#invoke 9000 btc_dev_1 start_esco_central {"start_esco_central":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":40,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+Initializations of Page
+#invoke 11000 btc_dev_1 set_page {"set_page":{"tx_pwr_index":0,"bd_address":[11,22,33,44,55,66],"clk_e_offset":0,"hci_trigger":1,"remote_scan_rep_mode":0,"lt_addr":1,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+#invoke 12000 btc_dev_1 start_page {"start_page":{"priority":1,"step_size":1,"end_tsf":20},"device_index":1}

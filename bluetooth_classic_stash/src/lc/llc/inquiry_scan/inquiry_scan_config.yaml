@@ -1,0 +1,16 @@
+sm_name : inquiry_scan_sm
+includes: 
+  - device_management/procedure_triggers.yaml
+states:
+  inquiry_scan_sm_idle:
+    START_PROCEDURE: inquiry_scan_start_procedure_handler
+  INQUIRY_SCAN_ID_RX_SCHEDULED: 
+    RX_DONE: inquiry_scan_rx_done_handler
+    RX_ABORT: inquiry_scan_rx_timeout_handler
+    RX_TIMEOUT: inquiry_scan_rx_timeout_handler
+  INQUIRY_SCAN_FHS_TX_CONFIGURED: 
+    TX_DONE: inquiry_scan_fhs_tx_done_handler
+    TX_ABORT: inquiry_scan_fhs_tx_abort_handler
+  INQUIRY_SCAN_EIR_TX_CONFIGURED: 
+    TX_DONE: inquiry_scan_eir_tx_done_handler
+    TX_ABORT: inquiry_scan_eir_tx_abort_handler

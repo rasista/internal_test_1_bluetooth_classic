@@ -1,0 +1,88 @@
+#invoke 0 btc_dev_1 init_device 1 11:22:33:44:55:66
+#invoke 1100 btc_dev_1 init_inquiry 1 11:22:33 61440000 3
+#invoke 9000 btc_dev_1 start_inquiry 1
+
+Testcase 1
+1st ID
+#invoke 10000 rail_1 expect "tx_start is 10000 in scheduled_activities"
+#invoke 10001 rail_1 expect "tx_end is 10136 in scheduled_activities"
+
+2nd ID
+#invoke 10137 rail_1 expect "tx_start is 10625 in scheduled_activities"
+#invoke 10138 rail_1 expect "tx_end is 10761 in scheduled_activities"
+
+1st ID FHS
+#invoke 10762 rail_1 expect "rx_start is 11250 in scheduled_activities"
+#invoke 11619 air_medium  rx_end 1        
+
+2st ID FHS
+#invoke 11803 rail_1 do_not_expect "rx_start is 11875 in scheduled_activities"
+
+1st id EIR
+#invoke 11876 rail_1 expect "rx_start is 13750 in scheduled_activities"
+#invoke 14025 air_medium rx_end 1   
+
+Testcase 2
+Schedule ID packets again (forcing 1st ID to abort)
+#invoke 14303 rail_1 expect "tx_start is 15000 in scheduled_activities"
+#invoke 15135 air_medium tx_end 1
+#invoke 15136 rail_1 expect "tx_start is 15625 in scheduled_activities"
+#invoke 15137 rail_1 expect "tx_end is 15761 in scheduled_activities"
+(after forcing tx_abort for 1st ID packet, we do not expect rx for FHS)
+#invoke 15138 rail_1 do_not_expect "rx_start is 16250 in scheduled_activities"
+#invoke 15139 rail_1 expect "rx_start is 16875 in scheduled_activities"
+#invoke 17150 air_medium rx_end 1
+(after forcing tx_abort for 1st ID packet, we do not expect rx for EIR)
+#invoke 17429 rail_1 do_not_expect "rx_start is 18750 in scheduled_activities"
+#invoke 17430 rail_1 expect "rx_start is 19375 in scheduled_activities"
+#invoke 19650 air_medium rx_end 1
+(we need to invoke rx_end to get to next step)
+
+ 
+Testcase 3
+Case 2 forcing 2nd ID to abort
+#invoke 19999 rail_1 expect "tx_start is 20000 in scheduled_activities"
+tx for ID2 starts at 15625, we abort it
+#invoke 20626 air_medium tx_end 1
+Expect fhs for first id packet
+#invoke 20627 rail_1 expect "rx_start is 21250 in scheduled_activities"
+#invoke 21525 air_medium rx_end 1
+we do not expect id response of 2nd packet since we recieved fhs    
+#invoke 21803 rail_1 do_not_expect "rx_start is 21875 in scheduled_activities"
+expecting eir for id1, not expecting for id2
+#invoke 21804 rail_1 expect "rx_start is 23750 in scheduled_activities"
+#invoke 21805 rail_1 do_not_expect "rx_start is 24375 in scheduled_activities"
+#invoke 24026 air_medium rx_end 1
+
+Testcase 4
+now we abort both the id packets
+#invoke 24928 rail_1 expect "tx_start is 25000 in scheduled_activities"
+#invoke 25001 air_medium tx_end 1
+#invoke 25002 rail_1 expect "tx_start is 25625 in scheduled_activities"
+#invoke 25626 air_medium tx_end 1
+
+ 
+Testcase 5
+Both id packets were aborted start tx again (abort first id packet and fhs timeout)
+#invoke 25627 rail_1 expect "tx_start is 27500 in scheduled_activities"
+#invoke 27635 air_medium tx_end 1
+#invoke 27636 rail_1 expect "tx_start is 28125 in scheduled_activities"
+#invoke 27637 rail_1 expect "tx_end is 28261 in scheduled_activities"
+#invoke 27638 rail_1 do_not_expect "rx_start is 28750 in scheduled_activities"
+#invoke 28262 rail_1 expect "rx_start is 29375 in scheduled_activities"
+
+#invoke 29999 rail_1 expect "tx_start is 30000 in scheduled_activities"
+
+
+Testcase 6
+Both id packets were aborted start tx again (abort first id packet and Eir timeout)
+#invoke 30135 air_medium tx_end 1
+#invoke 30136 rail_1 expect "tx_start is 30625 in scheduled_activities"
+#invoke 30137 rail_1 expect "tx_end is 30761 in scheduled_activities"
+#invoke 30138 rail_1 do_not_expect "rx_start is 31250 in scheduled_activities"
+#invoke 30762 rail_1 expect "rx_start is 31875 in scheduled_activities"
+#invoke 32150 air_medium rx_end 1
+
+#invoke 32429 rail_1 do_not_expect "rx_start is 33750 in scheduled_activities"
+#invoke 32430 rail_1 expect "rx_start is 34375 in scheduled_activities" 
+#invoke 34999 rail_1 expect "tx_start is 35000 in scheduled_activities"

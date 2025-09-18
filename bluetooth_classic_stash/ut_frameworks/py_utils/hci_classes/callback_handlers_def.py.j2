@@ -1,0 +1,138 @@
+import threading
+import logging
+import os
+import sys 
+from typing import Optional
+from utf.devices import Device
+from utf_lib_btdm.interfaces.hci import HCI
+BUILD_PATH = os.getenv("BUILD_PATH")
+sys.path.append(f"{BUILD_PATH}/../src/lc/ulc/autogen")
+sys.path.append(f"{BUILD_PATH}/../src/lc/ulc/ut/linapps/btc_virtual_controller")
+from hci_event_callback_autogen import *
+from hci_intf_autogen import *
+from btc_error_codes import *
+READ_BD_ADDR_OPCODE = 4105
+
+class call_back_handler_def(callback_handlers):
+    def set_semaphore(self, hci_lock=None, event_lock=None):
+        self.hci_lock = hci_lock
+        self.event_lock = event_lock
+   
+    def setEventVars_handler(self, hciEventVars):
+        self.hciEventVars = hciEventVars
+
+{% for event_name, event_info in hci_events.items() %}
+    def {{event_name}}_callback_handler(self, packet, opcode):
+        """
+        {{event_name | upper}} Event Callback Handler
+        Event Code: {{event_info['event_code']}}
+        {% if event_info['event_params'] is mapping %}
+        Parameters:
+        {% for param_name, param_size in event_info['event_params'].items() %}
+        - {{param_name}}: {{param_size}} bytes
+        {% endfor %}
+        {% endif %}
+        """
+        logger = logging.getLogger()
+        logger.info(f'{{event_name}}_callback_handler - {threading.get_ident()}')
+        
+        {% if event_name == 'cmd_complete' %}
+        # Special handling for cmd_complete event
+        len = packet[2]
+        if len > 3:
+            self.hciEventVars.cmd_complete = packet[6]
+            rx_opcode = ((packet[5] << 8) | packet[4])
+            if (rx_opcode == READ_BD_ADDR_OPCODE):
+                bd_addr_bytes = packet[7:13]  # BD Address is 6 bytes (indices 7 -12)
+                bd_addr = list(bd_addr_bytes) 
+                self.hciEventVars.device_bd_addr = bd_addr
+                logger.info(f"Recived Device BD Address: {bd_addr}")
+        else:
+            self.hciEventVars.cmd_complete = packet[3]
+        {% elif event_name == 'cmd_status' %}
+        # Special handling for cmd_status event
+        self.hciEventVars.cmd_status = packet[3]
+        logger.info(f"received cmd status  = {packet[3]}")
+        logger.info(f"cmd status  = {self.hciEventVars.cmd_status}")
+        {% elif event_name == 'conn_complete' %}
+        # Special handling for conn_complete event
+        status = packet[3]
+        if status == 0:
+            conn_handle = packet[4] | (packet[5] << 8)
+            conn_type = packet[12]
+            bd_addr_bytes = packet[6:12]  # BD Address is 6 bytes (indices 6-11)
+            received_bd_addr  = list(bd_addr_bytes )
+            self.hciEventVars.conn_complete = received_bd_addr
+            logger.info(f'conn_complete_callback_handler conn_handle = {conn_handle}')
+            logger.info(f'conn_complete_callback_handler conn_type = {conn_type}')
+            logger.info(f'conn_complete_callback_handler received_bd_addr = {received_bd_addr}')
+            self.hciEventVars.acl_connection_info.conn_handle = conn_handle
+            self.hciEventVars.acl_connection_info.conn_type = conn_type
+            self.hciEventVars.acl_connection_info.bd_addr = received_bd_addr
+        {% elif event_name == 'remote_name_request_complete' %}
+        # Special handling for remote_name_request_complete event
+        bd_addr_bytes = packet[4:10]  # BD Address is 6 bytes (indices 4-9)
+        # Format BD address as a colon-separated hex string (common format)
+        bd_addr_hex = ':'.join([f'{byte:02X}' for byte in bd_addr_bytes])
+        received_bd_addr = bytes.fromhex(bd_addr_hex.replace(':', ''))
+        received_bd_addr = list(received_bd_addr)
+
+        connected_bd_addr = self.hciEventVars.acl_connection_info.bd_addr
+        name_bytes = packet[10:]
+        logger.info(f'remote_name_request_complete_callback_handler connected_bd_addr {connected_bd_addr}')
+        logger.info(f'remote_name_request_complete_callback_handler Received bd_addr {received_bd_addr}')
+        if packet[3] == 0 and received_bd_addr == connected_bd_addr:
+            self.hciEventVars.remote_name_request_complete = name_bytes.decode('utf-8', errors='ignore').replace('\x00', '').strip()
+        {% elif event_name == 'vendor_event' %}
+        # Special handling for vendor_event
+        self.hciEventVars.vendor_event = 1
+        self.hciEventVars.vendor_power_control_notification = packet[4]
+        {% elif event_name == 'conn_request' %}
+        self.hciEventVars.{{event_name}} = 1
+        {% elif event_name == 'link_key_request' %}
+        bd_addr_bytes = packet[3:9]  # BD Address is 6 bytes (indices 3-8)
+        received_bd_addr  = list(bd_addr_bytes )
+        self.hciEventVars.{{event_name}} = received_bd_addr
+        {% elif event_name == 'pin_code_request' %}
+        bd_addr_bytes = packet[3:9]  # BD Address is 6 bytes (indices 3-8)
+        received_bd_addr  = list(bd_addr_bytes )
+        self.hciEventVars.{{event_name}} = received_bd_addr
+        {% elif event_name == 'link_key_notification' %}
+        bd_addr_bytes = packet[3:9]  # BD Address is 6 bytes (indices 3-8)
+        received_bd_addr  = list(bd_addr_bytes )
+        self.hciEventVars.{{event_name}} = received_bd_addr
+        {% elif event_name == 'io_capability_req' %}
+        bd_addr_bytes = packet[3:9]  # BD Address is 6 bytes (indices 3-8)
+        received_bd_addr  = list(bd_addr_bytes )
+        self.hciEventVars.{{event_name}} = received_bd_addr
+        {% elif event_name == 'io_capability_resp' %}
+        bd_addr_bytes = packet[3:9]  # BD Address is 6 bytes (indices 3-8)
+        received_bd_addr  = list(bd_addr_bytes )
+        self.hciEventVars.{{event_name}} = received_bd_addr
+        {% elif event_name == 'user_confirmation_request' %}
+        bd_addr_bytes = packet[3:9]  # BD Address is 6 bytes (indices 3-8)
+        received_bd_addr  = list(bd_addr_bytes )
+        self.hciEventVars.{{event_name}} = received_bd_addr
+        {% elif event_name == 'user_passkey_notification' %}
+        bd_addr_bytes = packet[3:9]  # BD Address is 6 bytes (indices 3-8)
+        received_bd_addr  = list(bd_addr_bytes )
+        self.hciEventVars.{{event_name}} = received_bd_addr
+        self.hciEventVars.acl_connection_info.passkey = (packet[9] | (packet[10] << 8) | (packet[11] << 16) | (packet[12] << 24))
+        {% elif event_name == 'user_passkey_request' %}
+        bd_addr_bytes = packet[3:9]  # BD Address is 6 bytes (indices 3-8)
+        received_bd_addr  = list(bd_addr_bytes )
+        self.hciEventVars.{{event_name}} = received_bd_addr
+        {% elif event_name == 'remote_oob_data_request' %}
+        bd_addr_bytes = packet[3:9]  # BD Address is 6 bytes (indices 3-8)
+        received_bd_addr  = list(bd_addr_bytes )
+        self.hciEventVars.{{event_name}} = received_bd_addr
+        {% else %}
+        # Standard event handling - set the event flag
+        self.hciEventVars.{{event_name}} = packet[3]
+        {% endif %}
+        
+        self.event_lock.release()
+        self.hci_lock.release()
+        logger.info(f"UNLOCKING THREAD $$$$  {threading.get_ident()}")
+
+{% endfor %}

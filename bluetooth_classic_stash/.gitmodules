@@ -1,0 +1,3 @@
+[submodule "src/utils/debug/sl_btdm_logging"]
+	path = src/utils/debug/sl_btdm_logging
+	url = ../sl_btdm_logging

@@ -1,0 +1,35 @@
+{
+   <print>
+   Helgrind:Race
+   fun:btc_print
+}
+{
+   <lock>
+   Helgrind:Race
+   fun:btc_plt_release_lock
+}
+{
+   <lock1>
+   Helgrind:Race
+   fun:btc_plt_acquire_lock
+}
+{
+   <pend>
+   Helgrind:Race
+   fun:btc_plt_add_to_pend
+}
+{
+   <pend1>
+   Helgrind:Race
+   fun:btc_plt_remove_from_pend
+}
+{
+   <enqueu>
+   Helgrind:Race
+   fun:enqueue
+}
+{
+   <dequeue>
+   Helgrind:Race
+   fun:dequeue
+}

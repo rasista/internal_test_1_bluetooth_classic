@@ -1,0 +1,65 @@
+[91mWARNING: Please verify all commands and parameters before execution![0m
+
+# init_device parameters: bd_address:[11,22,33,44,55,66]
+init_device 11 22 33 44 55 66
+
+# set_inquiry parameters: length:1 | hci_trigger:0 | EIR_value:1 | tx_pwr_index:100 | lap_address:[0x00,0x8B,0x9E]
+set_inquiry 1 0 0 1 100 0x00 0x8B 0x9E
+
+# start_inquiry parameters: priority:1 | step_size:1 | end_tsf:8192
+start_inquiry 1 1 8192
+
+# set_inquiry_scan parameters: window:16 | interval:2048 | host_eir_data:0 | EIR_value:0 | tx_pwr_index:100 | curr_scan_type:0 | lt_addr:1 | lap_address:[0x00,0x8B,0x9E]
+set_inquiry_scan 16 2048 0 0 100 0 1 0x00 0x8B 0x9E
+
+# start_inquiry_scan parameters: priority:1 | step_size:1 | end_tsf:8192
+start_inquiry_scan 1 1 8192
+
+# set_page parameters: length:1 | clk_e_offset:0 | hci_trigger:0 | EIR_value:1 | tx_pwr_index:100 | lap_address:[0x00,0x8B,0x9E]
+set_page 1 0 0 1 100 0x00 0x8B 0x9E
+
+# start_page parameters: priority:1 | step_size:1 | end_tsf:8192
+start_page 1 1 8192
+
+# set_page_scan parameters: window:16 | interval:2048 | host_eir_data:0 | EIR_value:0 | tx_pwr_index:100 | curr_scan_type:0 | lt_addr:1 | lap_address:[0x00,0x8B,0x9E]
+set_page_scan 16 2048 0 0 100 0 1 0x00 0x8B 0x9E
+
+# start_page_scan parameters: priority:1 | step_size:1 | end_tsf:8192
+start_page_scan 1 1 8192
+
+# set_device_parameters_acl parameters: connection_device_index:1 | peer_role:1 | lt_addr:2 | tx_pwr_index:29 | flow:1 | br_edr_mode:1
+set_device_parameters_acl 1 1 2 29 1 1 0
+
+# set_afh_parameters_acl parameters: connection_device_index:0 | no_of_valid_afh_channels:10 | piconet_type:0 | afh_new_channel_map_instant:0 | afh_new_channel_map:[10] | channel_map_in_use:[10]
+set_afh_parameters_acl 0 10 0 0 10 10
+
+# set_sniff_parameters_acl parameters: connection_device_index:0 | sniff_instant:0 | sniff_interval:0 | sniff_attempt:0 | sniff_timeout:0
+set_sniff_parameters_acl 0 0 0 0 0
+
+# start_acl_central parameters: connection_device_index:0 | current_device_index:1 | priority:1 | step_size:1 | end_tsf:72 | bd_address:[11,22,33,44,55,66]
+start_acl_central 0 1 1 1 72 11 22 33 44 55 66
+
+# start_acl_peripheral parameters: connection_device_index:0 | current_device_index:1 | priority:1 | step_size:1 | end_tsf:72 | bd_address:[11,22,33,44,55,66]
+start_acl_peripheral 0 1 1 1 72 11 22 33 44 55 66
+
+# set_device_parameters_esco parameters: connection_device_index:0 | lt_addr:2 | flow:1 | peer_role:1 | t_esco:6 | d_esco:0 | w_esco:2
+set_device_parameters_esco 0 2 1 1 6 0 2
+
+# start_esco_central parameters: connection_device_index:0 | current_device_index:1 | priority:1 | step_size:1 | end_tsf:72 | bd_address:[11,22,33,44,55,66]
+start_esco_central 0 1 1 1 72 11 22 33 44 55 66
+
+# start_esco_peripheral parameters: connection_device_index:0 | current_device_index:1 | priority:1 | step_size:1 | end_tsf:72 | bd_address:[11,22,33,44,55,66]
+start_esco_peripheral 0 1 1 1 72 11 22 33 44 55 66
+
+# set_device_parameters_roleswitch parameters: connection_device_index:1 | peer_role:1 | lt_addr:1 | tx_pwr_index:23 | flow:0 | clk_e_offset:0
+set_device_parameters_roleswitch 1 1 1 23 0 0
+
+# set_roleswitch_parameters parameters: connection_device_index:0 | new_lt_addr:2 | roleswitch_slot_offset:0 | roleswitch_instant:16
+set_roleswitch_parameters 0 2 0 16
+
+# start_roleswitch_central parameters: connection_device_index:0 | current_device_index:1 | priority:1 | step_size:1 | end_tsf:72 | bd_address:[11,22,33,44,55,66]
+start_roleswitch_central 0 1 1 1 72 11 22 33 44 55 66
+
+# start_roleswitch_peripheral parameters: connection_device_index:0 | current_device_index:1 | priority:1 | step_size:1 | end_tsf:72 | bd_address:[11,22,33,44,55,66]
+start_roleswitch_peripheral 0 1 1 1 72 11 22 33 44 55 66
+

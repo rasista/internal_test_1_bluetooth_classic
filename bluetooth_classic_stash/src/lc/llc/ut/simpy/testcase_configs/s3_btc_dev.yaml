@@ -1,0 +1,88 @@
+define: &NUM_BTC_DEVS 3
+ 
+udp_config:
+  ip: localhost
+  port: 5005
+ 
+Models:
+  btc_dev:
+    instances: *NUM_BTC_DEVS
+    secondary_init_function : secondary_init_function
+    python_handlers:
+      init_device : init_device_handler
+      init_page : init_page_handler
+      init_page_scan : init_page_scan_handler
+      start_page : start_page_handler
+      start_page_scan : start_page_scan_handler
+      init_inquiry : init_inquiry_handler
+      start_inquiry : start_inquiry_handler
+      init_inquiry_scan : init_inquiry_scan_handler
+      start_inquiry_scan : start_inquiry_scan_handler
+      start_esco_central: start_esco_central_handler
+      start_esco_peripheral: start_esco_peripheral_handler
+      start_acl_central: start_acl_central_handler
+      start_acl_peripheral: start_acl_peripheral_handler
+      set_page: set_page_handler
+      set_inquiry: set_inquiry_handler
+      set_page_scan: set_page_scan_handler
+      set_inquiry_scan: set_inquiry_scan_handler
+      set_afh_parameters_acl: set_afh_parameters_acl_handler
+      set_sniff_parameters_acl: set_sniff_parameters_acl_handler
+      set_device_parameters_acl: set_device_parameters_acl_handler
+      set_device_parameters_roleswitch: set_device_parameters_roleswitch_handler
+      set_device_parameters_esco: set_device_parameters_esco_handler
+      set_roleswitch_parameters: set_roleswitch_parameters_handler
+      stop_acl: stop_acl_handler
+      stop_esco: stop_esco_handler
+      stop_roleswitch: stop_roleswitch_handler
+      stop_acl_peripheral: stop_acl_peripheral_handler
+      stop_esco_peripheral: stop_esco_peripheral_handler
+      stop_roleswitch_peripheral: stop_roleswitch_peripheral_handler
+      stop_page: stop_page_handler
+      complete_event : complete_event_handler
+      payload_buffer: payload_buffer_handler
+      roleswitch_complete: roleswitch_complete_handler
+      start_roleswitch_central: start_roleswitch_central_handler  
+      start_roleswitch_peripheral: start_roleswitch_peripheral_handler
+      start_test_mode: start_test_mode_handler
+      procedure_complete : procedure_complete_handler
+    c_handlers:
+  rail:
+    instances: *NUM_BTC_DEVS
+    secondary_init_function : secondary_init_function
+    python_handlers:
+      expect: expect_handler
+      retry_tx : retry_tx_handler
+      tx_abort : tx_abort_handler
+      schedule_rx  : schedule_rx_handler
+      schedule_tx  : schedule_tx_handler
+      set_var : set_var_handler
+      tx_done : tx_done_handler
+      rx_done : rx_done_handler
+      rx_timeout : rx_timeout_handler
+      schedule_backoff : schedule_backoff_handler
+      do_not_expect: do_not_expect_handler
+      rx_header_received: rx_header_received_handler
+      rx_abort: rx_abort_handler
+    c_handlers:
+ 
+  air_medium:
+    secondary_init_function: secondary_init_function
+    python_handlers:
+      register_tx : register_tx_handler
+      register_rx : register_rx_handler
+      tx_start : tx_start_handler
+      rx_start : rx_start_handler
+      tx_end : tx_end_handler
+      rx_end : rx_end_handler
+      rx_timeout : rx_timeout_handler
+      rx_header : rx_header_handler
+      rx_abort : rx_timeout_handler
+      rx_done : rx_done_handler
+      rx_header_done : rx_header_done_handler
+    c_handlers:
+ 
+  gdb_console:
+    secondary_init_function: secondary_init_function
+    python_handlers:
+      expect_gdb : expect_gdb_handler

@@ -1,0 +1,28 @@
+#ifndef USCHED_API_H
+#define USCHED_API_H
+
+#include <stdint.h>
+void {{intf_configs["intf_name"]}}_command_parser(uint8_t *out_buffer, uint8_t *in_buffer);
+
+{% for element in elements.keys() %}
+{% if "brief" in elements[element].keys() %}
+/****
+{% for brief in elements[element]["brief"] %}
+    {{ brief }}
+{% endfor %}
+****/
+{%endif%}
+typedef {{elements[element]["class"]}} {{element}}_{{elements[element]["class"]}} {
+{% for field in elements[element].keys() %}
+{% if "brief" != field and "class" != field %}
+{% if elements[element][field]["data_type"] != "array" %}
+    {{elements[element][field]["data_type"]}} {{field}};
+{% else %}
+    {{elements[element][field]["array_type"]}} {{field}}[{{elements[element][field]["length"]}}];
+{% endif%}
+{% endif%}
+{% endfor %}
+} {{ element }}_t;
+{% endfor %}
+
+#endif

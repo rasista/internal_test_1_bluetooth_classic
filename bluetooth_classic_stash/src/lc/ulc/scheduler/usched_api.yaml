@@ -1,0 +1,127 @@
+elements:
+  usched_api_start_pi:
+    class: struct
+    brief:
+      - structure contains pi start parameters.
+      - end_tsf and curr_priority are placeholders, will be updated inside role.c
+      - clock_offset is rfu for inquiry
+    start_priority:
+      data_type: uint32_t
+    priority_step_size:
+      data_type: uint32_t
+    end_priority:
+      data_type: uint32_t
+    role:
+      data_type: uint32_t
+    min_runtime:
+      data_type: uint32_t
+    max_runtime:
+      data_type: uint32_t
+    pi_total_duration:
+      data_type: uint32_t
+    curr_priority:
+      data_type: uint32_t
+    end_tsf:
+      data_type: uint32_t
+    delay:
+      data_type: uint32_t
+    address:
+      data_type: array
+      array_type: uint8_t
+      length: 6
+    mode:
+      data_type: uint8_t
+    clock_offset:
+      data_type: uint16_t
+    current_device_index:
+      data_type: uint8_t
+  usched_api_stop_pi:
+    class: struct
+    brief:
+      - structure contains pi stop parameters
+    role:
+      data_type: uint32_t
+  usched_api_start_pi_scan:
+    class: struct
+    brief:
+      - structure contains pi scan start parameters
+      - end_tsf and curr_priority are placeholders, will be updated inside role.c
+    start_priority:
+      data_type: uint32_t
+    priority_step_size:
+      data_type: uint32_t
+    end_priority:
+      data_type: uint32_t
+    pi_scan_window:
+      data_type: uint32_t
+    role:
+      data_type: uint32_t
+    pi_scan_interval:
+      data_type: uint32_t
+    curr_priority:
+      data_type: uint32_t
+    end_tsf:
+      data_type: uint32_t
+    address:
+      data_type: array
+      array_type: uint8_t
+      length: 3
+    mode:
+      data_type: uint8_t
+    current_device_index:
+      data_type: uint8_t
+  usched_api_stop_pi_scan:
+    class: struct
+    brief:
+      - structure contains pi scan stop parameters
+    role:
+      data_type: uint32_t
+  usched_api_start_acl:
+    class: struct
+    brief:
+      - structure contains acl start parameters
+      - role = central (0) or peripheral (1)
+      - end_tsf and conn_info_index are placeholders, will be updated inside role.c
+      - acl_priority - LOW_PRIORITY or HIGH_PRIORITY( eg - A2DP)
+    start_priority:
+      data_type: uint32_t
+    priority_step_size:
+      data_type: uint32_t
+    end_priority:
+      data_type: uint32_t
+    role:
+      data_type: uint32_t
+    min_runtime:
+      data_type: uint32_t
+    max_runtime:
+      data_type: uint32_t
+    duration:
+      data_type: uint32_t
+    acl_priority:
+      data_type: uint32_t    
+    conn_info_index:
+      data_type: uint32_t
+    poll_interval:
+      data_type: uint32_t    
+    is_tx_pending:
+      data_type: uint32_t
+    is_rx_pending:
+      data_type: uint32_t
+  usched_api_stop_acl:
+    class: struct
+    brief:
+      - structure contains acl stop parameters
+      - Role = Central or Peripheral
+    role:
+      data_type: uint32_t
+    conn_info_index:
+      data_type: uint32_t
+  usched_api_usched_init:
+    class: struct
+    brief:
+      - structure contains usched init parameters
+    role:
+      data_type: uint32_t
+intf_configs:
+  cmd_configs: usched_api.h
+  intf_name: usched_api

@@ -1,0 +1,28 @@
+#ifndef USCHED_ROLE_H
+#define USCHED_ROLE_H
+
+#include <stdint.h>
+
+{% for element_name, element_value in elements.items() %}
+{% if 'start' in element_name %}
+/****
+    {% for brief_line in element_value.brief %}
+    {{ brief_line }}
+    {% endfor %}
+****/
+
+typedef struct {{ element_name.replace('_api', '').replace('_start','') }}_params_s {
+    {% for field_name, field_value in element_value.items() %}
+    {% if field_name != 'class' and field_name != 'brief' %}
+    {% if field_value.data_type != 'array' %}
+    {{ field_value.data_type }} {{ field_name }};
+    {% else %}
+    {{ field_value.array_type }} {{ field_name }}[{{ field_value.length }}];
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+} {{ element_name.replace('_api', '').replace('_start','') }}_params_t;
+
+{% endif %}
+{% endfor %}
+#endif /* USCHED_ROLE_H */

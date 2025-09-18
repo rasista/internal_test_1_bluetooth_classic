@@ -1,0 +1,35 @@
+Roleswitch Central Testcases
+
+Initialization of device,roleswitch central and start of roleswitch central
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_device_parameters_roleswitch {"set_device_parameters_roleswitch":{"connection_device_index":0,"lt_addr":1,"flow":0,"peer_role":1,"tx_pwr_index":23,"clk_e_offset":0},"device_index":1}
+#invoke 6000 btc_dev_1 set_roleswitch_parameters {"set_roleswitch_parameters":{"connection_device_index":0,"roleswitch_instant":16,"roleswitch_slot_offset":0,"new_lt_addr":2},"device_index":1}
+#invoke 8000 rail_1 set_var packet_type rs_central 2
+#invoke 9000 btc_dev_1 start_roleswitch_central {"start_roleswitch_central":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":40,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+States of Roleswitch Central
+WAITING_FOR_FHS_RX_PKT_HEADER
+WAITING_FOR_FHS_RX_PKT_COMPLETE
+ID_PKT_TX_SCHEDULED
+NEW_PERIPHERAL_WAITING_FOR_RX_PKT_HEADER
+NEW_PERIPHERAL_WAITING_FOR_RX_PKT_COMPLETE
+NEW_PERIPHERAL_TX_SCHEDULED
+
+setting crc and hec fail status
+#invoke 12500 rail_1 expect “rx_start is 12500 in scheduled_activities”
+#invoke 12505 rail_1 set_var packet_type rs_central 2
+#invoke 12506 rail_1 set_var crc_status 0
+#invoke 12507 rail_1 set_var hec_status 0 
+#invoke 12507 air_medium rx_header_done rail_1 
+
+crc and hec status check failed, next handler called will be rs_central_rx_timeout_handler
+
+setting crc fail and hec pass 
+#invoke 15000 rail_1 expect “rx_start is 15000 in scheduled_activities”
+#invoke 15005 rail_1 set_var packet_type rs_central 2
+#invoke 15006 rail_1 set_var crc_status 0
+#invoke 15007 rail_1 set_var hec_status 1
+#invoke 15008 air_medium rx_header_done rail_1 
+
+crc check failed, next handler called will be rs_central_rx_timeout_handler
+#invoke 17499 rail_1 expect “rx_start is 17500 in scheduled_activities”

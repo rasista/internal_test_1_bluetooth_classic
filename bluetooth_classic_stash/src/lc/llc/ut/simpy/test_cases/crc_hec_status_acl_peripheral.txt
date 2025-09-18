@@ -1,0 +1,30 @@
+ACL Peripheral Testcases
+
+Initialization of device,acl peripheral and start of acl peripheral
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_device_parameters_acl {"set_device_parameters_acl":{"connection_device_index":0,"lt_addr":2,"flow":1,"peer_role":1,"tx_pwr_index":29,"br_edr_mode":1},"device_index":1}
+#invoke 6000 btc_dev_1 set_afh_parameters_acl {"set_afh_parameters_acl":{"connection_device_index":0,"channel_map_in_use":[11,22,33,44,55,66,77,88,99,10],"afh_new_channel_map_instant":0,"afh_new_channel_map":[11,22,23,44,55,66,77,88,99,10],"no_of_valid_afh_channels":10,"piconet_type":0},"device_index":1}
+#invoke 7000 btc_dev_1 set_sniff_parameters_acl {"set_sniff_parameters_acl":{"connection_device_index":0,"sniff_instant":0,"sniff_interval":0,"sniff_attempt":0,"sniff_timeout":0},"device_index":1}
+#invoke 8000 rail_1 set_var packet_type peripheral 3
+#invoke 9000 btc_dev_1 start_acl_peripheral {"start_acl_peripheral":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":72,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+States of ACL Peripheral
+PERIPHERAL_WAITING_FOR_RX_PKT_HEADER
+PERIPHERAL_WAITING_FOR_RX_COMPLETE
+PERIPHERAL_TX_SCHEDULED
+
+setting crc and hec fail status
+#invoke 9002 rail_1 expect “rx_start is 10000 in scheduled_activities”
+#invoke 10005 rail_1 set_var crc_status 0
+#invoke 10006 rail_1 set_var hec_status 0
+#invoke 10007 air_medium rx_timeout rail_1 
+
+crc check failed, next handler called will be acl_central_rx_abort_handler
+
+setting crc fail and hec pass 
+#invoke 14303 rail_1 expect “rx_start is 15000 in scheduled_activities”
+#invoke 15001 rail_1 set_var crc_status 0
+#invoke 15002 rail_1 set_var hec_status 1 
+#invoke 15005 air_medium rx_header_done rail_1 
+
+#invoke 21803 rail_1 expect “rx_start is 22500 in scheduled_activities”

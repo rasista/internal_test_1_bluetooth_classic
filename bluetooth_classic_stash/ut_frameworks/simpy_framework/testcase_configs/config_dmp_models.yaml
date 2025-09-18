@@ -1,0 +1,38 @@
+Models:
+  model_coex_arbitrator:
+    python_handlers:
+      add_activity : add_activity_handler
+      remove_activity : remove_activity_handler
+    c_handlers :
+  model_soft_dmp:
+    secondary_init_function : secondary_init_function
+    init_params:
+      add_task_handlers:
+        esco : add_esco_task_handler
+        page : add_page_task_handler
+        page_scan : add_page_scan_task_handler
+        acl : add_acl_task_handler
+      remove_task_handlers:
+        esco : remove_esco_task_handler
+        page : remove_page_task_handler
+        page_scan : remove_page_scan_task_handler
+        acl : remove_acl_task_handler
+      start_task_handlers:
+        esco : start_esco_task_handler
+        page : start_page_task_handler
+        page_scan : start_page_scan_task_handler
+        acl : start_acl_task_handler
+      stop_task_handlers:
+        esco : stop_esco_task_handler
+        page : stop_page_task_handler
+        page_scan : stop_page_scan_task_handler
+        acl : stop_acl_task_handler
+      task_priorities:
+        esco:
+          start_priority : 200
+      scan_interval: 100000
+    python_handlers:
+      add_task : add_task_handler
+      remove_task : remove_task_handler
+      next_task : next_task_handler
+    c_handlers:

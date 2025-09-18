@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map File Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .upload-section {
+            border: 2px dashed #ccc;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+        }
+        .upload-section.highlight {
+            border-color: #3498db;
+            background-color: #ebf5fb;
+        }
+        .drag-text {
+            margin: 20px 0;
+            font-size: 1.2em;
+            color: #7f8c8d;
+        }
+        #fileInput {
+            display: none;
+        }
+        #uploadBtn {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        #uploadBtn:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .filters {
+            margin: 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        .filters input, .filters select {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex-grow: 1;
+        }
+        .summary {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .summary h2 {
+            margin-top: 0;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        #symbolTable_wrapper {
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .section-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .section-stat-item {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .section-stat-item h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .loading-spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .debug-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        .debug-toggle {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #6c757d;
+            cursor: pointer;
+            user-select: none;
+        }
+        .debug-toggle:hover {
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Map File Analyzer</h1>
+        
+        <div class="upload-section" id="drop-area">
+            <p class="drag-text">Drag & Drop your map file here or click to upload</p>
+            <input type="file" id="fileInput" accept=".map">
+            <button id="uploadBtn">Select Map File</button>
+        </div>
+        
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Processing map file...</p>
+        </div>
+        
+        <div class="results" id="results">
+            <div class="summary" id="summary">
+                <h2>Map File Summary</h2>
+                <p>Total symbols: <span id="totalSymbols">0</span></p>
+                <p>Total size: <span id="totalSize">0</span> bytes</p>
+            </div>
+            
+            <div class="section-stats" id="sectionStats">
+                <!-- Section statistics will be populated here -->
+            </div>
+            
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="Search symbols...">
+                <select id="sectionFilter">
+                    <option value="">All Sections</option>
+                </select>
+                <select id="sizeSort">
+                    <option value="">Sort by Size</option>
+                    <option value="asc">Smallest First</option>
+                    <option value="desc">Largest First</option>
+                </select>
+            </div>
+            
+            <div id="symbolTable_wrapper">
+                <table id="symbolTable">
+                    <thead>
+                        <tr>
+                            <th>Section</th>
+                            <th>Symbol</th>
+                            <th>Address</th>
+                            <th>Size (bytes)</th>
+                            <th>Object File</th>
+                            <th>Library</th>
+                        </tr>
+                    </thead>
+                    <tbody id="symbolTableBody">
+                        <!-- Symbol data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Object File Summary Table -->
+            <h2 class="table-title">Object File Summary</h2>
+            <div class="filters">
+                <input type="text" id="objectFileSearchInput" placeholder="Search object files...">
+                <select id="objectFileSort">
+                    <option value="">Sort by</option>
+                    <option value="name-asc">Name (A-Z)</option>
+                    <option value="name-desc">Name (Z-A)</option>
+                    <option value="size-asc">Size (Smallest First)</option>
+                    <option value="size-desc">Size (Largest First)</option>
+                </select>
+            </div>
+            <div id="objectFileTable_wrapper">
+                <table id="objectFileTable">
+                    <thead>
+                        <tr>
+                            <th>Object File</th>
+                            <th>Library</th>
+                            <th>Total Size (bytes)</th>
+                            <th>.text Size</th>
+                            <th>.data Size</th>
+                            <th>.bss Size</th>
+                            <th>.rodata Size</th>
+                            <th>Other Sections</th>
+                        </tr>
+                    </thead>
+                    <tbody id="objectFileTableBody">
+                        <!-- Object file summary data will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="debug-toggle" id="debugToggle">
+                Show Debug Info
+            </div>
+            <div class="debug-info" id="debugInfo">
+                <!-- Debug information will be shown here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const dropArea = document.getElementById('drop-area');
+            const fileInput = document.getElementById('fileInput');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            const symbolTableBody = document.getElementById('symbolTableBody');
+            const searchInput = document.getElementById('searchInput');
+            const sectionFilter = document.getElementById('sectionFilter');
+            const sizeSort = document.getElementById('sizeSort');
+            const totalSymbols = document.getElementById('totalSymbols');
+            const totalSize = document.getElementById('totalSize');
+            const sectionStats = document.getElementById('sectionStats');
+            const debugToggle = document.getElementById('debugToggle');
+            const debugInfo = document.getElementById('debugInfo');
+            const objectFileSearchInput = document.getElementById('objectFileSearchInput');
+            const objectFileSort = document.getElementById('objectFileSort');
+            const objectFileTableBody = document.getElementById('objectFileTableBody');
+            
+            // Symbol data storage
+            let allSymbols = [];
+            let filteredSymbols = [];
+            let sections = new Set();
+            let parsingDebugInfo = [];
+            let pendingSymbol = null;
+            
+            // Toggle debug info
+            debugToggle.addEventListener('click', function() {
+                if (debugInfo.style.display === 'block') {
+                    debugInfo.style.display = 'none';
+                    debugToggle.textContent = 'Show Debug Info';
+                } else {
+                    debugInfo.style.display = 'block';
+                    debugToggle.textContent = 'Hide Debug Info';
+                }
+            });
+            
+            // Event listeners for drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropArea.classList.add('highlight');
+            }
+            
+            function unhighlight() {
+                dropArea.classList.remove('highlight');
+            }
+            
+            // Handle file drop
+            dropArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length) {
+                    handleFiles(files);
+                }
+            }
+            
+            // Handle file selection via button
+            uploadBtn.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            fileInput.addEventListener('change', function() {
+                if (fileInput.files.length) {
+                    handleFiles(fileInput.files);
+                }
+            });
+            
+            function handleFiles(files) {
+                const file = files[0];
+                
+                if (file) {
+                    // Reset debug info
+                    parsingDebugInfo = [];
+                    pendingSymbol = null;
+                    
+                    // Show loading indicator
+                    loading.style.display = 'block';
+                    dropArea.style.display = 'none';
+                    
+                    // Process the file
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        setTimeout(() => {
+                            processMapFile(e.target.result);
+                            
+                            // Hide loading indicator and show results
+                            loading.style.display = 'none';
+                            results.style.display = 'block';
+                            
+                            // Update debug info
+                            debugInfo.textContent = parsingDebugInfo.join('\n');
+                        }, 500); // Small delay to show the loading indicator
+                    };
+                    
+                    reader.readAsText(file);
+                }
+            }
+            
+            function processMapFile(fileContent) {
+                // Reset the data
+                allSymbols = [];
+                sections = new Set();
+                
+                // Define standard loadable sections that we want to include
+                const standardSections = [
+                    'text', 'stext',
+                    'data', 'sdata',
+                    'bss', 'sbss',
+                    'rodata', 'srodata'
+                ];
+                
+                // Split the file content by lines
+                const lines = fileContent.split(/\r?\n/);
+                
+                // Regular expressions to match different line patterns
+                const symbolRegex = /\.([.\w]+)\s+0x([0-9a-fA-F]+)\s+0x([0-9a-fA-F]+)\s+(.+)$/;
+                const continuationRegex = /^\s+(0x[0-9a-fA-F]+)\s+(0x[0-9a-fA-F]+)(\s+.+)?$/;
+                
+                // Process each line
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    
+                    // Skip empty lines
+                    if (!line) continue;
+                    
+                    // Check if this is a standard symbol entry
+                    const symbolMatch = symbolRegex.exec(line);
+                    
+                    if (symbolMatch) {
+                        // Extract info from the standard match
+                        const fullSection = symbolMatch[1];
+                        const address = symbolMatch[2];
+                        const size = parseInt(symbolMatch[3], 16); // Convert hex to decimal
+                        let symbolInfo = symbolMatch[4].trim();
+                        
+                        // Extract parent section and determine symbol name
+                        // For formats like .text.function_name, .bss.variable_name
+                        let section, symbolName;
+                        
+                        // Split the section by dot (.) and determine the parent section
+                        const sectionParts = fullSection.split('.');
+                        
+                        if (sectionParts.length > 1) {
+                            // If we have format like text.function_name, use 'text' as section
+                            section = sectionParts[0]; // Main section (text, data, bss, etc.)
+                            
+                            // If the section itself contains function name (like .text.function_name)
+                            // use that as the symbol name if not already provided, but clean it up
+                            if (symbolInfo.trim() === '') {
+                                // Extract just the function name part from the section
+                                // For example, from "text.main" get just "main"
+                                symbolName = sectionParts.slice(1).join('.');
+                            } else {
+                                symbolName = symbolInfo;
+                            }
+                        } else {
+                            // Standard section format
+                            section = fullSection;
+                            symbolName = symbolInfo;
+                        }
+                        
+                        // Check if this is a standard loadable section we want to include
+                        // Skip if not in our list of standard sections
+                        if (!standardSections.includes(section)) {
+                            continue;
+                        }
+                        
+                        // Parse file/library info
+                        let objectFile = '';
+                        let library = '';
+                        
+                        // Check if there's space after symbol name (indicating file/library info)
+                        const lastSpaceIndex = symbolInfo.lastIndexOf(' ');
+                        if (lastSpaceIndex > 0) {
+                            // Extract symbol name and file/library info
+                            symbolName = symbolInfo.substring(0, lastSpaceIndex).trim();
+                            const fileInfo = symbolInfo.substring(lastSpaceIndex + 1).trim();
+                            
+                            // Parse the file info further - check for brackets indicating object file
+                            // Format could be like "librarypath(objectfile.o)"
+                            const bracketOpenIndex = fileInfo.lastIndexOf('(');
+                            const bracketCloseIndex = fileInfo.lastIndexOf(')');
+                            
+                            if (bracketOpenIndex > 0 && bracketCloseIndex > bracketOpenIndex) {
+                                // Extract library path (everything before the bracket)
+                                library = fileInfo.substring(0, bracketOpenIndex).trim();
+                                
+                                // Extract object file (everything between brackets)
+                                objectFile = fileInfo.substring(bracketOpenIndex + 1, bracketCloseIndex).trim();
+                            } else {
+                                // No brackets, just a simple file reference
+                                // Strip the path to get just the filename
+                                const pathParts = fileInfo.split(/[\/\\]/);
+                                objectFile = pathParts[pathParts.length - 1]; // Get just the filename
+                            }
+                        }
+                        
+                        // Clean up the symbol name if it still contains the section prefix
+                        // E.g., if symbolName is ".text.main" or "text.main", extract just "main"
+                        if (symbolName.includes('.')) {
+                            // Check if the symbol name starts with the section name
+                            const symbolParts = symbolName.split('.');
+                            if (symbolParts.length > 1 && (symbolParts[0] === section || symbolParts[0] === '')) {
+                                // Remove the section prefix (and any leading dot)
+                                symbolName = symbolParts.slice(symbolParts[0] === '' ? 2 : 1).join('.');
+                            }
+                        }
+                        
+                        // Add the parent section to our set
+                        sections.add(section);
+                        
+                        // Create a symbol object
+                        const symbol = {
+                            section: section,             // Main section (text, data, bss)
+                            fullSection: fullSection,     // Complete section name (.text.func1)
+                            symbolName: symbolName,       // Symbol name (cleaned)
+                            address: `0x${address}`,      // Address in hex
+                            size: size,                   // Size in decimal
+                            objectFile: objectFile,       // Object file name
+                            library: library              // Library path/name
+                        };
+                        
+                        allSymbols.push(symbol);
+                        
+                        // Log debug info
+                        parsingDebugInfo.push(`Symbol: ${symbolName} | Section: ${section} | Full Section: ${fullSection} | Address: 0x${address} | Size: ${size} | Object: ${objectFile} | Library: ${library}`);
+                        
+                        // Reset any pending symbol since we've parsed a complete one
+                        pendingSymbol = null;
+                    } 
+                    // Check if this is a continuation line (for long symbol names)
+                    else if (pendingSymbol) {
+                        // Skip if the pending symbol is not in a standard section
+                        if (!standardSections.includes(pendingSymbol.section)) {
+                            pendingSymbol = null;
+                            continue;
+                        }
+                        
+                        const continuationMatch = continuationRegex.exec(line);
+                        
+                        if (continuationMatch) {
+                            // Extract continuation info
+                            const address = continuationMatch[1].replace('0x', '');
+                            const size = parseInt(continuationMatch[2].replace('0x', ''), 16); // Convert hex to decimal
+                            let fileInfo = '';
+                            
+                            // Check if there's file/library info
+                            if (continuationMatch[3]) {
+                                fileInfo = continuationMatch[3].trim();
+                                
+                                // Parse file and library
+                                let objectFile = '';
+                                let library = '';
+                                
+                                // Check for brackets indicating object file
+                                const bracketOpenIndex = fileInfo.lastIndexOf('(');
+                                const bracketCloseIndex = fileInfo.lastIndexOf(')');
+                                
+                                if (bracketOpenIndex > 0 && bracketCloseIndex > bracketOpenIndex) {
+                                    // Extract library path (everything before the bracket)
+                                    library = fileInfo.substring(0, bracketOpenIndex).trim();
+                                    
+                                    // Extract object file (everything between brackets)
+                                    objectFile = fileInfo.substring(bracketOpenIndex + 1, bracketCloseIndex).trim();
+                                } else {
+                                    // No brackets, just a simple file reference
+                                    // Strip the path to get just the filename
+                                    const pathParts = fileInfo.split(/[\/\\]/);
+                                    objectFile = pathParts[pathParts.length - 1]; // Get just the filename
+                                }
+                                
+                                pendingSymbol.objectFile = objectFile;
+                                pendingSymbol.library = library;
+                            }
+                            
+                            // Clean up the symbol name for the pending symbol
+                            if (pendingSymbol.symbolName.includes('.')) {
+                                const symbolParts = pendingSymbol.symbolName.split('.');
+                                // Check if symbol starts with section prefix
+                                if (symbolParts.length > 1 && 
+                                    (symbolParts[0] === pendingSymbol.section || symbolParts[0] === '')) {
+                                    // Remove the section prefix
+                                    pendingSymbol.symbolName = symbolParts.slice(symbolParts[0] === '' ? 2 : 1).join('.');
+                                }
+                            }
+                            
+                            // Update pending symbol with address and size
+                            pendingSymbol.address = continuationMatch[1];
+                            pendingSymbol.size = size;
+                            
+                            // Add the completed symbol to our list
+                            allSymbols.push(pendingSymbol);
+                            
+                            // Log debug info
+                            parsingDebugInfo.push(`Continuation line: ${pendingSymbol.symbolName} | Address: ${address} | Size: ${size} | Object: ${pendingSymbol.objectFile} | Library: ${pendingSymbol.library}`);
+                            
+                            // Reset pending symbol
+                            pendingSymbol = null;
+                        }
+                        else {
+                            // This line doesn't match the continuation pattern but we have a pending symbol
+                            // Possibly a multi-line symbol name or something else
+                            
+                            // Check if this line contains 0x pattern for address
+                            if (line.includes('0x')) {
+                                parsingDebugInfo.push(`Possible continuation line with different format: ${line}`);
+                                
+                                // Try to extract address and size with a more flexible regex
+                                const flexMatch = /0x([0-9a-fA-F]+).*?0x([0-9a-fA-F]+)/.exec(line);
+                                if (flexMatch) {
+                                    const address = flexMatch[1];
+                                    const size = parseInt(flexMatch[2], 16);
+                                    
+                                    // Extract file name - everything after the second 0x...
+                                    let fileInfo = '';
+                                    const fileMatch = line.match(/0x[0-9a-fA-F]+\s+0x[0-9a-fA-F]+\s+(.*)/);
+                                    if (fileMatch && fileMatch[1]) {
+                                        fileInfo = fileMatch[1].trim();
+                                        
+                                        // Parse file and library
+                                        let objectFile = '';
+                                        let library = '';
+                                        
+                                        // Check for brackets indicating object file
+                                        const bracketOpenIndex = fileInfo.lastIndexOf('(');
+                                        const bracketCloseIndex = fileInfo.lastIndexOf(')');
+                                        
+                                        if (bracketOpenIndex > 0 && bracketCloseIndex > bracketOpenIndex) {
+                                            // Extract library path (everything before the bracket)
+                                            library = fileInfo.substring(0, bracketOpenIndex).trim();
+                                            
+                                            // Extract object file (everything between brackets)
+                                            objectFile = fileInfo.substring(bracketOpenIndex + 1, bracketCloseIndex).trim();
+                                        } else {
+                                            // No brackets, just a simple file reference
+                                            // Strip the path to get just the filename
+                                            const pathParts = fileInfo.split(/[\/\\]/);
+                                            objectFile = pathParts[pathParts.length - 1]; // Get just the filename
+                                        }
+                                        
+                                        pendingSymbol.objectFile = objectFile;
+                                        pendingSymbol.library = library;
+                                    }
+                                    
+                                    // Update pending symbol
+                                    pendingSymbol.address = `0x${address}`;
+                                    pendingSymbol.size = size;
+                                    
+                                    // Add to our list
+                                    allSymbols.push(pendingSymbol);
+                                    
+                                    parsingDebugInfo.push(`Extracted from flexible match: Address: 0x${address} | Size: ${size} | Object: ${pendingSymbol.objectFile} | Library: ${pendingSymbol.library}`);
+                                    
+                                    // Reset pending symbol
+                                    pendingSymbol = null;
+                                }
+                                else {
+                                    // Could not extract address and size
+                                    parsingDebugInfo.push(`Could not extract address and size from line: ${line}`);
+                                    pendingSymbol = null;
+                                }
+                            }
+                            else {
+                                // This might be part of a multi-line symbol name
+                                pendingSymbol.symbolName += ' ' + line;
+                                parsingDebugInfo.push(`Appending to symbol name: ${pendingSymbol.symbolName}`);
+                            }
+                        }
+                    }
+                    // This might be a section header or the start of a symbol that spans multiple lines
+                    else if (line.startsWith('.')) {
+                        // This could be the first line of a multi-line symbol
+                        const parts = line.split(/\s+/);
+                        
+                        // Check if this has the structure of a section.symbol but without address and size
+                        if (parts.length >= 1 && !line.includes('0x')) {
+                            // This may be a section header or a symbol header that continues on the next line
+                            const sectionParts = parts[0].match(/\.([.\w]+)/);
+                            
+                            if (sectionParts) {
+                                const fullSection = sectionParts[1];
+                                
+                                // Extract parent section (like text from text.function_name)
+                                const sectionSplit = fullSection.split('.');
+                                const section = sectionSplit.length > 1 ? sectionSplit[0] : fullSection;
+                                
+                                // Skip if not a standard loadable section
+                                if (!standardSections.includes(section)) {
+                                    continue;
+                                }
+                                
+                                // Add the parent section to our set
+                                sections.add(section);
+                                
+                                // Create a pending symbol - address and size will be filled later
+                                // For section names like "text.main", extract just "main" as the symbol name
+                                let symbolName = '';
+                                if (sectionSplit.length > 1) {
+                                    symbolName = sectionSplit.slice(1).join('.');
+                                } else {
+                                    symbolName = parts.slice(1).join(' ') || fullSection;
+                                }
+                                
+                                pendingSymbol = {
+                                    section: section,
+                                    fullSection: fullSection,
+                                    symbolName: symbolName,
+                                    address: '',
+                                    size: 0,
+                                    objectFile: '',
+                                    library: ''
+                                };
+                                
+                                parsingDebugInfo.push(`Pending symbol: ${pendingSymbol.symbolName} | Section: ${section} | Full Section: ${fullSection}`);
+                            }
+                        }
+                    }
+                    
+                    // You could add more patterns here for other types of lines
+                }
+                
+                // Update the UI
+                updateFilters();
+                updateResults();
+                
+                // Also try to parse section summaries - this is a common format in map files
+                // but might vary between different compilers/linkers
+                parseSectionSummaries(lines);
+            }
+            
+            function parseSectionSummaries(lines) {
+                // This is a simplistic approach to find sections summaries
+                // The actual format will depend on the specific map file format
+                // Looking for lines like: ".text 0x00000000 0x00001234"
+                const sectionSummaryRegex = /^\.([.\w]+)\s+0x([0-9a-fA-F]+)\s+0x([0-9a-fA-F]+)/;
+                
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    const match = sectionSummaryRegex.exec(line);
+                    
+                    if (match) {
+                        // Found a section summary
+                        // We could add additional processing here if needed
+                        parsingDebugInfo.push(`Section summary: .${match[1]} | Start: 0x${match[2]} | Size: 0x${match[3]}`);
+                    }
+                }
+            }
+            
+            function updateFilters() {
+                // Clear and populate section filter
+                sectionFilter.innerHTML = '<option value="">All Sections</option>';
+                
+                sections.forEach(section => {
+                    const option = document.createElement('option');
+                    option.value = section;
+                    option.textContent = `.${section}`;
+                    sectionFilter.appendChild(option);
+                });
+                
+                // Set up event listeners for filters
+                searchInput.addEventListener('input', updateResults);
+                sectionFilter.addEventListener('change', updateResults);
+                sizeSort.addEventListener('change', updateResults);
+                objectFileSearchInput.addEventListener('input', updateObjectFileResults);
+                objectFileSort.addEventListener('change', updateObjectFileResults);
+            }
+            
+            function updateResults() {
+                // Apply filters
+                filteredSymbols = allSymbols.filter(symbol => {
+                    // Skip symbols with no address or size (might be incomplete entries)
+                    if (!symbol.address || symbol.size === 0) return false;
+                    
+                    // Apply section filter
+                    if (sectionFilter.value && symbol.section !== sectionFilter.value) {
+                        return false;
+                    }
+                    
+                    // Apply search filter
+                    if (searchInput.value) {
+                        const searchTerm = searchInput.value.toLowerCase();
+                        return symbol.symbolName.toLowerCase().includes(searchTerm) || 
+                               symbol.file.toLowerCase().includes(searchTerm);
+                    }
+                    
+                    return true;
+                });
+                
+                // Apply sorting
+                if (sizeSort.value) {
+                    filteredSymbols.sort((a, b) => {
+                        if (sizeSort.value === 'asc') {
+                            return a.size - b.size;
+                        } else {
+                            return b.size - a.size;
+                        }
+                    });
+                }
+                
+                // Update the table
+                renderTable();
+                
+                // Update summary statistics
+                updateSummary();
+                
+                // Update object file summary
+                updateObjectFileResults();
+            }
+            
+            function renderTable() {
+                // Clear the table
+                symbolTableBody.innerHTML = '';
+                
+                // Add each symbol to the table
+                filteredSymbols.forEach(symbol => {
+                    const row = document.createElement('tr');
+                    
+                    // Create and add cells
+                    const sectionCell = document.createElement('td');
+                    sectionCell.textContent = `.${symbol.section}`;
+                    row.appendChild(sectionCell);
+                    
+                    const symbolCell = document.createElement('td');
+                    symbolCell.textContent = symbol.symbolName;
+                    row.appendChild(symbolCell);
+                    
+                    const addressCell = document.createElement('td');
+                    addressCell.textContent = symbol.address;
+                    row.appendChild(addressCell);
+                    
+                    const sizeCell = document.createElement('td');
+                    sizeCell.textContent = symbol.size;
+                    row.appendChild(sizeCell);
+                    
+                    const objectFileCell = document.createElement('td');
+                    objectFileCell.textContent = symbol.objectFile || '';
+                    row.appendChild(objectFileCell);
+                    
+                    const libraryCell = document.createElement('td');
+                    libraryCell.textContent = symbol.library || '';
+                    row.appendChild(libraryCell);
+                    
+                    symbolTableBody.appendChild(row);
+                });
+            }
+            
+            function updateSummary() {
+                // Calculate total symbols and size
+                const total = filteredSymbols.reduce((acc, symbol) => acc + symbol.size, 0);
+                
+                totalSymbols.textContent = filteredSymbols.length;
+                totalSize.textContent = total.toLocaleString();
+                
+                // Calculate per-section statistics
+                const sectionData = {};
+                
+                filteredSymbols.forEach(symbol => {
+                    if (!sectionData[symbol.section]) {
+                        sectionData[symbol.section] = {
+                            count: 0,
+                            size: 0
+                        };
+                    }
+                    
+                    sectionData[symbol.section].count++;
+                    sectionData[symbol.section].size += symbol.size;
+                });
+                
+                // Clear section stats
+                sectionStats.innerHTML = '';
+                
+                // Add section stats
+                for (const [section, data] of Object.entries(sectionData)) {
+                    const sectionDiv = document.createElement('div');
+                    sectionDiv.className = 'section-stat-item';
+                    
+                    const sectionTitle = document.createElement('h3');
+                    sectionTitle.textContent = `.${section}`;
+                    sectionDiv.appendChild(sectionTitle);
+                    
+                    const sectionCount = document.createElement('p');
+                    sectionCount.textContent = `Symbols: ${data.count}`;
+                    sectionDiv.appendChild(sectionCount);
+                    
+                    const sectionSize = document.createElement('p');
+                    sectionSize.textContent = `Size: ${data.size.toLocaleString()} bytes`;
+                    sectionDiv.appendChild(sectionSize);
+                    
+                    sectionStats.appendChild(sectionDiv);
+                }
+            }
+            
+            function updateObjectFileResults() {
+                // Calculate object file summary
+                const objectFileData = {};
+                
+                filteredSymbols.forEach(symbol => {
+                    const objectFile = symbol.objectFile || 'Unknown';
+                    const library = symbol.library || 'Unknown';
+                    
+                    if (!objectFileData[objectFile]) {
+                        objectFileData[objectFile] = {
+                            library: library,
+                            totalSize: 0,
+                            textSize: 0,
+                            dataSize: 0,
+                            bssSize: 0,
+                            rodataSize: 0,
+                            otherSections: {}
+                        };
+                    }
+                    
+                    objectFileData[objectFile].totalSize += symbol.size;
+                    
+                    switch (symbol.section) {
+                        case 'text':
+                            objectFileData[objectFile].textSize += symbol.size;
+                            break;
+                        case 'data':
+                            objectFileData[objectFile].dataSize += symbol.size;
+                            break;
+                        case 'bss':
+                            objectFileData[objectFile].bssSize += symbol.size;
+                            break;
+                        case 'rodata':
+                            objectFileData[objectFile].rodataSize += symbol.size;
+                            break;
+                        default:
+                            if (!objectFileData[objectFile].otherSections[symbol.section]) {
+                                objectFileData[objectFile].otherSections[symbol.section] = 0;
+                            }
+                            objectFileData[objectFile].otherSections[symbol.section] += symbol.size;
+                            break;
+                    }
+                });
+                
+                // Convert object file data to an array for sorting
+                const objectFileArray = Object.keys(objectFileData).map(objectFile => ({
+                    objectFile: objectFile,
+                    ...objectFileData[objectFile]
+                }));
+                
+                // Apply search filter
+                const searchTerm = objectFileSearchInput.value.toLowerCase();
+                const filteredObjectFiles = objectFileArray.filter(obj => 
+                    obj.objectFile.toLowerCase().includes(searchTerm) || 
+                    obj.library.toLowerCase().includes(searchTerm)
+                );
+                
+                // Apply sorting
+                if (objectFileSort.value) {
+                    filteredObjectFiles.sort((a, b) => {
+                        switch (objectFileSort.value) {
+                            case 'name-asc':
+                                return a.objectFile.localeCompare(b.objectFile);
+                            case 'name-desc':
+                                return b.objectFile.localeCompare(a.objectFile);
+                            case 'size-asc':
+                                return a.totalSize - b.totalSize;
+                            case 'size-desc':
+                                return b.totalSize - a.totalSize;
+                            default:
+                                return 0;
+                        }
+                    });
+                }
+                
+                // Clear the table
+                objectFileTableBody.innerHTML = '';
+                
+                // Add each object file summary to the table
+                filteredObjectFiles.forEach(obj => {
+                    const row = document.createElement('tr');
+                    
+                    // Create and add cells
+                    const objectFileCell = document.createElement('td');
+                    objectFileCell.textContent = obj.objectFile;
+                    row.appendChild(objectFileCell);
+                    
+                    const libraryCell = document.createElement('td');
+                    libraryCell.textContent = obj.library;
+                    row.appendChild(libraryCell);
+                    
+                    const totalSizeCell = document.createElement('td');
+                    totalSizeCell.textContent = obj.totalSize.toLocaleString();
+                    row.appendChild(totalSizeCell);
+                    
+                    const textSizeCell = document.createElement('td');
+                    textSizeCell.textContent = obj.textSize.toLocaleString();
+                    row.appendChild(textSizeCell);
+                    
+                    const dataSizeCell = document.createElement('td');
+                    dataSizeCell.textContent = obj.dataSize.toLocaleString();
+                    row.appendChild(dataSizeCell);
+                    
+                    const bssSizeCell = document.createElement('td');
+                    bssSizeCell.textContent = obj.bssSize.toLocaleString();
+                    row.appendChild(bssSizeCell);
+                    
+                    const rodataSizeCell = document.createElement('td');
+                    rodataSizeCell.textContent = obj.rodataSize.toLocaleString();
+                    row.appendChild(rodataSizeCell);
+                    
+                    const otherSectionsCell = document.createElement('td');
+                    otherSectionsCell.textContent = Object.entries(obj.otherSections)
+                        .map(([section, size]) => `.${section}: ${size.toLocaleString()} bytes`)
+                        .join(', ');
+                    row.appendChild(otherSectionsCell);
+                    
+                    objectFileTableBody.appendChild(row);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+sm_name : acl_peripheral_sm
+includes: 
+  - device_management/procedure_triggers.yaml
+states:
+  acl_peripheral_sm_idle:
+    START_PROCEDURE: acl_peripheral_start_procedure_handler
+  ACL_PERIPHERAL_WAITING_FOR_RX_PKT_HEADER:
+    RX_HEADER_RECEIVED: acl_peripheral_header_received_done_handler
+    RX_DONE: acl_peripheral_rx_poll_null_done_handler
+    RX_TIMEOUT: acl_peripheral_header_received_timeout_handler
+    RX_ABORT: acl_peripheral_header_received_timeout_handler
+  ACL_PERIPHERAL_WAITING_FOR_RX_COMPLETE: 
+    RX_DONE: acl_peripheral_rx_done_handler
+    RX_ABORT: acl_peripheral_rx_timeout_handler
+    RX_TIMEOUT: acl_peripheral_rx_timeout_handler
+  ACL_PERIPHERAL_TX_SCHEDULED: 
+    TX_DONE: acl_peripheral_tx_done_handler
+    TX_ABORT: acl_peripheral_tx_abort_handler

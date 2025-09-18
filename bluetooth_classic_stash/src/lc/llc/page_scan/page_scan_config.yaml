@@ -1,0 +1,31 @@
+sm_name : page_scan_sm
+includes: 
+  - device_management/procedure_triggers.yaml
+states:
+  page_scan_sm_idle:
+    START_PROCEDURE: page_scan_start_procedure_handler
+  PAGE_SCAN_ID_RX_SCHEDULED: 
+    RX_DONE: page_scan_id_rx_done_handler
+    RX_ABORT: page_scan_id_rx_timeout_handler
+    RX_TIMEOUT: page_scan_id_rx_timeout_handler
+  PAGE_SCAN_ID_TX_SCHEDULED:
+    TX_DONE: page_scan_id_tx_done_handler
+    TX_ABORT: page_scan_id_tx_abort_handler
+  PAGE_SCAN_FHS_RX_1_SCHEDULED:
+    RX_DONE: page_scan_fhs_rx_done_handler
+    RX_ABORT: page_scan_fhs_rx_1_timeout_handler
+    RX_TIMEOUT: page_scan_fhs_rx_1_timeout_handler
+  PAGE_SCAN_FHS_RX_2_SCHEDULED:
+    RX_DONE: page_scan_fhs_rx_done_handler
+    RX_ABORT: page_scan_fhs_rx_2_timeout_handler
+    RX_TIMEOUT: page_scan_fhs_rx_2_timeout_handler
+  PAGE_SCAN_FHS_RESPONSE_TX_SCHEDULED:
+    TX_DONE: page_scan_fhs_response_tx_done_handler
+    TX_ABORT: page_scan_fhs_response_tx_abort_handler
+  PAGE_SCAN_CENTRAL_POLL_RX_SCHEDULED:
+    RX_DONE: page_scan_central_poll_rx_done_handler
+    RX_ABORT: page_scan_central_poll_rx_timeout_handler
+    RX_TIMEOUT: page_scan_central_poll_rx_timeout_handler
+  PAGE_SCAN_PERIPHERAL_NULL_TX_SCHEDULED:
+    TX_DONE: page_scan_peripheral_null_tx_done_handler
+    TX_ABORT: page_scan_peripheral_null_tx_abort_handler

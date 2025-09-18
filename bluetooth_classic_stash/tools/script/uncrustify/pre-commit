@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+# pre-commit hook v1.1
+#
+# This hook will run the uncrustifyCheck.py script on your git repo to make sure
+# that it meets the coding guidelines. To do this it needs to be told where that
+# script is. Your options for specifying this location are listed below.
+#   1. Set the UNCRUSTIFY_CHECK_SCRIPT_PATH to point to the directory with the
+#      uncrustifyCheck.py file in it. This is usually 
+#      super/tool/script/uncrustify.
+#   2. Set the META_UTIL_PATH environment variable to point to the directory
+#      with meta_util.py. This script will then call meta_util to figure out
+#      where the SCRIPT repo is and run uncrustify from within there.
+#   3. Make sure the the path to meta_util.py is in your PYTHONPATH environment
+#      variable. Without the other two environment variables this script will
+#      just assume whatever it needs is already in the path.
+#
+# Note: The uncrustify check script expects that uncrustify is in your path or
+# that you have set UNCRUSTIFY_EXE to point to the executable it should call.
+
+import os, sys, importlib.util, subprocess
+
+# Attempt to find the uncrustify script
+if 'UNCRUSTIFY_CHECK_SCRIPT_PATH' in os.environ:
+  scriptPath = os.environ['UNCRUSTIFY_CHECK_SCRIPT_PATH']
+else:
+  metaUtilPath = sys.path
+  if 'META_UTIL_PATH' in os.environ:  
+    metaUtilPath = [os.environ['META_UTIL_PATH']]
+
+  try:
+    spec = importlib.util.spec_from_file_location("meta_util", os.path.join(metaUtilPath, "meta_util.py"))
+    meta_util = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(meta_util)
+  except:    
+    print("Could not load meta_util. Add it to your path or set "
+          "META_UTIL_PATH. Alternatively you can set "
+          "UNCRUSTIFY_CHECK_SCRIPT_PATH to the directory with the "
+          "uncrustifyCheck.py script to bypass meta_util entirely."
+          )
+    print ("If paths are already set using install-hooks.sh, open a new terminal then push OR do a \"source ~/.bashrc\"")
+    sys.exit(1)
+
+  # Get path to uncrustify check script
+  scriptPath = os.path.join(meta_util.get_module_path("SCRIPT"), "uncrustify")
+
+# Import the uncrustify script
+try:
+  spec = importlib.util.spec_from_file_location("uncrustifyCheck", os.path.join(scriptPath, "uncrustifyCheck.py"))
+  uncrustifyCheck = importlib.util.module_from_spec(spec)
+  spec.loader.exec_module(uncrustifyCheck)
+except:
+  print("Could not load uncrustifyCheck script. Fix super or set "
+        "UNCRUSTIFY_CHECK_SCRIPT_PATH to point to it.")
+  sys.exit(1)
+
+# Run the uncrustify check
+ret = uncrustifyCheck.runUncrustifyCheck(v1compat=False)
+
+# if the uncrustify check fails, unstage all the files
+if ret != 0:
+  print("Uncrustify check failed. Unstaging files...")
+
+  # list of staged files
+  staged_files = subprocess.check_output(["git", "diff", "--name-only", "--cached"]).decode("utf-8").splitlines()
+
+  # unstage the files
+  subprocess.run(["git", "reset", "HEAD"] + staged_files)
+  sys.exit(ret)

@@ -1,0 +1,15 @@
+##### REPOSITORIES in SUPER REPO #####
+
+set(PATH_EMLIB ${SUPER_DIR}/platform/emlib)
+set(EMDRV_DIR ${SUPER_DIR}/platform/emdrv)
+set(PATH_DEVICE ${SUPER_DIR}/platform/Device)
+set(PATH_CMSIS ${SUPER_DIR}/platform/CMSIS)
+set(PATH_KITS ${SUPER_DIR}/hardware/kit)
+set(PATH_GLIB ${SUPER_DIR}/platform/middleware/glib)
+set(CRYPTO_DIR ${SUPER_DIR}/platform/security)
+set(MBEDTLS_DIR ${SUPER_DIR}/util/third_party/mbedtls)
+set(PATH_BOOTLOADER ${SUPER_DIR}/platform/bootloader)
+set(PATH_HALCONFIG ${SUPER_DIR}/platform/halconfig)
+set(SILABS_CORE_DIR ${SUPER_DIR}/util/silicon_labs/silabs_core)
+set(PATH_MICRIUM ${SUPER_DIR}/platform/micrium_os)
+set(PLATFORM_COMMON_DIR ${SUPER_DIR}/platform/common)

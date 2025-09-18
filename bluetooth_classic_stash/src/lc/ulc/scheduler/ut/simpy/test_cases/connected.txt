@@ -1,0 +1,59 @@
+Testcase:
+
+#import {"Models" : {"btc_usched": "1", "btc_llc_interface": "4", "timer": "1", "llc_model": "1"}}
+
+#invoke 29999 btc_usched usched_init {"usched_api_usched_init":{"role":100}}
+
+1. Starting acl central for conn_info_index 0 and higher priority device 1 comes, checks how will they share time (acl central)
+#invoke 30000 btc_usched start_acl {"usched_api_start_acl":{"start_priority":170,"priority_step_size":10,"end_priority":100,"role":0,"min_runtime":20000,"max_runtime":25000,"duration":1000000,"acl_priority":170,"conn_info_index":0,"poll_interval":0,"is_tx_pending":0,"is_rx_pending":0}}
+
+Higher priority device (acl central)
+#invoke 40000 btc_usched start_acl {"usched_api_start_acl":{"start_priority":160,"priority_step_size":10,"end_priority":100,"role":0,"min_runtime":20000,"max_runtime":25000,"duration":1000000,"acl_priority":170,"conn_info_index":1,"poll_interval":0,"is_tx_pending":0,"is_rx_pending":0}}
+
+Stopping both, since need to add more testcases
+#invoke 120013 btc_usched stop_acl {"usched_api_stop_acl":{"role":0,"conn_info_index":0}}
+
+This is at 135006 because the task (device 1) was scheduled at 135000 even if we receive stop for device 0, device 1 will start at 135000
+TODO: If we send stop before 135000 should it stop the task scheduled in future??
+#invoke 135006 btc_usched stop_acl {"usched_api_stop_acl":{"role":0,"conn_info_index":1}}
+
+
+
+2. Starting device 0 and stopping it (acl central)
+#invoke 150000 btc_usched start_acl {"usched_api_start_acl":{"start_priority":170,"priority_step_size":10,"end_priority":100,"role":0,"min_runtime":20000,"max_runtime":25000,"duration":1000000,"acl_priority":170,"conn_info_index":0,"poll_interval":0,"is_tx_pending":0,"is_rx_pending":0}}
+
+stopping it
+#invoke 150005 btc_usched stop_acl {"usched_api_stop_acl":{"role":0,"conn_info_index":0}}
+
+
+
+3. Starting device 0 and stopping it (acl peripheral)
+#invoke 160000 btc_usched start_acl {"usched_api_start_acl":{"start_priority":170,"priority_step_size":10,"end_priority":100,"role":0,"min_runtime":20000,"max_runtime":25000,"duration":1000000,"acl_priority":170,"conn_info_index":0,"poll_interval":0,"is_tx_pending":0,"is_rx_pending":0}}
+
+stopping it
+#invoke 160005 btc_usched stop_acl {"usched_api_stop_acl":{"role":0,"conn_info_index":0}}
+
+
+4. Starting acl central for conn_info_index 0 and higher priority device 1 comes, checks how will they share time (acl central)
+#invoke 170000 btc_usched start_acl {"usched_api_start_acl":{"start_priority":170,"priority_step_size":10,"end_priority":100,"role":0,"min_runtime":20000,"max_runtime":25000,"duration":1000000,"acl_priority":170,"conn_info_index":0,"poll_interval":0,"is_tx_pending":0,"is_rx_pending":0}}
+
+4.1 Send stop for some other device
+#invoke 170005 btc_usched stop_acl {"usched_api_stop_acl":{"role":0,"conn_info_index":1}}
+
+4.2 Since it did not stop if stop for some other device came, it should stop now
+#invoke 199995 btc_usched stop_acl {"usched_api_stop_acl":{"role":0,"conn_info_index":0}}
+
+
+5. Case where 2 devices of same priority comes, device 0 (central)
+#invoke 200000 btc_usched start_acl {"usched_api_start_acl":{"start_priority":170,"priority_step_size":10,"end_priority":100,"role":0,"min_runtime":20000,"max_runtime":25000,"duration":1000000,"acl_priority":170,"conn_info_index":0,"poll_interval":0,"is_tx_pending":0,"is_rx_pending":0}}
+
+start for device 1 (central)
+#invoke 200005 btc_usched start_acl {"usched_api_start_acl":{"start_priority":170,"priority_step_size":10,"end_priority":100,"role":0,"min_runtime":20000,"max_runtime":25000,"duration":1000000,"acl_priority":170,"conn_info_index":1,"poll_interval":0,"is_tx_pending":0,"is_rx_pending":0}}
+
+5.1 If they work fine they should stop at the times specified below
+#invoke 975098 btc_usched stop_acl {"usched_api_stop_acl":{"role":0,"conn_info_index":1}}
+#invoke 975102 btc_usched stop_acl {"usched_api_stop_acl":{"role":0,"conn_info_index":0}}
+
+
+6. Let device 0 run (central)
+#invoke 1000000 btc_usched start_acl {"usched_api_start_acl":{"start_priority":170,"priority_step_size":10,"end_priority":100,"role":0,"min_runtime":20000,"max_runtime":25000,"duration":1000000,"acl_priority":170,"conn_info_index":0,"poll_interval":0,"is_tx_pending":0,"is_rx_pending":0}}

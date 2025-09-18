@@ -1,0 +1,59 @@
+ACL TEST CASES PERIPHERAL
+
+Testcase:
+#invoke 0 btc_dev_1 init_device 1 11:22:33:44:55:66                            
+#invoke 1250 btc_dev_1 init_acl_peripheral 1 11:22:33:44:55:66 1 1 0
+#invoke 8000 rail_1 set_var packet_type peripheral 2
+#invoke 8001 rail_1 set_var rail_status -1
+#invoke 9000 btc_dev_1 start_acl_peripheral 1
+
+ 
+Test Case 1(IDEAL TEST CASE)
+!# FOR 3DH3 packet 
+#invoke 9002 rail_1 expect “rx_start is 10000 in scheduled_activities”
+#invoke 10002 air_medium rx_header_done 
+#invoke 13740 air_medium rx_end 1
+#invoke 13749 rail_1 expect "tx_start is 13750 in scheduled_activities"
+#invoke 13750 rail_1 set_var packet_type peripheral 3
+
+Test Case 2(IDEAL TEST CASE)
+!# FOR 3DH5 packet
+#invoke 14303 rail_1 expect “rx_start is 15000 in scheduled_activities”
+#invoke 15002 air_medium rx_header_done 
+#invoke 21248 air_medium rx_end 1
+
+Test Case 3(triggering the rx_timeout handler and then triggering the fail_status as well)
+#invoke 21249 rail_1 expect "tx_start is 21250 in scheduled_activities"
+#invoke 21250 rail_1 set_var packet_type peripheral 2
+#invoke 21803 rail_1 expect “rx_start is 22500 in scheduled_activities”
+#invoke 22501 air_medium rx_header_done 
+#invoke 22502 rail_1 set_var rail_status -1
+#invoke 22503 rail_1 set_var packet_type peripheral 2
+#invoke 22504 air_medium rx_timeout 1
+
+Test case 4 (triggering the header recieved timeout handler and triggering fail status in  that as well)
+#invoke 22505 rail_1 expect “rx_start is 25000 in scheduled_activities”
+#invoke 25001 rail_1 set_var rail_status -1
+#invoke 25002 rail_1 set_var packet_type peripheral 3
+ 
+
+Test case 5 (Triggering peripheral_tx_abort_handler and the fail_status of the same handle for 3dh5 packet)
+#invoke 25017 rail_1 expect “rx_start is 27500 in scheduled_activities”
+#invoke 27501 air_medium rx_header_done 
+#invoke 33740 air_medium rx_end 1
+#invoke 33748 rail_1 expect "tx_start is 33750 in scheduled_activities”
+#invoke 33751 rail_1 set_var rail_status -1
+#invoke 33752 rail_1 set_var packet_type peripheral 2
+#invoke 33755 air_medium tx_end 1
+
+Test case 6 (triggering fail_status for peripheral rx_done_handler)
+#invoke 35001 air_medium rx_header_done 
+#invoke 35002 rail_1 set_var rail_status -1
+#invoke 35003 rail_1 set_var packet_type peripheral 2
+#invoke 35004 air_medium rx_end 1
+
+Test case 7(triggering fail_status for peripheral tx_done handler)
+#invoke 35005 rail_1 expect “rx_start is 37500 in scheduled_activities”
+#invoke 37501 air_medium rx_header_done 
+#invoke 41248 air_medium rx_end 1
+#invoke 41251 rail_1 set_var rail_status -1

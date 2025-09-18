@@ -1,0 +1,3 @@
+#invoke 1 activity_monitor set_tx_power 45
+#invoke 2 activity_monitor set_rx_power 12.6
+#invoke 100 a2dp_sink start_streaming 3DH5

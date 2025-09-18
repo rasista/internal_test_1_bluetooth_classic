@@ -1,0 +1,53 @@
+Testcase:
+aperiodic->periodic
+Test TX puncturing for page (aperiodic) to esco(periodic) for immediate periodic activities 
+
+Initialization of device, acl central and start of acl central
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_device_parameters_acl {"set_device_parameters_acl":{"connection_device_index":0,"lt_addr":2,"flow":1,"peer_role":1,"tx_pwr_index":29,"br_edr_mode":1},"device_index":1}
+#invoke 6000 btc_dev_1 set_afh_parameters_acl {"set_afh_parameters_acl":{"connection_device_index":0,"channel_map_in_use":[11,22,33,44,55,66,77,88,99,10],"afh_new_channel_map_instant":0,"afh_new_channel_map":[11,22,23,44,55,66,77,88,99,10],"no_of_valid_afh_channels":10,"piconet_type":0},"device_index":1}
+#invoke 7000 btc_dev_1 set_sniff_parameters_acl {"set_sniff_parameters_acl":{"connection_device_index":0,"sniff_instant":0,"sniff_interval":0,"sniff_attempt":0,"sniff_timeout":0},"device_index":1}
+#invoke 8000 rail_1 set_var packet_type central 4
+#invoke 9000 btc_dev_1 start_acl_central {"start_acl_central":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":72,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+States of ACL Central
+CENTRAL_TX_SCHEDULED
+CENTRAL_WAITING_FOR_RX_PKT_HEADER
+CENTRAL_WAITING_FOR_RX_COMPLETE
+
+ACL TX/RX
+triggering 5 slot packet
+#invoke 9002 rail_1 expect “tx_start is 10000 in scheduled_activities”
+#invoke 9003 rail_1 expect “tx_end is 16249 in scheduled_activities”
+
+ESCO TX-RX
+#invoke 11000 btc_dev_1 set_device_parameters_esco {"set_device_parameters_esco":{"is_edr":1,"is_esco":1,"connection_device_index":0,"lt_addr":2,"flow":1,"peer_role":1,"tx_pwr_index":0,"t_esco":6,"d_esco":0,"w_esco":0,"crc_status":0},"device_index":1}
+#invoke 12500 rail_1 set_var packet_type central 2
+#invoke 12600 btc_dev_1 start_esco_central {"start_esco_central":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":6,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+ACL tx slot will be punctured immediately, and esco will start
+
+Esco TX RX
+#invoke 14800 rail_1 expect “tx_start is 15000 in scheduled_activities”
+#invoke 14850 rail_1 expect “tx_end is 16249 in scheduled_activities”
+#invoke 16350 air_medium rx_header_done rail_1
+#invoke 16355 rail_1 set_var packet_type central 2
+#invoke 16615 air_medium rx_end rail_1
+Esco next window start - 22500
+
+Tx abort externally sent to ACL to restart
+#invoke 17500 rail_1 expect “tx_start is 17500 in scheduled_activities”
+#invoke 18750 rail_1 expect “rx_start is 18750 in scheduled_activities”
+
+esco next window start, ACL tx slot will be punctured externally, and esco will start
+#invoke 22500 rail_1 expect “tx_start is 22500 in scheduled_activities”
+#invoke 23000 rail_1 expect “tx_end is 23749 in scheduled_activities”
+#invoke 23750 rail_1 expect “rx_start is 23750 in scheduled_activities”
+next window start- 30000
+
+Tx abort externally sent to ACL to restart
+#invoke 25000 rail_1 expect “tx_start is 25000 in scheduled_activities”
+#invoke 26250 rail_1 expect “rx_start is 26250 in scheduled_activities”
+
+esco next window start, ACL tx slot will be punctured externally, and esco will start
+#invoke 30000 rail_1 expect “tx_start is 30000 in scheduled_activities”
+#invoke 31250 rail_1 expect “rx_start is 31250 in scheduled_activities”

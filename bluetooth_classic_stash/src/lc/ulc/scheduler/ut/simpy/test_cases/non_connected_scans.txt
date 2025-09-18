@@ -1,0 +1,59 @@
+
+Testcases: FOR INQUIRY_SCAN AND PAGE_SCAN
+
+#import {"Models" : {"btc_usched": "1", "btc_llc_interface": "7", "timer": "1", "llc_model": "1"}}
+#invoke 29999 btc_usched usched_init {"usched_api_usched_init":{"role":2}}
+
+1. Start inquiry_scan and stop it from host
+#invoke 30000 btc_usched start_pi_scan {"usched_api_start_pi_scan":{"start_priority":170,"priority_step_size":10,"end_priority":100,"pi_scan_window":10000,"role":2,"pi_scan_interval":1000000,"curr_priority":170,"end_tsf":20}}
+#invoke 30005 btc_usched stop_pi_scan {"usched_api_stop_pi_scan":{"role":2}}
+
+2. Start page_scan and stop it from host
+#invoke 30008 btc_usched start_pi_scan {"usched_api_start_pi_scan":{"start_priority":170,"priority_step_size":10,"end_priority":100,"pi_scan_window":10000,"role":3,"pi_scan_interval":1000000,"curr_priority":170,"end_tsf":20}}
+#invoke 30015 btc_usched stop_pi_scan {"usched_api_stop_pi_scan":{"role":3}}
+
+3. Start inquiry_scan and page_scan comes in between with high priority, page_sacn should stop inquiry_scan
+#invoke 50000 btc_usched start_pi_scan {"usched_api_start_pi_scan":{"start_priority":170,"priority_step_size":10,"end_priority":100,"pi_scan_window":10000,"role":2,"pi_scan_interval":1000000,"curr_priority":170,"end_tsf":20}}
+#invoke 50006 btc_usched start_pi_scan {"usched_api_start_pi_scan":{"start_priority":150,"priority_step_size":10,"end_priority":100,"pi_scan_window":10000,"role":3,"pi_scan_interval":1000000,"curr_priority":170,"end_tsf":20}}
+
+TODO: Send stop for 2 when it is low priority, equal priority send stop before page, combinations like these
+3.1. Stopping the above, will let it run later in the testcases as end_tsf is huge
+Reasoning: Stop for role 2 is at 75010 because it was rescheduled to high_priority_role_start + 10000 + offest for delay added by simulation
+#invoke 59991 btc_usched stop_pi_scan {"usched_api_stop_pi_scan":{"role":3}}
+#invoke 60025 btc_usched stop_pi_scan {"usched_api_stop_pi_scan":{"role":2}}
+
+4. Start page_scan and inquiry_scan comes in between with high priority, inquiry_scan should stop page_scan
+#invoke 80000 btc_usched start_pi_scan {"usched_api_start_pi_scan":{"start_priority":170,"priority_step_size":10,"end_priority":100,"pi_scan_window":10000,"role":3,"pi_scan_interval":1000000,"curr_priority":170,"end_tsf":20}}
+#invoke 80006 btc_usched start_pi_scan {"usched_api_start_pi_scan":{"start_priority":150,"priority_step_size":10,"end_priority":100,"pi_scan_window":10000,"role":2,"pi_scan_interval":1000000,"curr_priority":170,"end_tsf":20}}
+
+TODO: Same as abore TODO but for role 3
+4.1. Stopping the above, will let it run later in the testcases as end_tsf is huge
+Reasoning: Stop for role 1 is at 75010 because it was rescheduled to high_priority_role_start + 10000 + offest for delay added by simulation
+#invoke 89991 btc_usched stop_pi_scan {"usched_api_stop_pi_scan":{"role":2}}
+#invoke 99999 btc_usched stop_pi_scan {"usched_api_stop_pi_scan":{"role":3}}
+
+5. Start inquiry_scan
+#invoke 100000 btc_usched start_pi_scan {"usched_api_start_pi_scan":{"start_priority":170,"priority_step_size":10,"end_priority":100,"pi_scan_window":10000,"role":2,"pi_scan_interval":1000000,"curr_priority":170,"end_tsf":20}}
+
+5.1. Sending stop for some other role instead of the started role
+#invoke 100007 btc_usched stop_pi_scan {"usched_api_stop_pi_scan":{"role":1}}
+
+5.2 If it works correctly it should stop at the stop below
+#invoke 109996 btc_usched stop_pi_scan {"usched_api_stop_pi_scan":{"role":2}}
+
+
+Will be valid if timer is stays for page scan
+6. Start inquiry_scan and page_scan comes in between with high priority, page_sacn should stop inquiry_scan and schedule it at a later time, let the testcase run till that later time
+invoke 110000 btc_usched start_pi_scan {"usched_api_start_pi_scan":{"start_priority":170,"priority_step_size":10,"end_priority":100,"pi_scan_window":10000,"role":2,"pi_scan_interval":1000000,"curr_priority":170,"end_tsf":20}}
+invoke 110006 btc_usched start_pi_scan {"usched_api_start_pi_scan":{"start_priority":150,"priority_step_size":10,"end_priority":100,"pi_scan_window":10000,"role":3,"pi_scan_interval":1000000,"curr_priority":170,"end_tsf":20}}
+
+6.1. Stopping the higher role then timer will trigger for the lower priority scheduled task for future
+Reasoning: Stop for role 2 is at 75010 because it was rescheduled to high_priority_role_start + 10000 + offest for delay added by simulation
+invoke 110009 btc_usched stop_pi_scan {"usched_api_stop_pi_scan":{"role":3}}
+
+Stopping the higher priority role in distant future
+invoke 1110009 btc_usched stop_pi_scan {"usched_api_stop_pi_scan":{"role":3}}
+
+
+7. Run inquiry_scan without stop
+#invoke 150000 btc_usched start_pi_scan {"usched_api_start_pi_scan":{"start_priority":170,"priority_step_size":10,"end_priority":100,"pi_scan_window":10000,"role":2,"pi_scan_interval":1000000,"curr_priority":170,"end_tsf":20}}

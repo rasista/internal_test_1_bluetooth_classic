@@ -1,0 +1,16 @@
+#ifndef LMP_PARAM_LEN_H
+#define LMP_PARAM_LEN_H
+
+{% set cmd_length = namespace(value=1) %}
+{% for cmd, details in lmp_cmds.items() -%}           
+    {% set cmd_length.value = 1 -%}  {# Reset length for the current command #}
+    {% if details['parameters'] is mapping -%}
+        {% for key, size in details['parameters'].items() -%}
+            {% set cmd_length.value = cmd_length.value + size -%}
+        {% endfor -%}
+    {% else -%}
+    {% endif -%}
+#define SET_PTL_OF_{{ cmd | upper }}_CMD  {{ cmd_length.value }}
+{% endfor %}
+
+#endif

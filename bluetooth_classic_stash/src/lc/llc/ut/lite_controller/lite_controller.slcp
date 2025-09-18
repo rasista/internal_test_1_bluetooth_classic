@@ -1,0 +1,571 @@
+project_name: btc_lite_controller_app
+description: |-
+  Classic Bluetooth Lite Controller Application To Be Used For RAIL Integration
+quality: internal
+
+define:
+  - name: FPGA
+    condition: [fpga]
+    value: "1"
+  - name: RAIL_INTERNAL_BUILD
+    value: "1"
+configuration:
+  - name: SL_STACK_SIZE
+    value: "2048"
+  - name: SL_HEAP_SIZE
+    value: "0"
+  # clock manager
+  - name: SL_CLOCK_MANAGER_HFXO_EN
+    value: 1
+  - name: SL_CLOCK_MANAGER_LFXO_EN
+    value: 1
+  - name: SL_CLOCK_MANAGER_LFRCO_PRECISION
+    value: 1
+  # cli
+  #   for all
+  - name: SL_CLI_MAX_INPUT_ARGUMENTS
+    value: '20'
+  - name: RESPONSE_PRINT_FORMAT_STR_SIZE_MAX
+    value: 2048
+
+component:
+  - id: bluetooth_classic_rail_interface
+  - id: sl_system
+  - id: printf
+  - id: sli_btdm_logging
+  - id: sli_btc_init_hook
+  - id: segger_rtt
+  - id: iostream_eusart
+    instance:
+      - vcom
+  - id: iostream_retarget_stdio
+  - id: silabs_core_response_print
+
+  - id: sl_rail_util_rf_path
+  - id: sl_rail_util_rf_path_internal
+  - id: sl_rail_util_rf_path_switch_internal
+  - id: sl_rail_util_built_in_phys
+  - id: sl_rail_util_built_in_phys_internal
+
+  # cli
+  - id: cli
+    instance:
+      - inst0
+  - id: cli_delay # non-blocking wait implementation for CLI use
+  
+  - id: rail_util_init
+    instance:
+      - inst0
+  - id: rail_util_init_internal
+    instance:
+      - inst0
+
+  # cli command storage
+  - id: cli_storage_ram
+    instance:
+      - inst0
+  - id: toolchain_gcc_ram
+  - id: rail_lib
+  - id: rail_util_protocol_internal
+
+template_contribution:
+  - name: btc_hello
+    value:
+      name: btc_hello
+      handler: btc_hello
+      help: "Send hello command to sequencer."
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: btc_sequencer_user_init
+      handler: btc_sequencer_user_init
+      argument:
+        - type: uint32
+          help: "BTC Init Flags: BIT(1): logging enabled on RTT"
+      help: "loads the sequencer."
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: init_device
+      handler: cli_init_device_handler
+      help: "start BTC inquiry"
+      argument:
+        - type: uint32opt
+          help: "Values: bd_address[0]:11|bd_address[1]:22|bd_address[2]:33|bd_address[3]:44|bd_address[4]:55|bd_address[5]:66"
+
+  - name: cli_command
+    value:
+      name: set_inquiry
+      handler: cli_set_inquiry_handler
+      help: "set BTC inquiry"
+      argument:
+        - type: uint32opt
+          help: "Values: length:1|hci_trigger:0|EIR_value:1|tx_pwr_index:100|lap_address[0]:0x00|lap_address[1]:0x8B|lap_address[2]:0x9E"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: start_inquiry
+      handler: cli_start_inquiry_handler
+      help: "start BTC inquiry"
+      argument:
+        - type: uint32opt
+          help: "Values: priority:1|step_size:1|end_tsf:8192"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: set_inquiry_scan
+      handler: cli_set_inquiry_scan_handler
+      help: "set BTC inquiry scan"
+      argument:
+        - type: uint32opt
+          help: "Values: window:16|interval:2048|EIR_value:0|pkt_type:3|pkt_len:17|curr_scan_type:0|lap_address[0]:0x00|lap_address[1]:0x8B|lap_address[2]:0x9E"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: start_inquiry_scan
+      handler: cli_start_inquiry_scan_handler
+      help: "start BTC inquiry scan"
+      argument:
+        - type: uint32opt
+          help: "Values: priority:1|step_size:1|end_tsf:8192"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: enable_slow_hop
+      handler: enable_slow_hopping
+      help: "Enable slow hopping"
+      argument:
+        - type: uint32opt
+          help: "No value is required"
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: test_mode_set_encryption
+      handler: cli_test_mode_set_encryption
+      help: "Set BTC encryption. For defaults use 'set_encryption 99 <encryption_type>' where encryption_type is 0 for E0 or 1 for AES."
+      argument:
+        - type: uint32opt
+          help: "Default flag (99=use defaults)"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: set_encryption
+      handler: cli_set_encryption_parameters
+      help: "Set BTC encryption. For defaults use 'set_encryption 99 <encryption_type>' where encryption_type is 0 for E0 or 1 for AES."
+      argument:
+        - type: uint32opt
+          help: "Default flag (99=use defaults)"
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: set_page
+      handler: cli_set_page_handler
+      help: "set BTC page"
+      argument:
+        - type: uint32opt
+          help: "Values: clk_e_offset:0|hci_trigger:0|tx_pwr_index:100|remote_scan_rep_mode:0|lt_addr:5|bd_address:0x11,0x22,0x33,0x44,0x55,0x66"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: start_page
+      handler: cli_start_page_handler
+      help: "start BTC page"
+      argument:
+        - type: uint32opt
+          help: "Values: priority:1|step_size:1|end_tsf:8192"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: set_page_scan
+      handler: cli_set_page_scan_handler
+      help: "set BTC page scan"
+      argument:
+        - type: uint32opt
+          help: "Values: window:16|interval:2048|curr_scan_type:0|tx_pwr_index:0|bd_address:0x11,0x22,0x33,0x44,0x55,0x66"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: start_page_scan
+      handler: cli_start_page_scan_handler
+      help: "start BTC page scan"
+      argument:
+        - type: uint32opt
+          help: "Values: priority:1|step_size:1|end_tsf:8192"
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: set_device_parameters_acl
+      handler: cli_set_device_parameters_acl
+      help: "set BTC ACL device parameters"
+      argument:
+        - type: uint32opt
+          help: "Values: tx_pwr_index:29|flow:1|br_edr_mode:1|end_tsf"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: set_afh_parameters_acl
+      handler: cli_set_afh_parameters_acl
+      help: "set BTC AFH parameters for ACL"
+      argument:
+        - type: uint32opt
+          help: "Values: connection_device_index:0|no_of_valid_afh_channels:10|piconet_type:0|afh_new_channel_map_instant:0|afh_new_channel_map[10]|channel_map_in_use:[10]"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: set_sniff_parameters_acl
+      handler: cli_set_sniff_parameters_acl
+      help: "set BTC sniff parameters for ACL"
+      argument:
+        - type: uint32opt
+          help: "Values: connection_device_index:0|sniff_instant:0|sniff_interval:0|sniff_attempt:0|sniff_timeout:0"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: start_acl_central
+      handler: cli_start_acl_central
+      help: "start BTC ACL connection as central"
+      argument:
+        - type: uint32opt
+          help: "Values: connection_device_index:0|priority:1|step_size:1|end_tsf:72|bd_address:0x11,0x22,0x33,0x44,0x55,0x66"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: start_acl_peripheral
+      handler: cli_start_acl_peripheral
+      help: "start BTC ACL connection as peripheral"
+      argument:
+        - type: uint32opt
+          help: "Values: connection_device_index:0|priority:1|step_size:1|end_tsf:72|bd_address:0x11,0x22,0x33,0x44,0x55,0x66"
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: set_device_parameters_esco
+      handler: cli_set_device_parameters_esco
+      help: "set BTC eSCO device parameters"
+      argument:
+        - type: uint32opt
+          help: "Values: connection_device_index:0|lt_addr:2|flow:1|peer_role:1|t_esco:6|d_esco:0|w_esco:2"
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: start_esco_central
+      handler: cli_start_esco_central
+      help: "start BTC eSCO connection as central"
+      argument:
+        - type: uint32opt
+          help: "Values: connection_device_index:0|priority:1|step_size:1|end_tsf:72|bd_address:0x11,0x22,0x33,0x44,0x55,0x66"
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: start_esco_peripheral
+      handler: cli_start_esco_peripheral
+      help: "start BTC eSCO connection as peripheral"
+      argument:
+        - type: uint32opt
+          help: "Values: connection_device_index:0|priority:1|step_size:1|end_tsf:72|bd_address:0x11,0x22,0x33,0x44,0x55,0x66"
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: set_device_parameters_roleswitch
+      handler: cli_set_device_parameters_roleswitch
+      help: "set BTC role switch device parameters"
+      argument:
+        - type: uint32opt
+          help: "Values: connection_device_index:1|peer_role:1|lt_addr:1|tx_pwr_index:23|flow:0|clk_e_offset:0"
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: set_roleswitch_parameters
+      handler: cli_set_roleswitch_parameters
+      help: "set BTC set_roleswitch_parameters"
+      argument:
+        - type: uint32opt
+          help: "Values: connection_device_index:0|new_lt_addr:2|roleswitch_slot_offset:0|roleswitch_instant:16"
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: start_roleswitch_central
+      handler: cli_start_roleswitch_central
+      help: "start BTC role switch as central"
+      argument:
+        - type: uint32opt
+          help: "Values: connection_device_index:0|priority:1|step_size:1|end_tsf:72|bd_address:0x11,0x22,0x33,0x44,0x55,0x66"
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: start_roleswitch_peripheral
+      handler: cli_start_roleswitch_peripheral
+      help: "start BTC role switch as peripheral"
+      argument:
+        - type: uint32opt
+          help: "Values: connection_device_index:0|priority:1|step_size:1|end_tsf:72|bd_address:0x11,0x22,0x33,0x44,0x55,0x66"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: stop_inquiry
+      handler: cli_stop_inquiry_handler
+      help: "stop inquiry"
+      argument:
+        - type: uint32opt
+          help: "Values: device_index:0"
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: stop_inquiry_scan
+      handler: cli_stop_inquiry_scan_handler
+      help: "stop inquiry scan"
+      argument:
+        - type: uint32opt
+          help: "Values: device_index:0"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: stop_page
+      handler: cli_stop_page_handler
+      help: "stop page"
+      argument:
+        - type: uint32opt
+          help: "Values: device_index:0"
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: stop_page_scan
+      handler: cli_stop_page_scan_handler
+      help: "stop page scan"
+      argument:
+        - type: uint32opt
+          help: "Values: device_index:0"
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: show_stats
+      handler: cli_show_stats_handler
+      help: "show statistics"
+      argument:
+        - type: uint32opt
+          help: "No parameters required"
+    condition:
+      - cli
+  
+
+  - name: cli_command
+    value:
+      name: stop_acl_central
+      handler: cli_stop_acl_central_handler
+      help: "stop acl central"
+      argument:
+        - type: uint32opt
+          help: "Values: connection_device_index:0|new_lt_addr:2|roleswitch_slot_offset:0|roleswitch_instant:16"
+    condition:
+      - cli
+  
+
+  - name: cli_command
+    value:
+      name: stop_acl_peripheral
+      handler: cli_stop_acl_peripheral_handler
+      help: "stop acl peripheral"
+      argument:
+        - type: uint32opt
+          help: "Values: connection_device_index:0|new_lt_addr:2|roleswitch_slot_offset:0|roleswitch_instant:16"
+    condition:
+      - cli
+  
+
+  - name: cli_command
+    value:
+      name: compute_roleswitch_slot_offset
+      handler: cli_compute_roleswitch_slot_offset
+      help: "compute_roleswitch params"
+      argument:
+        - type: uint32opt
+    condition:
+      - cli
+
+  - name: cli_command
+    value:
+      name: trigger_roleswitch
+      handler: cli_trigger_roleswitch
+      help: "enable_roleswitch"
+      argument:
+        - type: uint32opt
+    condition:
+      - cli 
+
+  - name: cli_command
+    value:
+      name: start_test_mode
+      handler: cli_start_test_mode_handler
+      help: "start BTC test mode"
+      argument:
+        - type: uint8
+          help: "Tx/Rx 0=Rx 1=Tx"
+        - type: uint8
+          help: "BR/EDR 0=BR 1=EDR"
+        - type: uint8
+          help: "BTC packet type"
+        - type: uint32
+          help: "BTC packet length"
+        - type: uint8
+          help: "Payload type"
+        - type: uint32
+          help: "Number of packets"
+        - type: uint8
+          help: "Inter packet gap"
+        - type: uint8
+          help: "Link type"
+        - type: uint8
+          help: "Tx power"
+        - type: uint8
+          help: "Hopping type"
+        - type: uint8
+          help: "Loopback Mode"
+        - type: uint8
+          help: "Scrambler seed"
+        - type: uint32
+          help: "Receive window"
+        - type: uint8
+          help: "bd_address[0]"
+        - type: uint8
+          help: "bd_address[1]"
+        - type: uint8
+          help: "bd_address[2]"
+        - type: uint8
+          help: "bd_address[3]"
+        - type: uint8
+          help: "bd_address[4]"
+        - type: uint8
+          help: "bd_address[5]"
+    condition:
+      - cli 
+      
+  - name: cli_command
+    value:
+      name: set_pti_auxdata
+      handler: set_pti_auxdata
+      help: "Enables FRC AUXDATA by setting SEQ_SR3_DEBUG_ENABLES_AUXDATA_DEBUG bit in RAC->SR3."
+      argument:
+        - type: uint8
+          help: "0=Disable 1=Enable"
+  
+  
+  - name: cli_command
+    value:
+      name: set_btdm_logger
+      handler: set_btdm_logger
+      help: "Enables and Disables BTDM logger"
+      argument: 
+        - type: uint32
+          help: "0=Disable 1=Enable" 
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: set_lpw_hss_event_logger
+      handler: set_lpw_hss_event_logger
+      help: "Enables and disables event logger for host"
+      argument:
+        - type: uint32
+          help: "0=Disable 1=Enable"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: start_acl_traffic_pattern
+      handler: start_acl_traffic_pattern
+      help: "start BTC ACL traffic pattern"
+      argument: 
+        - type: uint32opt
+          help: "Values: packet_type:0x0B|payload_length:17|packet_interval:4"
+  
+
+  - name: cli_command
+    value:
+      name: stop_acl_traffic_pattern
+      handler: stop_acl_traffic_pattern
+      help: "stop BTC ACL traffic pattern"
+    condition:
+      - cli
+  
+  - name: cli_command
+    value:
+      name: set_fixed_btc_channel
+      handler: set_fixed_btc_channel_handler
+      help: "Set a fixed BTC channel for Tx/Rx"
+      argument:
+        - type: uint8
+          help: "Value: channel_index"
+
+  - name: cli_command
+    value:
+      name: enable_prs
+      handler: enable_prs_handler
+      help: "Enable PRS signals for either Tx(0)/Rx(1)"
+      argument:
+        - type: uint8
+          help: "Value: Tx (0)/ Rx (1)" 
+source:
+  - path: main.c
+  - path: lite_controller.c
+  - path: btc_ut_hss_event_callbacks.c
+  - path: sl_btdm_fast_log_consumer.c

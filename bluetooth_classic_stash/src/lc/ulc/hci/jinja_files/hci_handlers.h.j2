@@ -1,0 +1,17 @@
+#ifndef __HCI_HANDLERS_AUTOGEN_H__
+#define  __HCI_HANDLERS_AUTOGEN_H__
+#include <hci.h>
+{% for cmd, details in hci_cmds.items() %}
+/* -------------------{{cmd}}_handlers---------------------*/
+{% if details['OGF'] != 63 %}
+{% for sub_cmd, sub_details in details['cmds'].items() %}
+void hci_cmd_{{sub_cmd}}_handler(void *ctx,pkb_t *pkb);
+{% endfor %}
+{% else %}
+{% for sub_cmd, sub_details in details['cmds'].items() %}
+void hci_cmd_vendor_{{sub_cmd}}_handler(void *ctx,pkb_t *pkb);
+{% endfor %}
+{%endif%}
+{% endfor %}
+
+#endif

@@ -1,0 +1,29 @@
+#ifndef {{ sm_name}}_AUTOGEN_H_
+#define {{ sm_name}}_AUTOGEN_H_
+#include "state_machine.h"
+
+extern sm_t {{ sm_name }};
+
+extern sm_trigger_handler_t {{sm_name}}_trigger_handler_entries[];
+extern uint8_t {{sm_name}}_trigger_handler_entries_bitmap[];
+extern uint8_t {{sm_name}}_trigger_handler_entries_count[];
+
+typedef enum {{sm_name}}_states_s {
+{% for state in list_states %}
+    {{ state }},
+{% endfor%}
+    {{ sm_name }}_state_max
+} {{sm_name}}_states_t;
+
+
+{% macro generate_handler_protoypes()%}
+{% for handler in list_handlers %}
+{% if handler != "sm_assert" %}
+void {{handler}}(sm_t *{{ sm_name }});
+{% endif %}
+{% endfor %}
+{% endmacro%}
+
+{{ generate_handler_protoypes() -}}
+
+#endif

@@ -1,0 +1,22 @@
+#ifndef {{ sm_name}}_AUTOGEN_H_
+#define {{ sm_name}}_AUTOGEN_H_
+#include "state_machine.h"
+
+extern sm_t {{ sm_name }};
+
+typedef enum page_states_s {
+{% for state in list_states %}
+    {{ state }},
+{% endfor%}
+    {{ sm_name }}_state_max
+} page_states_t;
+
+{% macro generate_handler_protoypes()%}
+{% for handler in list_handlers %}
+void {{handler}}(sm_t *{{ sm_name }}, uint8_t trigger);
+{% endfor %}
+{% endmacro%}
+
+{{ generate_handler_protoypes() -}}
+
+#endif

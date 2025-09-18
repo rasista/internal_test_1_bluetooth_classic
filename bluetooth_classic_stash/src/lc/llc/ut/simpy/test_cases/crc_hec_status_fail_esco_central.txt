@@ -1,0 +1,34 @@
+CRC and HEC check for esco central
+
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 3000 btc_dev_1 set_device_parameters_esco {"set_device_parameters_esco":{"is_edr":1,"is_esco":1,"connection_device_index":0,"lt_addr":2,"flow":1,"peer_role":1,"t_esco":6,"d_esco":0,"w_esco":2,"crc_status":0},"device_index":1}
+#invoke 4000 rail_1 set_var packet_type central 2
+#invoke 9000 btc_dev_1 start_esco_central {"start_esco_central":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":40,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+setting crc and hec fail status
+#invoke 10000 rail_1 expect “tx_start is 15000 in scheduled_activities”
+#invoke 10001 rail_1 expect “tx_end is 16249 in scheduled_activities”
+#invoke 16251 rail_1 set_var crc_status 0
+#invoke 16252 rail_1 set_var hec_status 0
+#invoke 16360 air_medium rx_header_done rail_1
+#invoke 16361 rail_1 set_var packet_type central 2
+
+crc and hec status check failed, next handler called will be esco_central_rx_timeout_handler
+
+setting crc fail and hec pass 
+#invoke 17499 rail_1 expect “tx_start is 17500 in scheduled_activities”
+#invoke 17505 rail_1 expect “tx_end is 18749 in scheduled_activities”
+#invoke 18751 rail_1 set_var crc_status 1
+#invoke 18752 rail_1 set_var hec_status 0
+#invoke 18755 air_medium rx_header_done rail_1
+#invoke 18760 rail_1 set_var packet_type central 2
+
+setting crc pass and hec fail 
+#invoke 20000 rail_1 expect “tx_start is 20000 in scheduled_activities”
+#invoke 20005 rail_1 expect “tx_end is 21249 in scheduled_activities”
+#invoke 21251 rail_1 set_var crc_status 1
+#invoke 21252 rail_1 set_var hec_status 0
+#invoke 21255 air_medium rx_header_done rail_1
+#invoke 21260 rail_1 set_var packet_type central 2
+
+crc check failed, next handler called will be esco_central_rx_timeout_handler

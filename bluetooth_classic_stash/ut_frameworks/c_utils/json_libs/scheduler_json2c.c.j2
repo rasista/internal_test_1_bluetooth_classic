@@ -1,0 +1,119 @@
+#include "stdint.h"
+#include "jansson_binaries/include/jansson_config.h"
+#include "jansson_binaries/include/jansson.h"
+#include "string.h"
+#include "{{intf_configs["cmd_configs"]}}"
+#include <stdlib.h>
+
+{% for element in elements.keys() %}
+void json2c_{{element}}_t({{element}}_t *{{element}}, json_t *json_obj, uint8_t length);
+{% endfor %}
+
+
+void json2c_uint8_t(uint8_t *field, json_t *json_obj, uint8_t length);
+void json2c_array_uint8_t(uint8_t *field, json_t *json_obj  , json_t *value, uint8_t length);
+void json2c_uint16_t(uint16_t *field, json_t *json_obj, uint8_t length);
+void json2c_uint32_t(uint32_t *field, json_t *json_obj, uint8_t length);
+
+{% for element in elements.keys() %}
+void json2c_{{element}}_t({{element}}_t *{{element}}, json_t *json_obj, uint8_t length)
+{
+    const char *json_key ;
+    json_t *json_value;
+    json_object_foreach(json_obj, json_key, json_value) {
+    {% for field in elements[element].keys()%}
+        {% if "brief" != field and "class" != field%}
+        if(!strcmp(json_key, "{{field}}")){
+        {% if elements[element][field]["data_type"] != "array"%}
+            json2c_{{elements[element][field]["data_type"]}}(&{{element}}->{{field}}, json_value, 1);
+        {% else %}
+            json_t *array = json_object_get(json_obj , json_key);
+            json2c_array_{{elements[element][field]["array_type"]}}({{element}}->{{field}}, array , json_value, {{elements[element][field]["length"]}});
+        {% endif %}
+        } else
+        {% endif %}
+    {% endfor %}
+        {
+            printf("Rail Fail at file: %s, line: %d\n", __FILE__, __LINE__); // Print error message
+            exit(EXIT_FAILURE);
+        }
+    }
+}
+void json2c_array_{{element}}_t({{element}}_t *{{element}}, json_t *json_obj, uint8_t length)
+{
+    size_t index;
+    json_t *json_value_outer;
+    json_array_foreach(json_obj, index, json_value_outer) {
+        const char *json_key;
+        json_t *json_value;
+        json_object_foreach(json_value_outer, json_key, json_value) {
+        {% for field in elements[element].keys()%}
+            {% if "brief" != field and "class" != field%}
+            if(!strcmp(json_key, "{{field}}")){
+            {% if elements[element][field]["data_type"] != "array"%}
+                json2c_{{elements[element][field]["data_type"]}}(&{{element}}[index].{{field}}, json_value, 1);
+            {% else %}
+                json_t *array = json_object_get(json_obj , json_key);
+                json2c_array_{{elements[element][field]["array_type"]}}({{element}}->{{field}}, array , json_value, {{elements[element][field]["length"]}});
+            {% endif %}
+            } else
+            {% endif %}
+        {% endfor %}
+            {
+                printf("Rail Fail at file: %s, line: %d\n", __FILE__, __LINE__); // Print error message
+                exit(EXIT_FAILURE);
+            }
+        }
+    }
+}
+{% endfor %}
+
+void {{intf_configs["intf_name"]}}_command_parser(uint8_t *out_buffer, uint8_t *in_buffer)
+{
+    json_t *json_obj = json_loads((char *)in_buffer, 0, NULL);
+    if (json_obj == NULL) {
+       fprintf(stderr, "Error loading JSON\n");
+    }
+    const char *json_key;
+    json_t *json_value;
+    json_object_foreach(json_obj, json_key, json_value) {
+{% for element in elements.keys() %}
+        if (!strcmp(json_key, "{{element}}")) {
+            json2c_{{element}}_t((void *)out_buffer, json_value, 1);
+        } else 
+{% endfor %}
+        {
+            printf("Rail Fail at file: %s, line: %d\n", __FILE__, __LINE__); // Print error message
+            exit(EXIT_FAILURE);
+        }
+    }    
+    json_decref(json_obj);
+}
+
+
+//definition of functions to remove compilation error 
+
+
+void json2c_uint8_t(uint8_t *field, json_t *json_obj, uint8_t length)
+{
+   *field = (uint8_t)json_integer_value(json_obj);
+}
+
+void json2c_array_uint8_t(uint8_t *field, json_t *json_obj  , json_t *value, uint8_t length)
+{
+   size_t index;
+   json_array_foreach(json_obj , index , value)
+   {
+     *(field + index) = (uint8_t)json_integer_value(value);
+   }
+}
+
+void json2c_uint16_t(uint16_t *field, json_t *json_obj, uint8_t length)
+{
+     *field = (uint16_t)json_integer_value(json_obj);
+}
+
+void json2c_uint32_t(uint32_t *field, json_t *json_obj, uint8_t length)
+{
+     *field = (uint32_t)json_integer_value(json_obj);
+}

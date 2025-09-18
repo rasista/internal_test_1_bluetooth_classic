@@ -1,0 +1,20 @@
+#ifndef inquiry_AUTOGEN_H_
+#define inquiry_AUTOGEN_H_
+#include "state_machine.h"
+#include "btc_device.h"
+
+extern sm_t inquiry_sm_cb;
+
+typedef enum inquiry_states_s {
+{% for state in list_states %}
+    {{ state }},
+{% endfor%}
+    {{ sm_name }}_STATE_MAX
+} inquiry_states_t;
+
+
+void {{ sm_name }}_handler(sm_t *inquiry_sm_cb, uint8_t trigger);
+{% for handler in list_handlers %}
+void {{handler}}(sm_t *inquiry_sm_cb, uint8_t trigger);
+{% endfor %}
+#endif

@@ -1,0 +1,35 @@
+devices:
+    si353_c:
+        type: 'si353'
+        src_dir: 'utf_lib_btdm'
+        interfaces:
+          btc:
+            type: 'hci.event_callback'
+            src_dir: 'utf_lib_btdm'
+            cli_transport: 'uart'
+          uart:
+            type: 'serial'
+            packetizer: 'hci_packetizer'
+            port: ''
+          hci_packetizer:
+            type: 'bt_packetizer'
+            src_dir: 'utf_lib_btdm'
+    si353_p:
+        type: 'si353'
+        src_dir: 'utf_lib_btdm'
+        interfaces:
+          btc:
+            type: 'hci.event_callback'
+            src_dir: 'utf_lib_btdm'
+            cli_transport: 'uart'
+          uart:
+            type: 'serial'
+            packetizer: 'hci_packetizer'
+            port: ''
+          hci_packetizer:
+            type: 'bt_packetizer'
+            src_dir: 'utf_lib_btdm'
+defaults:
+    dut:
+      - 'si353_c'
+      - 'si353_p'

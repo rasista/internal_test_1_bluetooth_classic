@@ -1,0 +1,86 @@
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 11000 btc_dev_1 set_device_parameters_roleswitch {"set_device_parameters_roleswitch":{"connection_device_index":0,"lt_addr":1,"flow":0,"peer_role":1,"tx_pwr_index":23,"clk_e_offset":0},"device_index":1}
+#invoke 12000 btc_dev_1 set_roleswitch_parameters {"set_roleswitch_parameters":{"connection_device_index":0,"roleswitch_instant":24,"roleswitch_slot_offset":0,"new_lt_addr":2},"device_index":1}
+#invoke 13000 rail_1 set_var packet_type rs_central 2
+#invoke 14000 btc_dev_1 start_roleswitch_central {"start_roleswitch_central":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":80,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+triggering abort in NEW_PERIPHERAL_TX_SCHEDULED state using NEW_CONN_TIMEOUT [16 times] condition after which it goes to idle state.
+#invoke 15000 rail_1 expect “rx_start is 15000 in scheduled_activities”
+#invoke 15005 air_medium rx_header_done rail_1
+#invoke 15006 rail_1 set_var packet_type rs_central 2
+#invoke 15008 air_medium rx_end rail_1
+#invoke 16250 rail_1 expect "tx_start is 16250 in scheduled_activities"
+#invoke 16255 rail_1 expect “tx_end is 16386 in scheduled_activities”
+we are in stage 2 from here.
+#invoke 17500 rail_1 expect “rx_start is 17500 in scheduled_activities”
+#invoke 17501 rail_1 set_var packet_type rs_central 2
+#invoke 17505 air_medium rx_header_done rail_1
+#invoke 17506 air_medium rx_end rail_1
+
+TX_ABORT
+#invoke 18750 rail_1 expect "tx_start is 18750 in scheduled_activities"
+#invoke 18751 air_medium tx_end rail_1
+
+1st RX_TIMEOUT trigger
+#invoke 19999 rail_1 expect “rx_start is 20000 in scheduled_activities” 
+#invoke 20005 air_medium rx_timeout rail_1
+
+2nd RX_TIMEOUT trigger
+#invoke 22499 rail_1 expect “rx_start is 22500 in scheduled_activities”  
+#invoke 22505 air_medium rx_timeout rail_1
+
+3rd RX_TIMEOUT trigger
+#invoke 24999 rail_1 expect “rx_start is 25000 in scheduled_activities” 
+#invoke 25005 air_medium rx_timeout rail_1
+
+4th RX_TIMEOUT trigger
+#invoke 27499 rail_1 expect “rx_start is 27500 in scheduled_activities”  
+#invoke 27505 air_medium rx_timeout rail_1
+
+5th RX_TIMEOUT trigger
+#invoke 29999 rail_1 expect “rx_start is 30000 in scheduled_activities” 
+#invoke 30005 air_medium rx_timeout rail_1
+
+6th RX_TIMEOUT trigger
+#invoke 32499 rail_1 expect “rx_start is 32500 in scheduled_activities”  
+#invoke 32505 air_medium rx_timeout rail_1
+
+7th RX_TIMEOUT trigger
+#invoke 34999 rail_1 expect “rx_start is 35000 in scheduled_activities”
+#invoke 35005 air_medium rx_header_done rail_1
+
+8th RX_TIMEOUT trigger
+#invoke 37499 rail_1 expect “rx_start is 37500 in scheduled_activities”
+#invoke 37505 air_medium rx_timeout rail_1
+
+9th RX_TIMEOUT trigger
+#invoke 39999 rail_1 expect “rx_start is 40000 in scheduled_activities”
+#invoke 40005 air_medium rx_timeout rail_1
+ 
+10th RX_TIMEOUT trigger
+#invoke 42499 rail_1 expect “rx_start is 42500 in scheduled_activities”
+#invoke 42505 air_medium rx_timeout rail_1
+
+11th RX_TIMEOUT trigger
+#invoke 44999 rail_1 expect “rx_start is 45000 in scheduled_activities”
+#invoke 45005 air_medium rx_timeout rail_1
+
+12th RX_TIMEOUT trigger
+#invoke 47499 rail_1 expect “rx_start is 47500 in scheduled_activities”
+#invoke 47505 air_medium rx_timeout rail_1
+
+13th RX_TIMEOUT trigger
+#invoke 49999 rail_1 expect “rx_start is 50000 in scheduled_activities”
+#invoke 50005 air_medium rx_timeout rail_1
+
+14th RX_TIMEOUT trigger
+#invoke 52499 rail_1 expect “rx_start is 52500 in scheduled_activities”
+#invoke 52505 air_medium rx_timeout rail_1
+
+15th RX_TIMEOUT trigger
+#invoke 54999 rail_1 expect “rx_start is 55000 in scheduled_activities”
+#invoke 55005 air_medium rx_timeout rail_1
+
+going in idle state, checking do not expect:
+#invoke 57500 rail_1 do_not_expect "rx_start is 57500 in scheduled_activities"
+ 

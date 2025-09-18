@@ -1,0 +1,10 @@
+#ifndef __PROCEDURE_TRIGGERS_AUTOGEN_H__
+#define __PROCEDURE_TRIGGERS_AUTOGEN_H__
+
+enum procedure_triggers_e {
+{% for trigger in triggers %}
+    {{ trigger }},
+{% endfor%}
+    procedures_max_num_triggers
+};
+#endif

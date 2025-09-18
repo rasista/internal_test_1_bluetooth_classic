@@ -1,0 +1,13 @@
+Models:
+  model_pong:
+    python_handlers:
+      ping : ping_handler
+    c_handlers:
+  model_ping:
+    python_handlers:
+      pong : pong_handler
+    c_handlers:
+  model_ping_pong:
+    python_handlers:
+      ping_pong : ping_pong_handler
+    c_handlers:

@@ -1,0 +1,103 @@
+id: bluetooth_classic_rail_interface
+label: Bluetooth Classic interface with RAIL LIB
+package: Bluetooth-Classic
+description: |-
+  The "bluetooth_classic_rail_interface" component encapsulates rail_lib calls to be used by Bluetooth Classic modules.
+
+category: Bluetooth-Classic|Bluetooth-Classic Controller (Link Layer)
+quality: internal
+root_path: protocol/bluetooth_classic
+
+
+provides:
+  - name: bluetooth_classic_rail_interface
+
+
+
+include:
+  - path: inc
+    file_list:
+      - path: sl_host_to_lpw_interface.h
+      - path: sl_btc_seq_interface.h
+      - path: btc_riscvseq_address_map.h
+
+  - path: ../../platform/common/inc
+    file_list:
+      - path: sl_status.h
+
+  - path: ../../platform/radio/rail_lib/common
+    file_list:
+      - path: sl_rail_types.h
+
+  - path: ../../platform/radio/rail_lib/plugin/rail_util_rssi/config/sixg300xilpwh72000fpga
+    file_list:
+      - path: sl_rail_util_rssi_config.h
+
+  - path: ../../platform/radio/rail_lib/plugin/rail_util_init/config/sixg300
+    file_list:
+      - path: sl_rail_util_init_inst_config.h
+
+  - path: ../../platform/radio/rail_lib/protocol/btc
+    file_list:
+      - path: sl_rail_btc.h
+    condition:
+      - device_has_btcphy
+
+source:
+  - path: "src/lc/rail_libintf/sl_btc_hal.c"
+
+requires:
+  - name: clock_manager_runtime
+  - name: hal_gpio
+    condition:
+      - device_series_3
+  - name: hal_prs
+    condition:
+      - device_series_3
+  - name: hal_system
+    condition:
+      - device_series_3
+  - name: sl_rail_util_pa
+  - name: sl_rail_util_built_in_phys
+    condition:
+      - device_init
+  - name: clock_manager_init_internal
+    condition:
+      - device_series_3
+  - name: gpio
+    condition: [device_series_3]
+  - name: sl_rail_util_pti
+  - name: sl_rail_util_rssi
+  - name: sl_rail_util_power_manager_init
+  - name: silabs_core_circular_queue
+  - name: memory_manager
+  - name: sl_rail_util_pa_internal
+
+
+
+
+template_contribution:
+  - name: event_handler
+    value:
+      include: sl_btc_init.h
+      event: stack_init
+      handler: sl_btc_init
+
+
+library:
+  - path: build/gcc/cortex-m33/btc_hal/debug/libbtc_hal.a
+    condition:
+      - toolchain_gcc
+      - cortexm33
+  - path: build/gcc/cortex-m33/btc_hal/release/libbtc_hal.a
+    condition:
+      - toolchain_gcc
+      - cortexm33
+  - path: build/gcc/cortex-m55/btc_hal/debug/libbtc_hal.a
+    condition:
+      - toolchain_gcc
+      - cortexm55
+  - path: build/gcc/cortex-m55/btc_hal/release/libbtc_hal.a
+    condition:
+      - toolchain_gcc
+      - cortexm55

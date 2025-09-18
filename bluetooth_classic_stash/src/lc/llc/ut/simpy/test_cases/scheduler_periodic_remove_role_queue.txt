@@ -1,0 +1,38 @@
+Testcase to trigger remove periodic role from periodic queue
+
+Testcase:
+aperiodic->periodic
+
+Initializations of device and page
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 10 btc_dev_1 set_page {"set_page":{"tx_pwr_index":0,"bd_address":[11,22,33,44,55,66],"clk_e_offset":0,"hci_trigger":1,"remote_scan_rep_mode":0,"lt_addr":1,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+#invoke 1000 btc_dev_1 start_page {"start_page":{"priority":1,"step_size":1,"end_tsf":32000},"device_index":1}
+
+page TX-RX activity
+#invoke 2000 rail_1 expect “tx_start is 2500 in scheduled_activities”
+#invoke 2050 rail_1 expect “tx_end is 2636 in scheduled_activities”
+#invoke 3000 rail_1 expect “tx_start is 3125 in scheduled_activities”
+#invoke 3005 rail_1 expect “tx_end is 3261 in scheduled_activities”
+#invoke 3750 rail_1 expect "rx_start is 3750 in scheduled_activities"
+#invoke 4370 rail_1 expect "rx_start is 4375 in scheduled_activities"
+
+Initializations of esco parameters
+#invoke 6000 btc_dev_1 set_device_parameters_esco {"set_device_parameters_esco":{"is_edr":1,"is_esco":1,"connection_device_index":0,"lt_addr":2,"flow":1,"peer_role":1,"tx_pwr_index":0,"clk_e_offset":0,"t_esco":6,"d_esco":0,"w_esco":0,"crc_status":0},"device_index":1}
+#invoke 7000 rail_1 set_var packet_type central 2
+#invoke 8000 btc_dev_1 start_esco_central {"start_esco_central":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":6,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+ESCO TX/RX
+#invoke 14999 rail_1 expect “tx_start is 15000 in scheduled_activities”
+#invoke 15002 rail_1 expect “tx_end is 16249 in scheduled_activities”
+#invoke 16350 air_medium rx_header_done rail_1
+#invoke 16355 rail_1 set_var packet_type central 2
+#invoke 16615 air_medium rx_end rail_1
+next esco window calculated at 22500
+
+Page tx 
+#invoke 18120 rail_1 expect “tx_start is 18125 in scheduled_activities”
+
+Stopping esco before next window start
+#invoke 18130 btc_dev_1 stop_esco {"stop_esco":{"connection_device_index":0},"device_index":1}
+
+

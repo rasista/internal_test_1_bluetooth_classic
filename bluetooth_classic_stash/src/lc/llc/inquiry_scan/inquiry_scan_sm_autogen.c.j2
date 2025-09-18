@@ -1,0 +1,42 @@
+#include "inquiry_scan_autogen.h"
+
+{% for state in list_states %}
+static void {{ sm_name }}_{{ state }}_handler(sm_t *inquiry_scan_sm_cb, uint8_t trigger);
+{% endfor %}
+
+
+
+void {{ sm_name }}_handler(sm_t *inquiry_scan_sm_cb, uint8_t trigger)
+{
+    //sim_printf("inquiry_scan_sm_cb->current_state %u", inquiry_scan_sm_cb->current_state)
+    switch(inquiry_scan_sm_cb->current_state)
+    {
+{% for state in list_states %}
+        case {{ state }}:
+            sim_printf("Current State : {{state}}")
+            {{ sm_name }}_{{ state }}_handler(inquiry_scan_sm_cb, trigger);
+        break;
+{% endfor %}
+        default:
+            sm_assert(inquiry_scan_sm_cb, trigger);
+        break;
+    }
+}
+
+{% for state in list_states %}
+static void {{ sm_name }}_{{ state }}_handler(sm_t *inquiry_scan_sm_cb, uint8_t trigger)
+{
+    switch(trigger)
+    {
+{% for trigger in state_details_orig[state].keys() %}
+        case {{ trigger }}:
+            sim_printf("Trigger to Current State : {{trigger}}")
+            {{ state_details_orig[state][trigger] }}(inquiry_scan_sm_cb, trigger);
+        break;
+{% endfor %}
+        default:
+            sm_assert(inquiry_scan_sm_cb, trigger);
+        break;
+    }
+}
+{% endfor %}

@@ -1,0 +1,22 @@
+sm_name : esco_peripheral_sm
+includes: 
+  - device_management/procedure_triggers.yaml
+  
+states:
+  esco_peripheral_sm_idle:
+    START_PROCEDURE: esco_peripheral_start_procedure_handler
+  ESCO_PERIPHERAL_RX_HEADER_SCHEDULED:
+    RX_TIMEOUT: esco_peripheral_rx_timeout_handler
+    RX_ABORT: esco_peripheral_rx_timeout_handler
+    RX_HEADER_RECEIVED: esco_peripheral_rx_header_done_handler
+  ESCO_PERIPHERAL_RX_COMPLETE_SCHEDULED:
+    RX_DONE: esco_peripheral_rx_complete_handler
+    RX_ABORT: esco_peripheral_rx_timeout_handler
+    RX_TIMEOUT: esco_peripheral_rx_timeout_handler
+  ESCO_PERIPHERAL_TX_SCHEDULED:
+    TX_DONE: esco_peripheral_tx_done_handler
+    TX_ABORT: esco_peripheral_tx_abort_handler
+  ESCO_RETRANSMIT_PERIPHERAL_WAITING_FOR_RX_HEADER:
+    RX_HEADER_RECEIVED: esco_peripheral_rx_header_done_handler
+    RX_ABORT: esco_peripheral_rx_timeout_handler
+    RX_TIMEOUT: esco_peripheral_rx_timeout_handler

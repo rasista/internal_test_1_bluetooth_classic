@@ -1,0 +1,9 @@
+  root:
+    system:
+      commands:
+        restart:
+          ui_handler: restart_cmd_handler
+        update_sys_tick : 
+          ui_handler : update_sys_tick_handler
+        end:
+          ui_handler : end_cmd_handler

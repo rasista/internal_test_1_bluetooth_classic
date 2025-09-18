@@ -1,0 +1,445 @@
+#invoke 0 btc_dev_1 init_device 1 11:22:33:44:55:66
+#invoke 1100 btc_dev_1 init_page_scan 1 1280000 10000 1
+#invoke 8000 rail_1 set_var rail_status -1 
+#invoke 9000 btc_dev_1 start_page_scan 1
+
+
+!# Test Case 1
+!# Invoking the BTC_RAIL_FAIL_STATUS in start_procedure_handler
+#invoke 10001 air_medium rx_timeout 1 
+#invoke 10002 rail_1 expect "rx_start is 12500 in scheduled_activities"
+
+!# Test Case 2 
+!# invoking BTC_RAIL_FAIL_STATUS in rx_timeout_handler
+#invoke 12502 rail_1 set_var rail_status -1
+#invoke 12503 air_medium rx_timeout 1
+#invoke 12871 rail_1 expect "rx_start is 15000 in scheduled_activities"
+
+!#Test case 3 (Ideal Case)
+
+Accepting first ID packet(rx_done_handler)
+#invoke 15136 air_medium rx_end 1
+
+scheduling response ID_response(id_tx_done_handler)
+#invoke 15137 rail_1 expect "tx_start is 16250 in scheduled_activities"
+
+Expecting FHS(fhs_rx_done_handler)
+#invoke 16387 rail_1 expect "rx_start is 17500 in scheduled_activities"
+
+Recieving FHS
+#invoke 17502 air_medium rx_end 1
+
+Execting FHS response(fhs_response_tx_done_hander)
+#invoke 17504 rail_1 expect "tx_start is 18750 in scheduled_activities"
+
+Expecting RX for POLL
+#invoke 19303 rail_1 expect "rx_start is 20000 in scheduled_activities"
+#invoke 20002 air_medium rx_end 1
+
+Expecting poll response
+#invoke 20003 rail_1 expect "tx_start is 21250 in scheduled_activities"
+
+
+Aborting POLL response 
+#invoke 21240 air_medium tx_end 1 
+
+ID_Rx_start for next cycle 
+#invoke 60371 rail_1 expect "rx_start is 62500 in scheduled_activities"
+
+!# Test Case 4
+!# invoking ID_TX_ABORT_HANDLER
+
+Recieving second ID_PACKET
+#invoke 63127 air_medium rx_end 1
+
+scheduling  ID_tx response 
+#invoke 63128 rail_1 expect "tx_start is 64375 in scheduled_activities"
+
+aborting ID_TX response
+#invoke 64370 air_medium tx_end 1
+
+Scheduling next ID_Rx
+#invoke 64371 rail_1 expect "rx_start is 65000 in scheduled_activities"
+
+
+!# Test case 5 
+!# Invoking fhs_rx_timeout_handler
+
+Recieving First ID packet
+#invoke 65001 air_medium rx_end 1
+
+Expecting ID response
+#invoke 65002 rail_1 expect "tx_start is 66250 in scheduled_activities"
+
+Expecting FHS and doing timeout
+#invoke 66803 rail_1 expect "rx_start is 67500 in scheduled_activities"
+
+Expecting ID_Rx_start
+#invoke 77871 rail_1 expect "rx_start is 80000 in scheduled_activities"
+
+!#Test Case 6 
+!#invoking page_Scan_fhs_response_tx_abort_handler
+
+Recieving First ID packet
+#invoke 80001 air_medium rx_end 1
+
+Scheduling ID response
+#invoke 80002 rail_1 expect "tx_start is 81250 in scheduled_activities"
+
+Expecting FHS
+#invoke 81387 rail_1 expect "rx_start is 82500 in scheduled_activities"
+
+Recieving FHS
+#invoke 82501 air_medium rx_end 1
+
+Scheduling FHS response and aborting it 
+#invoke 82502 rail_1 expect "tx_start is 83750 in scheduled_activities"
+#invoke 83749 air_medium tx_end 1 
+
+Expecting ID_rx start
+#invoke 92871 rail_1 expect "rx_start is 95000 in scheduled_activities"
+
+!#Test Case 7
+#invoking POLL RX_TIMEOUT handler
+
+Reciving second ID packet
+#invoke 95626 air_medium rx_end 1
+
+Reciving FHS 
+#invoke 97501 air_medium rx_end 1
+
+Expecting RX_Start for poll
+#invoke 99303 rail_1 expect "rx_start is 100000 in scheduled_activities"
+
+!#Test case 8
+!#invoking page_scan_peripheral_null_tx_done_handler
+
+Recieving first ID packet
+#invoke 100001 air_medium rx_end 1
+
+Reciving FHS_RX
+#invoke 102501 air_medium rx_end 1
+
+Recieving POLL_RX
+#invoke 105001 air_medium rx_end 1
+
+scheduling null_TX
+#invoke 105002 rail_1 expect "tx_start is 106250 in scheduled_activities"
+
+scheduling next ID RX
+#invoke 147871 rail_1 expect "rx_start is 150000 in scheduled_activities"
+
+
+
+
+!# Test Case 9
+invoking the else part of page_scan_fhs_response_tx_abort_handler
+
+recieving first ID packet
+#invoke 150001 air_medium rx_end 1
+
+Recieving FHS
+#invoke 152501 air_medium rx_end 1
+
+Scheduling fhs_tx_response
+#invoke 152503 rail_1 expect "tx_start is 153750 in scheduled_activities"
+
+aborting fhs_tx_response
+#invoke 153751 air_medium tx_end 1
+
+Recieving FHS ---- first try 
+#invoke 155001 air_medium rx_end 1
+
+aborting fhs_tx_response
+#invoke 156251 air_medium tx_end 1
+
+Recieving FHS ---- second try
+#invoke 157501 air_medium rx_end 1
+
+aborting  fhs_tx_response
+#invoke 158751 air_medium tx_end 1
+
+Reciving fhs ---third try
+#invoke 160001 air_medium rx_end 1
+
+aborting fhs_tx_response
+#invoke 161251 air_medium tx_end 1
+
+Recieving FHS ---fourth try 
+#invoke 162501 air_medium rx_end 1
+
+aborting fhs_tx_response
+#invoke 163751 air_medium tx_end 1
+
+Scheduling next ID_RX
+invoke 163752 rail_1 expect "rx_start is 165000 in scheduled_activities"
+#invoke 165000 rail_1 expect "rx_start is 165000 in scheduled_activities"
+
+
+
+!#Test case 10
+invoking the else part of page_scan_peripheral_null_tx_abort_handler
+
+Recieving first ID packet
+#invoke +1 air_medium rx_end 1
+
+Recieving FHS
+#invoke +2501 air_medium rx_end 1
+
+Recieving poll
+#invoke +2501 air_medium rx_end 1
+
+aborting null
+#invoke +1251 air_medium tx_end 1
+
+Rx_start for poll reception
+#invoke 172500 rail_1 expect "rx_start is 172500 in scheduled_activities"
+
+
+Reciving poll and aborting null_tx (16 times)
+---first try
+#invoke +1 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+--second try
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+3
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+4
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+5
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+6
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+7
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+8
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+9
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+10
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+11
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+12
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+13
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+14
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+15
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+16
+#invoke +1251 air_medium rx_end 1
+#invoke +1251 air_medium tx_end 1
+
+Expecting ID_RX
+#invoke 212400 rail_1 expect "rx_start is 212500 in scheduled_activities"
+
+
+
+
+Now setting the BTC_RAIL_FAIL_STATUS for next iterations
+!#Test case 11
+!#invoke fail condition in page_scan_id_rx_done_handler (will abort the id response and again schedule rx for ID packets)
+
+#invoke 212401 rail_1 set_var rail_status -1 
+#invoke 212501 air_medium rx_end 1
+
+#invoke 212502 rail_1 expect "rx_start is 215000 in scheduled_activities"
+
+!#Test case 12
+!#invoking BTC_RAIL_FAIL_STATUS in page_scan_id_tx_done_handler
+
+#invoke 215001 air_medium rx_end 1
+#invoke 215002 rail_1 set_var rail_status -1
+#invoke 215003 rail_1 expect "tx_start is 216250 in scheduled_activities"
+
+expecting RX for next id_rx 
+#invoke 227500 rail_1 expect "rx_start is 227500 in scheduled_activities"
+
+!#Test Case 13
+!# invoking BTC_RAIL_FAIL_STATUS in page_scan_id_tx_abort_handler
+
+#invoke 227501 air_medium rx_end 1
+#invoke 227502 rail_1 expect "tx_start is 228750 in scheduled_activities"
+#invoke 228751 rail_1 set_var rail_status -1
+#invoke 228752 air_medium tx_end 1
+
+expecting rx for next id_rx 
+#invoke 228754 rail_1 expect "rx_start is 230000 in scheduled_activities"
+
+
+!# Test case 14
+!# invoking BTC_RAIL_FAIL_STATUS in page_scan_fhs_rx_done_handler
+
+#invoke 230001 air_medium rx_end 1
+#invoke 232500 rail_1 set_var rail_status -1
+#invoke 232501 air_medium rx_end 1
+
+expecting rx for next id_rx 
+#invoke 245000 rail_1 expect "rx_start is 245000 in scheduled_activities"
+
+
+
+!#Test case 15 
+!# invoking BTC_RAIL_FAIL_STATUS in page_scan_fhs_rx_timeout_handler
+#invoke 245001 air_medium rx_end 1
+#invoke 247500 rail_1 expect "rx_start is 247500 in scheduled_activities"
+#invoke 247501 rail_1 set_var rail_status -1
+
+Invoking the BTC_RAIL_FAIL_STATUS in the else of page_scan_fhs_rx_timeout_handler
+expecting rx for next id_rx 
+
+#invoke 255369 rail_1 set_var rail_status -1 
+#invoke 257500 rail_1 expect "rx_start is 257500 in scheduled_activities"
+#invoke 257503 air_medium rx_timeout 1
+
+#invoke 260000 rail_1 expect "rx_start is 260000 in scheduled_activities"
+
+
+
+!#Test Case 16
+!#invoking BTC_RAIL_FAIL_STATUS in page_scan_fhs_response_tx_done_handler
+
+#invoke 260001 air_medium rx_end 1
+#invoke 262501 air_medium rx_end 1
+#invoke 262502 rail_1 set_var rail_status -1 
+#invoke 262503 rail_1 expect "tx_start is 263750 in scheduled_activities"
+
+Expecting Next ID_RX
+#invoke 305000 rail_1 expect "rx_start is 305000 in scheduled_activities"
+
+!#invoking BTC_RAIL_FAIL_STATUS in page_scan_fhs_response_tx_abort_handler
+
+Recieving First ID packet
+#invoke 305000 air_medium rx_end 1
+
+Recieving FHS
+#invoke 307501 air_medium rx_end 1
+
+#invoke 307502 rail_1 set_var rail_status -1
+#invoke 307503 rail_1 expect "tx_start is 308750 in scheduled_activities"
+#invoke 308752 air_medium tx_end 1 
+
+
+!#invoking BTC_RAIL_FAIL_STATUS in the else part of page_scan_fhs_response_tx_abort_handler
+
+--2nd try 
+#invoke +1250 air_medium rx_end 1
+#invoke +1250 air_medium tx_end 1
+
+--3rd try 
+#invoke +1250 air_medium rx_end 1
+#invoke +1250 air_medium tx_end 1
+
+--4th try 
+#invoke +1250 air_medium rx_end 1
+#invoke 316250 rail_1 set_var rail_status -1
+#invoke +2 air_medium tx_end 1
+#invoke 317500 rail_1 expect "rx_start is 317500 in scheduled_activities"
+#invoke 317501 air_medium rx_timeout 1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

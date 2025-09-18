@@ -1,0 +1,78 @@
+Roleswitch Peripheral Testcases
+
+Initialization of device,roleswitch peripheral and start of roleswitch peripheral
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_device_parameters_roleswitch {"set_device_parameters_roleswitch":{"connection_device_index":0,"lt_addr":1,"flow":0,"peer_role":1,"tx_pwr_index":23,"clk_e_offset":0},"device_index":1}
+#invoke 12000 btc_dev_1 set_roleswitch_parameters {"set_roleswitch_parameters":{"connection_device_index":0,"roleswitch_instant":24,"roleswitch_slot_offset":0,"new_lt_addr":2},"device_index":1}
+#invoke 16000 rail_1 set_var packet_type rs_peripheral 2
+#invoke 17000 btc_dev_1 start_roleswitch_peripheral {"start_roleswitch_peripheral":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":40,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+States of Roleswitch Peripheral
+FHS_TX_SCHEDULED
+ID_RX_SCHEDULED
+NEW_CENTRAL_TX_SCHEDULED
+NEW_CENTRAL_WAITING_FOR_RX_PKT_HEADER
+NEW_CENTRAL_WAITING_FOR_RX_PKT_COMPLETE
+
+Triggers
+tx_end- TX_ABORT
+rx_end- RX_DONE
+
+Test Case 1
+triggering abort in FHS_TX_SCHEDULED state [TX_ABORT]
+#invoke 17500 rail_1 expect “tx_start is 17500 in scheduled_activities”
+#invoke 17501 rail_1 set_var packet_type rs_peripheral 2
+#invoke 17503 air_medium tx_end rail_1
+
+Testcase 2
+triggering  timeout in ID_RX_SCHEDULED state [RX_TIMEOUT] 
+#invoke 20000 rail_1 expect “tx_start is 20000 in scheduled_activities” 
+#invoke 20001 rail_1 expect “tx_end is 21249 in scheduled_activities”
+#invoke 20002 rail_1 set_var packet_type rs_peripheral 2
+#invoke 21250 rail_1 expect “rx_start is 21250 in scheduled_activities” 
+#invoke 21251 rail_1 set_var packet_type rs_peripheral 2
+#invoke 21252 air_medium rx_timeout rail_1
+
+Testcase 3
+triggering abort in NEW_CENTRAL_TX_SCHEDULED state [TX_ABORT]
+#invoke 22500 rail_1 expect “tx_start is 22500 in scheduled_activities”
+#invoke 23749 rail_1 expect “tx_end is 23749 in scheduled_activities”
+#invoke 23750 rail_1 expect “rx_start is 23750 in scheduled_activities” 
+#invoke 23751 rail_1 set_var packet_type rs_peripheral 2
+#invoke 23752 air_medium rx_end rail_1
+we are in stage 2 from here.
+#invoke 25000 rail_1 expect “tx_start is 25000 in scheduled_activities”
+#invoke 25005 rail_1 set_var packet_type rs_peripheral 2
+#invoke 25008 air_medium tx_end rail_1
+
+Testcase 4
+triggering timeout in NEW_CENTRAL_WAITING_FOR_RX_PKT_HEADER state [RX_HEADER_TIMEOUT]
+#invoke 27500 rail_1 expect “tx_start is 27500 in scheduled_activities”
+#invoke 27501 rail_1 set_var packet_type rs_peripheral 2
+#invoke 27502 rail_1 expect “tx_end is 28749 in scheduled_activities”
+#invoke 28750 rail_1 expect “rx_start is 28750 in scheduled_activities”
+#invoke 28751 rail_1 set_var packet_type rs_peripheral 2
+#invoke 28755 air_medium rx_timeout rail_1
+
+Testcase 5
+triggering timeout in NEW_CENTRAL_WAITING_FOR_RX_PKT_COMPLETE state [RX_TIMEOUT]
+#invoke 30000 rail_1 expect “tx_start is 30000 in scheduled_activities” 
+#invoke 30001 rail_1 expect “tx_end is 31249 in scheduled_activities”
+#invoke 31250 rail_1 expect “rx_start is 31250 in scheduled_activities”
+#invoke 31252 rail_1 set_var packet_type rs_peripheral 2
+#invoke 31255 air_medium rx_header_done rail_1
+#invoke 31257 air_medium rx_timeout rail_1
+
+
+Testcase 6
+Ideal case
+triggering all positive cases simultaneously and done triggers.
+#invoke 32500 rail_1 expect “tx_start is 32500 in scheduled_activities” 
+#invoke 32501 rail_1 set_var packet_type rs_peripheral 2
+#invoke 32502 rail_1 expect “tx_end is 33749 in scheduled_activities”
+#invoke 33750 rail_1 expect “rx_start is 33750 in scheduled_activities”
+#invoke 33751 rail_1 set_var packet_type rs_peripheral 2
+#invoke 33752 air_medium rx_header_done rail_1
+#invoke 33753 air_medium rx_end rail_1
+
+#invoke 35000 btc_dev_1 stop_roleswitch_peripheral {"stop_roleswitch_peripheral":{"connection_device_index":0},"device_index":1}

@@ -1,0 +1,13 @@
+#ifndef HSS_CMD_H
+#define HSS_CMD_H
+
+#include <stdint.h> 
+#include "message_decode.h"
+
+{% for element, value in elements.items() %}
+    {% if value is not none and value is mapping and value.values() | selectattr('data_type', 'ne', 'None') | list %}
+void {{ element | lower }}_handler(uint32_t argc, uint8_t *argv[]);
+    {% endif %}
+{% endfor %}
+
+#endif

@@ -1,0 +1,51 @@
+#ifndef LMP_GET_DEF_H
+#define LMP_GET_DEF_H
+#include <stdint.h>
+#define BIT(n) (1<<n)
+
+{% for cmd, details in lmp_cmds.items() -%}
+/* {{cmd | upper }} */
+{% set offset = namespace(value = 1) -%}
+#define GET_{{cmd | upper}}_TID(buf) ((buf[0] & (BIT(7)))>>7)
+        {% if details['EXTENDED_OPCODE'] != 0 -%}
+#define GET_{{cmd | upper}}_OPCODE(buf)  (buf[0]) & ~(BIT(7))
+#define GET_{{cmd | upper}}_EXTENDED_OPCODE(buf)  (buf[1])
+        {% set offset.value = offset.value + 2 -%}
+{% if details['parameters'] != 0 -%}
+{% for key, size in details['parameters'].items()-%}
+{% if size == 1%}
+#define GET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf)  buf[{{offset.value}}] 
+{% elif size == 2 %}
+#define GET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf)  ((uint16_t *)&buf[{{offset.value}}]) 
+{% elif size == 3 %}
+#define GET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf)  ((uint32_t *)&buf[{{offset.value}}]) & ~(BIT(24)) 
+{% elif size == 4 %}
+#define GET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf)  (uint32_t *)&buf[{{offset.value}}] 
+{% else -%}
+#define GET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf) (buf[{{offset.value}}])
+{% endif -%}
+{% set offset.value = offset.value + size -%}
+{% endfor -%}  
+{% endif -%}   
+        {%else-%}
+#define GET_{{cmd | upper}}_OPCODE(buf) ((buf[0]) & ~(BIT(7)))
+       {% set offset.value = offset.value + 1 -%}
+{% if details['parameters'] != 0-%}
+{% for key, size in details['parameters'].items()-%}
+{% if size == 1-%}
+#define GET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf)  buf[{{offset.value}}] 
+{% elif size == 2 -%}
+#define GET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf)  ((uint16_t *)&buf[{{offset.value}}]) 
+{% elif size == 3 -%}
+#define GET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf)  ((uint32_t *)&buf[{{offset.value}}]) & ~(BIT(24)) 
+{% elif size == 4-%}
+#define GET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf)  (uint32_t *)&buf[{{offset.value}}] 
+{% else -%}
+#define GET_{{cmd | upper}}_PARAMETER_{{key | upper}}(buf) (buf[{{offset.value}}])
+{% endif -%}
+{% set offset.value = offset.value + size -%}
+{% endfor -%} 
+{% endif -%}
+{% endif-%} 
+{% endfor -%}
+#endif

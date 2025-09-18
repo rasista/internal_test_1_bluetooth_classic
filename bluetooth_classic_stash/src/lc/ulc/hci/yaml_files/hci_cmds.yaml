@@ -1,0 +1,1834 @@
+#This file contains the details of HCI commands with details like OCF, name and parameters etc for BT-Classic controller
+hci_cmds:
+  link_control:
+    OGF: 0x01
+    cmds:
+      inquiry:
+        OCF: 0x01
+        length:
+          octets: 1 #length field is 1 octet
+          value: 5 # 5 is the inquiry length
+        parameters:
+          lap: 3
+          inquiry_length: 1
+          num_responses: 1
+        return_parameters: 0
+      inquiry_cancel:
+        OCF: 0x02
+        length: 0
+        return_parameters: 
+          status: 1
+      periodic_inquiry_mode:
+        OCF: 0x03
+        length:
+          octets: 1 #length field is 1 octet
+          value: 9 # 9 is the max_period_length 
+        parameters:
+          max_period_length: 2
+          min_period_length: 2
+          lap: 3
+          inquiry_length: 1
+          num_responses: 1 
+        return_parameters: 
+          status: 1
+      exit_periodic_inquiry_mode:
+        OCF: 0x04
+        length: 0
+        return_parameters: 
+          status: 1
+      create_connection:
+        OCF: 0x05
+        length:
+          octets: 1 #length field is 1 octets
+          value: 13 # 0x0000 is the packet type
+        parameters:
+          bd_addr: 6
+          pkt_type: 2
+          page_scan_rep_mode: 1
+          reserved: 1
+          clock_offset: 2
+          allow_role_switch: 1
+        return_parameters: 0
+      disconnect:
+        OCF: 0x06
+        length:
+          octets: 1 #length field is 1 octets
+          value: 3 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          reason: 1
+        return_parameters: 0
+      create_connection_cancel:
+        OCF: 0x08
+        length:
+          octets: 1 #length field is 1 octets
+          value: 6
+        parameters:
+          bd_addr: 6  # 0x0000 is the connection_handle
+        return_parameters: 
+          status: 1
+          bd_addr: 6
+      accept_connection_request:
+        OCF: 0x09
+        length:
+          octets: 1 #length field is 1 octets
+          value: 7 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          role: 1
+        return_parameters: 0
+      reject_connection_request:
+        OCF: 0x0A
+        length:
+          octets: 1 #length field is 1 octets
+          value: 7 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          reason: 1
+        return_parameters: 0
+      link_key_request_reply:
+        OCF: 0x0B
+        length:
+          octets: 1 #length field is 1 octets
+          value: 22 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          link_key: 16
+        return_parameters: 
+          status: 1
+          bd_addr: 6
+      link_key_request_negative_reply:
+        OCF: 0x0C
+        length:
+          octets: 1 #length field is 1 octets
+          value: 6 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+        return_parameters: 
+          status: 1
+          bd_addr: 6
+      pin_code_request_reply:
+        OCF: 0x0D
+        length:
+          octets: 1 #length field is 1 octets
+          value: 23 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          pin_code_length: 1
+          pin_code: 16
+        return_parameters: 
+          status: 1
+          bd_addr: 6
+      pin_code_request_negative_reply:
+        OCF: 0x0E
+        length:
+          octets: 1 #length field is 1 octets
+          value: 6 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+        return_parameters: 
+          status: 1
+          bd_addr: 6
+      change_connection_packet_type:
+        OCF: 0x0F
+        length:
+          octets: 1 #length field is 1 octets
+          value: 4 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          pkt_type: 2
+        return_parameters: 0
+      authentication_requested:
+        OCF: 0x11
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+        return_parameters: 0
+      set_connection_encryption:
+        OCF: 0x13
+        length:
+          octets: 1 #length field is 1 octets
+          value: 3 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          encryption_enable: 1
+        return_parameters: 0
+      change_connection_link_key:
+        OCF: 0x15
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+        return_parameters: 0
+      # link_key_selection:
+      #   OCF: 0x17
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 1 # 0x0000 is the key_flag
+      #   parameters:
+      #     key_flag: 1
+      #   return_parameters: 0
+      remote_name_request:
+        OCF: 0x19
+        length:
+          octets: 1 #length field is 1 octets
+          value: 10 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          page_scan_rep_mode: 1
+          reserved: 1
+          clk_offset: 2
+        return_parameters: 0
+      remote_name_request_cancel:
+        OCF: 0x1A
+        length:
+          octets: 1 #length field is 1 octets
+          value: 6 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+        return_parameters: 
+          status: 1
+          bd_addr: 6
+      read_remote_supported_features:
+        OCF: 0x1B
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+        return_parameters: 0
+      read_remote_extended_features:
+        OCF: 0x1C
+        length:
+          octets: 1 #length field is 1 octets
+          value: 3 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          page_number: 1
+        return_parameters: 0
+      read_remote_version_information:
+        OCF: 0x1D
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+        return_parameters: 0
+      read_clock_offset:
+        OCF: 0x1F
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+        return_parameters: 0
+      # read_lmp_handle:
+      #   OCF: 0x20
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 2 # 0x0000 is the connection_handle
+      #   parameters:
+      #     connection_handle: 2
+      #   return_parameters: 
+      #     status: 1
+      #     connection_handle: 2
+      #     lmp_handle: 1
+      #     reserved: 4
+      setup_synchronous_connection:
+        OCF: 0x28
+        length:
+          octets: 1 #length field is 1 octets
+          value: 17 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          transmit_bandwidth: 4
+          receive_bandwidth: 4
+          max_latency: 2
+          voice_setting: 2
+          retransmission_effort: 1
+          pkt_type: 2
+        return_parameters: 0
+      accept_synchronous_connection_request:
+        OCF: 0x29
+        length:
+          octets: 1 #length field is 1 octets
+          value: 17 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          transmit_bandwidth: 4
+          receive_bandwidth: 4
+          max_latency: 2
+          voice_setting: 2
+          retransmission_effort: 1
+          pkt_type: 2
+        return_parameters: 0
+      reject_synchronous_connection_request:
+        OCF: 0x2A
+        length:
+          octets: 1 #length field is 1 octets
+          value: 7 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          reason: 1
+        return_parameters: 0
+      io_capability_request_reply:
+        OCF: 0x2B
+        length:
+          octets: 1 #length field is 1 octets
+          value: 9 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          io_capability: 1
+          oob_data_present: 1
+          authentication_requirements: 1
+        return_parameters: 
+          status: 1
+          bd_addr: 6
+      user_confirmation_request_reply:
+        OCF: 0x2C
+        length:
+          octets: 1 #length field is 1 octets
+          value: 6 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+        return_parameters: 
+          status: 1
+          bd_addr: 6
+      user_confirmation_request_negative_reply:
+        OCF: 0x2D
+        length:
+          octets: 1 #length field is 1 octets
+          value: 6 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+        return_parameters: 
+          status: 1
+          bd_addr: 6
+      user_passkey_request_reply:
+        OCF: 0x2E
+        length:
+          octets: 1 #length field is 1 octets
+          value: 10 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          numeric_value: 4
+        return_parameters: 
+          status: 1
+          bd_addr: 6
+      user_passkey_request_negative_reply:
+        OCF: 0x2F
+        length:
+          octets: 1 #length field is 1 octets
+          value: 6 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+        return_parameters: 
+            status: 1
+            bd_addr: 6
+      remote_oob_data_request_reply:
+        OCF: 0x30
+        length:
+          octets: 1 #length field is 1 octets
+          value: 38 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          c: 16
+          r: 16
+        return_parameters: 
+            status: 1
+            bd_addr: 6
+      remote_oob_data_request_negative_reply:
+        OCF: 0x33
+        length:
+          octets: 1 #length field is 1 octets
+          value: 6 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+        return_parameters: 
+            status: 1
+            bd_addr: 6
+      io_capability_request_negative_reply:
+        OCF: 0x34
+        length:
+          octets: 1 #length field is 1 octets
+          value: 7 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          reason: 1
+        return_parameters: 
+            status: 1
+            bd_addr: 6
+      # enhanced_setup_synchronous_connection:
+      #   OCF: 0x3D
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 60 # 0x0000 is the connection_handle
+      #   parameters:
+      #     connection_handle: 2
+      #     transmit_bandwidth: 4
+      #     receive_bandwidth: 4
+      #     transmit_coding_format: 5
+      #     receive_coding_format: 5
+      #     transmit_codec_frame_size: 2
+      #     receive_codec_frame_size: 2
+      #     input_bandwidth: 4
+      #     output_bandwidth: 4
+      #     input_coding_format: 5
+      #     output_coding_format: 5
+      #     input_coded_data_size: 2
+      #     output_coded_data_size: 2
+      #     input_pcm_data_format: 1
+      #     output_pcm_data_format: 1
+      #     input_pcm_sample_payload_msb_position: 1
+      #     output_pcm_sample_payload_msb_position: 1
+      #     input_data_path: 1
+      #     output_data_path: 1
+      #     input_transport_unit_size: 1
+      #     output_transport_unit_size: 1
+      #     max_latency: 2
+      #     packet_type: 2
+      #     retransmission_effort: 1
+      #   return_parameters: 0
+      # enhanced_accept_synchronous_connection_request:
+      #   OCF: 0x3E
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 60 # 0x0000 is the bd_addr
+      #   parameters:
+      #     bd_addr: 6
+      #     transmit_bandwidth: 4
+      #     receive_bandwidth: 4
+      #     transmit_coding_format: 5
+      #     receive_coding_format: 5
+      #     transmit_codec_frame_size: 2
+      #     receive_codec_frame_size: 2
+      #     input_bandwidth: 4
+      #     output_bandwidth: 4
+      #     input_coding_format: 5
+      #     output_coding_format: 5
+      #     input_coded_data_size: 2
+      #     output_coded_data_size: 2
+      #     input_pcm_data_format: 1
+      #     output_pcm_data_format: 1
+      #     input_pcm_sample_payload_msb_position: 1
+      #     output_pcm_sample_payload_msb_position: 1
+      #     input_data_path: 1
+      #     output_data_path: 1
+      #     input_transport_unit_size: 1
+      #     output_transport_unit_size: 1
+      #     max_latency: 2
+      #     packet_type: 2
+      #     retransmission_effort: 1
+      #   return_parameters: 0
+      # truncated_page:
+      #   OCF: 0x3F
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 9 # 0x0000 is the bd_addr
+      #   parameters:
+      #     bd_addr: 6
+      #     page_scan_rep_mode: 1
+      #     clk_offset: 2
+      #   return_parameters: 0
+      # truncated_page_cancel:
+      #   OCF: 0x40
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 6 # 0x0000 is the bd_addr
+      #   parameters:
+      #     bd_addr: 6
+      #   return_parameters: 
+      #       status: 1
+      #       bd_addr: 6
+      # set_connectionless_peripheral_broadcast:
+      #   OCF: 0x41
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 10 # 0x0000 is the handle
+      #   parameters:
+      #     lt_addr: 1
+      #     lpo_allowed: 1
+      #     packet_type: 2
+      #     interval_min: 2
+      #     interval_max: 2
+      #     supervision_timeout: 2
+      #   return_parameters: 
+      #       status: 1
+      #       lt_addr: 1
+      #       interval: 2
+      # set_connectionless_peripheral_broadcast_receive:
+      #   OCF: 0x42
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 34 # 0x0000 is the handle
+      #   parameters:
+      #     enable: 1
+      #     bd_addr: 6
+      #     lt_addr: 1
+      #     interval: 2
+      #     clock_offset: 4
+      #     next_connectionless_peripheral_broadcast_clock: 4
+      #     supervision_timeout: 2
+      #     remote_timing_accuracy: 1
+      #     skip: 1
+      #     packet_type: 2
+      #     afh_channel_map: 10
+      #   return_parameters: 
+      #     status: 1
+      #     bd_addr: 6
+      #     lt_addr: 1
+      # start_synchronization_train:
+      #   OCF: 0x43
+      #   length: 0
+      #   return_parameters: 0
+      # receive_synchronization_train:
+      #   OCF: 0x44
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 12 # 0x0000 is the bd_addr
+      #   parameters:
+      #     bd_addr: 6
+      #     sync_scan_timeout: 2
+      #     sync_scan_window: 2
+      #     sync_scan_interval: 2
+      #   return_parameters: 0
+      #   remote_oob_extended_data_request_reply:
+      #     OCF: 0x45
+      #     length:
+      #       octets: 1 #length field is 1 octets
+      #       value: 70 # 0x0000 is the bd_addr
+      #     parameters:
+      #       bd_addr: 6
+      #       c_192: 16
+      #       r_192: 16
+      #       c_256: 16
+      #       r_256: 16
+      #     return_parameters:
+      #       status: 1
+      #       bd_addr: 6
+  link_policy:
+    OGF: 0x02
+    cmds:
+      # hold_mode:
+      #   OCF: 0x01
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 6 # 0x0000 is the connection_handle
+      #   parameters:
+      #     connection_handle: 2
+      #     hold_mode_max_interval: 2
+      #     hold_mode_min_interval: 2
+      #   return_parameters: 0
+      sniff_mode:
+        OCF: 0x03
+        length:
+          octets: 1 #length field is 1 octets
+          value: 10 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          sniff_max_interval: 2
+          sniff_min_interval: 2
+          sniff_attempt: 2
+          sniff_timeout: 2
+        return_parameters: 0
+      exit_sniff_mode:
+        OCF: 0x04
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+        return_parameters: 0
+      qos_setup:
+        OCF: 0x07
+        length:
+          octets: 1 #length field is 1 octets
+          value: 20 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          unused: 1
+          service_type: 1
+          token_rate: 4
+          peak_bandwidth: 4
+          latency: 4
+          delay_variation: 4
+        return_parameters: 0
+      role_discovery:
+        OCF: 0x09
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+        return_parameters:
+          status: 1
+          connection_handle: 2
+          current_role: 1
+      switch_role:
+        OCF: 0x0B
+        length:
+          octets: 1 #length field is 1 octets
+          value: 7 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          role: 1
+        return_parameters: 0
+      read_link_policy_settings:
+        OCF: 0x0C
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+        return_parameters: 
+          status: 1
+          connection_handle: 2
+          link_policy_settings: 2
+      write_link_policy_settings:
+        OCF: 0x0D
+        length:
+          octets: 1 #length field is 1 octets
+          value: 4 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          link_policy_settings: 2
+        return_parameters: 
+          status: 1
+          connection_handle: 2
+      read_default_link_policy_settings:
+        OCF: 0x0E
+        length: 0
+        return_parameters: 
+          status: 1
+          default_link_policy_settings: 2
+      write_default_link_policy_settings:
+        OCF: 0x0F
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the default_link_policy_settings
+        parameters:
+          default_link_policy_settings: 2
+        return_parameters: 
+          status: 1
+      # flow_specification:
+      #   OCF: 0x10
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 21 # 0x0000 is the connection_handle
+      #   parameters:
+      #     connection_handle: 2
+      #     unused: 1
+      #     flow_direction: 1
+      #     service_type: 1
+      #     token_rate: 4
+      #     token_bucket_size: 4
+      #     peak_bandwidth: 4
+      #     access_latency: 4
+      #   return_parameters: 0
+      sniff_subrating:
+        OCF: 0x12
+        length:
+          octets: 1 #length field is 1 octets
+          value: 8 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          max_latency: 2
+          min_remote_timeout: 2
+          min_local_timeout: 2
+        return_parameters: 
+          status: 1
+          connection_handle: 2
+  controller_and_baseband:
+    OGF: 0x03
+    cmds:
+      set_event_mask:
+        OCF: 0x01
+        length:
+          octets: 1 #length field is 1 octets
+          value: 8 # 0x0000 is the event_mask
+        parameters:
+          event_mask: 8
+        return_parameters: 
+          status: 1
+      reset:
+        OCF: 0x03
+        length: 0
+        return_parameters: 
+          status: 1
+      set_event_filter:
+        OCF: 0x05
+        length:
+          octets: 1 #length field is 1 octets
+          value: 3
+        parameters:
+          filter_type: 1
+          filter_condition_type: 1
+          condition: 1
+        return_parameters: 
+          status: 1
+      # flush:
+      #   OCF: 0x08
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 2 # 0x0000 is the connection_handle
+      #   parameters:
+      #     connection_handle: 2
+      #   return_parameters: 
+      #     status: 1
+      #     connection_handle: 2
+      read_pin_type:
+        OCF: 0x09
+        length: 0
+        return_parameters: 
+          status: 1
+          pin_type: 1
+      write_pin_type:
+        OCF: 0x0A
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1 # 0x0000 is the pin_type
+        parameters:
+          pin_type: 1
+        return_parameters: 
+          status: 1
+      read_stored_link_key:
+        OCF: 0x0D
+        length:
+          octets: 1 #length field is 1 octets
+          value: 7 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          read_all_flag: 1
+        return_parameters: 
+          status: 1
+          max_num_keys: 2
+          num_keys_read: 2
+      write_stored_link_key:
+        OCF: 0x11
+        length:
+          octets: 1 #length field is 1 octets
+          value: 23 # 0x0000 is the num_keys_to_write
+        parameters:
+          num_keys_to_write: 1
+          bd_addr: 6
+          link_key: 16
+        return_parameters: 
+          status: 1
+          num_keys_written: 1
+      delete_stored_link_key:
+        OCF: 0x12
+        length:
+          octets: 1 #length field is 1 octets
+          value: 7 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          delete_all_flag: 1
+        return_parameters: 
+          status: 1
+          num_keys_deleted: 1
+      write_local_name:
+        OCF: 0x13
+        length:
+          octets: 1 #length field is 1 octets
+          value: -1 
+        parameters:
+          local_name: -1
+        return_parameters: 
+          status: 1
+      read_local_name:
+        OCF: 0x14
+        length:
+         octets: 1 #length field is 1 octets
+         value: 1 # 0x0000 is the ecosystem_base_interval
+        parameters:
+          sampledata: 1
+        return_parameters: 
+          status: 1
+          local_name: 248
+      read_connection_accept_timeout:
+        OCF: 0x15
+        length: 0
+        return_parameters: 
+          status: 1
+          connection_accept_timeout: 2
+      write_connection_accept_timeout:
+        OCF: 0x16
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the conn_accept_timeout
+        parameters:
+          conn_accept_timeout: 2
+        return_parameters: 
+          status: 1
+      read_page_timeout:
+        OCF: 0x17
+        length: 0
+        return_parameters: 
+          status: 1
+          page_timeout: 2
+      write_page_timeout:
+        OCF: 0x18
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the page_timeout
+        parameters:
+          page_timeout: 2
+        return_parameters: 
+          status: 1
+      read_scan_enable:
+        OCF: 0x19
+        length: 0
+        return_parameters: 
+          status: 1
+          scan_enable: 1
+      write_scan_enable:
+        OCF: 0x001A
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1 # 0x0000 is the scan_enable
+        parameters:
+          scan_enable: 1
+        return_parameters: 
+          status: 1
+      read_page_scan_activity:
+        OCF: 0x001B
+        length: 0
+        return_parameters: 
+          status: 1
+          page_scan_interval: 2
+          page_scan_window: 2
+      write_page_scan_activity:
+        OCF: 0x001C
+        length:
+          octets: 1 #length field is 1 octets
+          value: 4 # 0x0000 is the page_scan_interval
+        parameters:
+          page_scan_interval: 2
+          page_scan_window: 2
+        return_parameters: 
+          status: 1
+      read_inquiry_scan_activity:
+        OCF: 0x001D
+        length: 0
+        return_parameters: 
+          status: 1
+          inquiry_scan_interval: 2
+          inquiry_scan_window: 2
+      write_inquiry_scan_activity:
+        OCF: 0x001E
+        length:
+          octets: 1 #length field is 1 octets
+          value: 4 # 0x0000 is the inquiry_scan_interval
+        parameters:
+          inquiry_scan_interval: 2
+          inquiry_scan_window: 2
+        return_parameters: 
+          status: 1
+      read_authentication_enable:
+        OCF: 0x001F
+        length: 0
+        return_parameters: 
+          status: 1
+          authentication_enable: 1
+      write_authentication_enable:
+        OCF: 0x20
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1 # 0x0000 is the authentication_enable
+        parameters:
+          authentication_enable: 1
+        return_parameters: 
+          status: 1
+      read_class_of_device:
+        OCF: 0x0023
+        length: 0
+        return_parameters: 
+          status: 1
+          class_of_device: 3
+      write_class_of_device:
+        OCF: 0x24
+        length:
+          octets: 1 #length field is 1 octets
+          value: 3 # 0x0000 is the class_of_device
+        parameters:
+          class_of_device: 3  
+        return_parameters: 
+          status: 1
+      read_voice_setting:
+        OCF: 0x0025
+        length: 0
+        return_parameters: 
+          status: 1
+          voice_setting: 2
+      write_voice_setting:
+        OCF: 0x0026
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the voice_setting
+        parameters:
+          voice_setting: 2
+        return_parameters: 
+          status: 1
+      read_automatic_flush_timeout:
+        OCF: 0x0027
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+        return_parameters: 
+          status: 1
+          connection_handle: 2
+          flush_timeout: 2
+      write_automatic_flush_timeout:
+        OCF: 0x0028
+        length:
+          octets: 1 #length field is 1 octets
+          value: 4 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          flush_timeout: 2
+        return_parameters: 
+          status: 1
+          connection_handle: 2
+      # read_num_broadcast_retransmissions:
+      #   OCF: 0x0029
+      #   length: 0
+      #   return_parameters: 
+      #     status: 1
+      #     num_broadcast_retransmissions: 1
+      # write_num_broadcast_retransmissions:
+      #   OCF: 0x002A
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 1 # 0x0000 is the num_broadcast_retransmissions
+      #   parameters:
+      #     num_broadcast_retransmissions: 1
+      #   return_parameters: 
+      #     status: 1
+      # read_hold_mode_activity:
+      #   OCF: 0x002B
+      #   length: 0
+      #   return_parameters: 
+      #     status: 1
+      #     hold_mode_activity: 1
+      # write_hold_mode_activity:
+      #   OCF: 0x002C
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 1 # 0x0000 is the hold_mode_activity
+      #   parameters:
+      #     hold_mode_activity: 1
+      #   return_parameters: 
+      #     status: 1
+      read_transmit_power_level:
+        OCF: 0x002D
+        length:
+          octets: 1 #length field is 1 octets
+          value: 3 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          type: 1
+        return_parameters: 
+          status: 1
+          connection_handle: 2
+          tx_power_level: 1
+      # read_synchronous_flow_control_enable:
+      #   OCF: 0x002E
+      #   length: 0
+      #   return_parameters: 
+      #     status: 1
+      #     read_synchronous_flow_control_enable: 1
+      # write_synchronous_flow_control_enable:
+      #   OCF: 0x002F
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 1 # 0x0000 is the flow_control_enable
+      #   parameters:
+      #     flow_control_enable: 1
+      #   return_parameters: 
+      #     status: 1
+      # set_controller_to_host_flow_control:
+      #   OCF: 0x0031
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 1 # 0x0000 is the flow_control_enable
+      #   parameters:
+      #     flow_control_enable: 1
+      #   return_parameters: 
+      #     status: 1
+      # host_buffer_size:
+      #   OCF: 0x0033
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 7 # 0x0000 is the host_acl_data_packet_length
+      #   parameters:
+      #     host_acl_data_packet_length: 2
+      #     host_synchronous_data_packet_length: 1
+      #     host_total_num_acl_data_packets: 2
+      #     host_total_num_synchronous_data_packets: 2
+      #   return_parameters: 
+      #     status: 1
+      # host_number_of_completed_packets:
+      #   OCF: 0x0035
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: -1 # 0x0000 is the number_of_handles , var length 
+      #   parameters:
+      #     number_of_handles: 1
+      #     connection_handle: 2 #!num_handles * 2 octets
+      #     host_num_of_completed_packets: 2 #!num_handles * 2 octets
+      #   return_parameters: 0
+      read_link_supervision_timeout:
+        OCF: 0x0036
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+        return_parameters: 
+          status: 1
+          handle: 2
+          link_supervision_timeout: 2
+      write_link_supervision_timeout:
+        OCF: 0x0037
+        length:
+          octets: 1 #length field is 1 octets
+          value: 4 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          link_supervision_timeout: 2
+        return_parameters: 
+          status: 1
+          handle: 2
+      read_number_of_supported_iac:
+        OCF: 0x0038
+        length: 0
+        return_parameters: 
+          status: 1
+          num_supported_iac: 1
+      read_current_iac_lap:
+        OCF: 0x0039
+        length: 0
+        return_parameters: 
+          status: 1
+          num_current_iac: 1
+          iac_lap: 3 #num_current_iac * 3 octets
+      write_current_iac_lap:
+        OCF: 0x003A
+        length:
+          octets: 1 #length field is 1 octets
+          value: -1 # 0x0000 is the num_current_iac
+        parameters:
+          num_current_iac: 1
+          lap: 3 #!3 * num_current_iac
+        return_parameters: 
+          status: 1
+      set_afh_host_channel_classification:
+        OCF: 0x003F
+        length:
+          octets: 1 #length field is 1 octets
+          value: 10 # 0x0000 is the channel_map
+        parameters:
+          channel_map: 10
+        return_parameters: 
+          status: 1
+      read_inquiry_scan_type:
+        OCF: 0x0042
+        length: 0
+        return_parameters: 
+          status: 1
+          inquiry_scan_type: 1
+      write_inquiry_scan_type:
+        OCF: 0x0043
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1 # 0x0000 is the inquiry_scan_type
+        parameters:
+          inquiry_scan_type: 1
+        return_parameters: 
+          status: 1
+      read_inquiry_mode:
+        OCF: 0x0044
+        length: 0
+        return_parameters: 
+          status: 1
+          inquiry_mode: 1
+      write_inquiry_mode:
+        OCF: 0x0045
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1 # 0x0000 is the inquiry_mode
+        parameters:
+          inquiry_mode: 1
+        return_parameters: 
+          status: 1
+      read_page_scan_type:
+        OCF: 0x0046
+        length: 0
+        return_parameters: 
+          status: 1
+          page_scan_type: 1
+      write_page_scan_type:
+        OCF: 0x0047
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1 # 0x0000 is the page_scan_type
+        parameters:
+          page_scan_type: 1
+        return_parameters: 
+          status: 1
+      read_afh_channel_assessment_mode:
+        OCF: 0x0048
+        length: 0
+        return_parameters: 
+          status: 1
+          afh_channel_assessment_mode: 1
+      write_afh_channel_assessment_mode:
+        OCF: 0x0049
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1 # 0x0000 is
+        parameters:
+          afh_channel_assessment_mode: 1
+        return_parameters: 
+          status: 1
+      read_extended_inquiry_response:
+        OCF: 0x0051
+        length: 0
+        return_parameters: 
+          status: 1
+          fec_required: 1
+          extended_inquiry_response: 240
+      write_extended_inquiry_response:
+        OCF: 0x0052
+        length:
+          octets: 1 #length field is 1 octets
+          value: 241 # 0x0000 is the fec_required
+        parameters:
+          fec_required: 1
+          extended_inquiry_response: 240
+        return_parameters: 
+          status: 1
+      refresh_encryption_key:
+        OCF: 0x0053
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+        return_parameters: 0
+      read_simple_pairing_mode:
+        OCF: 0x0055
+        length: 0
+        return_parameters: 
+          status: 1
+          simple_pairing_mode: 1
+      write_simple_pairing_mode:
+        OCF: 0x0056
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1 # 0x0000 is the simple_pairing_mode
+        parameters:
+          simple_pairing_mode: 1
+        return_parameters: 
+          status: 1
+      read_local_oob_data:
+        OCF: 0x0057
+        length: 0
+        return_parameters: 
+          status: 1
+          c: 16
+          r: 16
+      read_inquiry_response_transmit_power_level:
+        OCF: 0x0058
+        length: 0
+        return_parameters: 
+          status: 1
+          tx_power: 1
+      write_inquiry_transmit_power_level:
+        OCF: 0x0059
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1 # 0x0000 is the tx_power_level
+        parameters:
+          tx_power_level: 1
+        return_parameters: 
+          status: 1
+      send_keypress_notification:
+        OCF: 0x0060
+        length:
+          octets: 1 #length field is 1 octets
+          value: 7 # 0x0000 is the bd_addr
+        parameters:
+          bd_addr: 6
+          notification_type: 1
+        return_parameters: 
+          status: 1
+          bd_addr: 6
+      # read_default_erroneous_data_reporting:
+      #   OCF: 0x005A
+      #   length: 0
+      #   return_parameters: 
+      #     status: 1
+      #     erroneous_data_reporting: 1
+      # write_default_erroneous_data_reporting:
+      #   OCF: 0x005B
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 1 # 0x0000 is the erroneous_data_reporting
+      #   parameters:
+      #     erroneous_data_reporting: 1
+      #   return_parameters: 
+      #     status: 1
+      enhanced_flush:
+        OCF: 0x005F
+        length:
+          octets: 1 #length field is 1 octets
+          value: 3 # 0x0000 is the connection_handle
+        parameters:
+          handle: 2
+          packet_type: 1
+        return_parameters: 0
+      # set_event_mask_page_2:
+      #   OCF: 0x0063
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 8 # 0x0000 is the event_mask_page_2
+      #   parameters:
+      #     event_mask_page_2: 8 #!BIT_MAP
+      #   return_parameters: 
+      #     status: 1
+      # read_flow_control_mode:
+      #   OCF: 0x0066
+      #   length: 0
+      #   return_parameters: 
+      #     status: 1
+      #     flow_control_mode: 1
+      # write_flow_control_mode:
+      #   OCF: 0x0067
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 1 # 0x0000 is the flow_control_mode
+      #   parameters:
+      #     flow_control_mode: 1
+      #   return_parameters: 
+      #     status: 1
+      read_enhanced_transmit_power_level:
+        OCF: 0x0068
+        length:
+          octets: 1 #length field is 1 octets
+          value: 3 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          type: 1
+        return_parameters: 
+          status: 1
+          connection_handle: 2
+          tx_power_level_gfsk: 1
+          tx_power_level_dqpsk: 1
+          tx_power_level_8dpsk: 1
+      # read_le_host_supported:
+      #   OCF: 0x006C
+      #   length: 0
+      #   return_parameters: 
+      #     status: 1
+      #     le_supported_host: 1
+      #     unused: 1
+      # write_le_host_supported:
+      #   OCF: 0x006D
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 2 # 0x0000 is the le_host_supported
+      #   parameters:
+      #     le_host_supported: 1
+      #     unused: 1 
+      #   return_parameters: 
+      #     status: 1
+      # set_mws_channel_parameters:
+      #   OCF: 0x006E
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 10 # 0x0000 is the mws_channel_parameters
+      #   parameters:
+      #     mws_channel_enable: 1
+      #     mws_rx_center_frequency: 2
+      #     mws_tx_center_frequency: 2
+      #     mws_rx_channel_bandwidth: 2
+      #     mws_tx_channel_bandwidth: 2
+      #     mws_channel_type: 1
+      #   return_parameters: 
+      #     status: 1
+      # set_external_frame_configuration:
+      #   OCF: 0x006F
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 10 # 0x0000 is the ext_frame_type
+      #   parameters:
+      #     mws_frame_duration: 2
+      #     mws_frame_sync_assert_offset: 2
+      #     mws_frame_sync_assert_jitter: 2
+      #     mws_num_periods: 1
+      #     period_duration: 2 #!array 2 * mws_num_periods
+      #     period_type: 1 #!array 1 * mws_num_periods 
+      #   return_parameters: 
+      #     status: 1
+      # set_mws_signaling:
+      #   OCF: 0x0070
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 28 # 0x0000 is the mws_signaling
+      #   parameters:
+      #     mws_rx_assert_offset: 2
+      #     mws_rx_deassert_offset: 2
+      #     mws_rx_deassert_jitter: 2
+      #     mws_tx_assert_offset: 2
+      #     mws_tx_assert_jitter: 2
+      #     mws_tx_deassert_offset: 2
+      #     mws_tx_deassert_jitter: 2
+      #     mws_pattern_assert_offset: 2
+      #     mws_pattern_assert_jitter: 2
+      #     mws_inactivity_duration_assert_offset: 2
+      #     mws_inactivity_duration_assert_jitter: 2
+      #     mws_scan_frequency_assert_offset: 2
+      #     mws_scan_frequency_assert_jitter: 2
+      #     mws_priority_assert_offset_request: 2
+      #   return_parameters: 
+      #     status: 1
+      #     bt_rx_priority_assert_offset: 2
+      #     bt_rx_priority_assert_jitter: 2
+      #     bt_rx_priority_deassert_offset: 2
+      #     bt_rx_priority_deassert_jitter: 2
+      #     802_rx_priority_assert_offset: 2
+      #     802_rx_priority_assert_jitter: 2
+      #     802_rx_priority_deassert_offset: 2
+      #     802_rx_priority_deassert_jitter: 2
+      #     bt_tx_on_assert_offset: 2
+      #     bt_tx_on_assert_jitter: 2
+      #     bt_tx_on_deassert_offset: 2
+      #     bt_tx_on_deassert_jitter: 2
+      #     802_tx_on_assert_offset: 2
+      #     802_tx_on_assert_jitter: 2
+      #     802_tx_on_deassert_offset: 2
+      #     802_tx_on_deassert_jitter: 2
+      # set_mws_transport_layer:
+      #   OCF: 0x0071
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 9 # 0x0000 is the mws_tlk_type
+      #   parameters:
+      #     transport_layer: 1
+      #     to_mws_baud_rate: 4
+      #     from_mws_baud_rate: 4
+      #   return_parameters:
+      #     status: 1
+      # set_mws_scan_frequency_table:
+      #   OCF: 0x0072
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 5 # 0x0000 is the mws_scan_frequency_table
+      #   parameters:
+      #     num_Scan_Frequencies: 1
+      #     scan_Frequency_Low: 2
+      #     scan_Frequency_High: 2
+      #   return_parameters:
+      #     status: 1
+      # set_mws_pattern_configuration:
+      #   OCF: 0x0073
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 5 # 0x0000 is the mws_pattern_config
+      #   parameters:
+      #     mws_pattern_index: 1
+      #     mws_pattern_numIntervals: 1
+      #     mws_pattern_intervalDuration: 2
+      #     mws_patter_intervalType: 1
+      #   return_parameters:
+      #     status: 1
+      # set_reserved_lt_addr:
+      #   OCF: 0x0074
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 1 # 0x0000 is the lt_addr
+      #   parameters:
+      #     lt_addr: 1
+      #   return_parameters:
+      #     status: 1
+      #     lt_addr: 1
+      # delete_reserved_lt_addr:
+      #   OCF: 0x0075
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 1 # 0x0000 is the lt_addr
+      #   parameters:
+      #     lt_addr: 1
+      #   return_parameters:
+      #     status: 1
+      #     lt_addr: 1
+      # cbb_set_connectionless_peripheral_broadcast:
+      #   OCF: 0x0076
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: -1 # 0x0000 is the handle
+      #   parameters:
+      #     lt_addr: 1
+      #     fragment: 1
+      #     data_Length: 2
+      #     data: 0 #!size --> data_length octets
+      #   return_parameters:
+      #     status: 1
+      #     lt_addr: 1
+      # read_synchronization_train_parameters:
+      #   OCF: 0x0077
+      #   length: 0
+      #   return_parameters:
+      #     status: 1
+      #     sync_train_interval: 2
+      #     sync_train_timeout: 4
+      #     service_data: 1
+      # write_synchronization_train_parameters:
+      #   OCF: 0x0078
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 9 # 0x0000 is the synchronization_train_params
+      #   parameters:
+      #     interval_Min: 2
+      #     interval_Max: 2
+      #     sync_train_timeout: 4
+      #     service_data: 1
+      #   return_parameters:
+      #     status: 1
+      #     sync_train_interval: 2
+      read_secure_connections_host_support:
+        OCF: 0x0079
+        length: 0
+        return_parameters:
+          status: 1
+          secure_connections_host_support: 1
+      write_secure_connections_host_support:
+        OCF: 0x007A
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1 # 0x0000 is the secure_connections_host_support
+        parameters:
+          secure_connections_host_support: 1
+        return_parameters:
+          status: 1
+      # read_auth_payload_timeout:
+      #   OCF: 0x007B
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 2 # 0x0000 is the connection_handle
+      #   parameters:
+      #     connection_handle: 2
+      #   return_parameters:
+      #     status: 1
+      #     connection_handle: 2
+      #     authenticated_payload_timeout: 2
+      # write_auth_payload_timeout:
+      #   OCF: 0x007C
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 4 # 0x0000 is the connection_handle
+      #   parameters:
+      #     connection_handle: 2
+      #     auth_payload_timeout: 2
+      #   return_parameters:
+      #     status: 1
+      #     connection_handle: 2
+      # read_local_oob_ext_data:
+      #   OCF: 0x007D
+      #   length: 0
+      #   return_parameters:
+      #     status: 1
+      #     c_192: 16
+      #     r_192: 16
+      #     c_256: 16
+      #     r_256: 16
+      read_extended_page_timeout:
+        OCF: 0x007E
+        length: 0
+        return_parameters:
+          status: 1
+          extended_page_timeout: 2
+      write_extended_page_timeout:
+        OCF: 0x007F
+        length:
+          octets: 1 #length field is 1 octets
+          value: 4 # 0x0000 is the extended_page_timeout
+        parameters:
+          extended_page_timeout: 2
+        return_parameters:
+          status: 1
+      read_extended_inquiry_length:
+        OCF: 0x0080
+        length: 0
+        return_parameters:
+          status: 1
+          extended_inquiry_length: 2
+      write_extended_inquiry_length:
+        OCF: 0x0081
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the extended_inquiry_length
+        parameters:
+          extended_inquiry_length: 2
+        return_parameters:
+          status: 1
+      # set_ecosystem_base_interval:
+      #   OCF: 0x0082
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 2 # 0x0000 is the ecosystem_base_interval
+      #   parameters:
+      #     ecosystem_base_interval: 2
+      #   return_parameters:
+      #     status: 1
+      # configure_data_path:
+      #   OCF: 0x0083
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 4 # 0x0000 is the data_path_direction
+      #   parameters:
+      #     data_path_direction: 1
+      #     data_path_id: 1
+      #     vendor_specific_config_length: 1
+      #     vendor_specific_config: 0 # Vendor_Specific_Config_Length
+      #   return_parameters:
+      #     status: 1
+      # set_min_encryption_key_size:
+      #   OCF: 0x0084
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 1 # 0x0000 is the min_encryption_key_size
+      #   parameters:
+      #     min_encryption_key_size: 1
+      #   return_parameters:
+      #     status: 1
+  informational_parameters:
+    OGF: 0x04
+    cmds:
+      read_local_version_information:
+        OCF: 0x01
+        length:
+         octets: 1 #length field is 1 octets
+         value: 1 # 0x0000 is the ecosystem_base_interval
+        parameters:
+          sampledata: 1
+        return_parameters:
+          status: 1
+          hci_version: 1
+          hci_subversion: 2
+          lmp_version: 1
+          company_identifier: 2
+          lmp_subversion: 2
+      read_local_supported_commands:
+        OCF: 0x02
+        length: 0
+        return_parameters:
+          status: 1
+          supported_commands: 64
+      read_local_supported_features:
+        OCF: 0x03
+        length: 0
+        return_parameters:
+          status: 1
+          lmp_features: 8
+      read_local_extended_features:
+        OCF: 0x04
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1 # 0x0000 is the page_number
+        parameters:
+          page_number: 1
+        return_parameters:
+          status: 1
+          page_number: 1
+          max_page_number: 1
+          extended_lmp_features: 8
+      read_buffer_size:
+        OCF: 0x05
+        length: 0
+        return_parameters:
+          status: 1
+          acl_data_packet_length: 2
+          synchronous_data_packet_length: 1
+          total_num_acl_data_packets: 2
+          host_total_num_synchronous_data_packets: 2
+      read_bd_addr:
+        OCF: 0x09
+        length: 0
+        return_parameters:
+          status: 1
+          bd_addr: 6
+      # read_data_block_size:
+      #   OCF: 0x000A
+      #   length: 0
+      #   return_parameters:
+      #     status: 1
+      #     max_acl_data_packet_length: 2
+      #     data_block_length: 2
+      #     total_num_data_blocks: 2
+      # read_local_supported_codecs: #!DOUBT
+      #   OCF: 0x000B
+      #   length: 0
+      #   return_parameters:
+      #     status: 1 #more parameters to be included
+      # read_local_simple_pairing_options:
+      #   OCF: 0x000C
+      #   length: 0
+      #   return_parameters:
+      #     status: 1 
+      #     simple_pairing_options: 1
+      #     max_encryption_key_size: 1
+      # read_local_suported_codec_capabilities:
+      #   OCF: 0x000E
+      #   length: 
+      #     octets: 1 #length field is 1 octets
+      #     value: 7 # 0x0000 is the codec_id
+      #   parameters:
+      #     codec_id: 5
+      #     logical_transport_type: 1
+      #     direction: 1
+      #   return_parameters:
+      #     status: 1 
+      #     num_codec_capabilities: 1
+      #     codec_capability_length: 1 #* num_codec_capabilites
+      #     codec_capability: 1 #sum of codec_capability_length octets
+      # read_local_suppported_controller_delay:
+      #   OCF: 0x000F
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: -1 # 0x0000 is the controller_delay
+      #   parameters:
+      #     codec_id: 5
+      #     logical_transport_type: 1
+      #     direction: 1
+      #     codec_configuration_length: 1
+      #     codec_configuration: 0 #! length -> Codec_Configuration_Length
+      #   return_parameters:
+      #     status: 1 
+      #     min_controller_delay: 3
+      #     max_controller_delay: 3
+  status_parameters:
+    OGF: 0x05
+    cmds:
+      # read_failed_contact_counter:
+      #   OCF: 0x01
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 2 # 0x0000 is the connection_handle
+      #   parameters:
+      #     connection_handle: 2
+      #   return_parameters:
+      #     status: 1 
+      #     handle: 2
+      #     failed_contact_counter: 2
+      # reset_failed_contact_counter:
+      #   OCF: 0x02
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 2 # 0x0000 is the connection_handle
+      #   parameters:
+      #     handle: 2
+      #   return_parameters:
+      #     status: 1 
+      #     handle: 2
+      read_link_quality:
+        OCF: 0x03
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          handle: 2
+        return_parameters:
+          status: 1 
+          handle: 2
+          link_quality : 1
+      read_rssi:
+        OCF: 0x05
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          handle: 2
+        return_parameters:
+          status: 1 
+          handle: 2
+          rssi: 1
+      read_afh_channel_map:
+        OCF: 0x06
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+        return_parameters:
+          status: 1 
+          connection_handle: 2
+          afh_mode: 1
+          afh_channel_map: 10
+      read_clock:
+        OCF: 0x07
+        length:
+          octets: 1 #length field is 1 octets
+          value: 3 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+          which_clock: 1
+        return_parameters:
+          status: 1 
+          connection_handle: 2
+          clock: 4
+          accuracy: 2
+      read_encryption_key_size:
+        OCF: 0x08
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2 # 0x0000 is the connection_handle
+        parameters:
+          connection_handle: 2
+        return_parameters:
+          status: 1 
+          connection_handle: 2
+          key_size: 1
+      # get_mws_transort_layer_configuration:
+      #   OCF: 0x000c
+      #   length: 0
+      #   return_parameters:
+      #     status: 1 
+      #     num_transports: 1
+      #     transport_layer: 1 # * num_transports
+      #     num_baud_rates: 1 # * num_transports
+      #     to_mws_baud_rate: 4 # sum of num_baud_rates* 4
+      # set_triggered_clock_capture:
+      #   OCF: 0x000D
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 6 # 0x0000 is the connection_handle
+      #   parameters:
+      #     connection_handle: 2
+      #     enable: 1
+      #     which_clock: 1
+      #     lpo_allowed: 1
+      #     num_clock_captures_to_filter: 1
+      #   return_parameters:
+      #     status: 1 
+  test_commands:
+    OGF: 0x06
+    cmds:
+      # read_loopback_mode:
+      #   OCF: 0x01
+      #   length: 0
+      #   return_parameters:
+      #     status: 1 
+      #     loopback_mode: 1
+      # write_loopback_mode:
+      #   OCF: 0x02
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 1 # 0x0000 is the loopback_mode
+      #   parameters:
+      #     loopback_mode: 1
+      #   return_parameters:
+      #     status: 1 
+      enable_device_under_test_mode:
+        OCF: 0x03
+        length: 0
+        return_parameters:
+          status: 1 
+      write_simple_pairing_debug_mode:
+        OCF: 0x04
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1 # 0x0000 is the simple_pairing_debug_mode
+        parameters:
+          simple_pairing_debug_mode: 1
+        return_parameters:
+          status: 1 
+      # write_secure_connections_test_mode:
+      #   OCF: 0x000A
+      #   length:
+      #     octets: 1 #length field is 1 octets
+      #     value: 4 # 0x0000 is the secure_connections_test_mode
+      #   parameters:
+      #     connection_handle: 2
+      #     DM1_ACL_U_Mode: 1
+      #     esco_loopback_mode: 1
+      #   return_parameters:
+      #     status: 1 
+      #     connection_handle: 2          
+  vendor_specific:
+    OGF: 0x3F
+    cmds:
+      echo:
+        OCF: 0x01
+        length:
+          octets: 1
+          value: 1
+        parameters:
+          echo_str: 1
+        return_parameters: 0 #TODO can be included for future purposes
+      virtual_listen_connection:
+        OCF: 0x02
+        length:
+          octets: 1 #length field is 1 octets
+          value: 2
+        parameters:
+          connect_port: 2
+        return_parameters: 0 #TODO can be included for future purposes
+      virtual_cancel_listen:
+        OCF: 0x03
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1
+        parameters: 
+          empty_byte: 1 #TODO should be removed after changing logic in hci_cmd_get_defines.h.j2
+        return_parameters: 0 #TODO can be included for future purposes
+      virtual_connect:
+        OCF: 0x04
+        length:
+          octets: 1 #length field is 1 octets
+          value: 6
+        parameters:
+          connect_ip: 4
+          connect_port: 2
+        return_parameters: 0 #TODO can be included for future purposes
+      virtual_cancel_connect:
+        OCF: 0x05
+        length:
+          octets: 1 #length field is 1 octets
+          value: 1
+        parameters:
+          empty_byte: 1 #no parameter
+        return_parameters: 0 #TODO can be included for future purposes
+      internal_event_trigger_from_lpw:
+        OCF: 0x06
+        length:
+          octets: 1 #length field is 1 octets
+          value: -1 
+        parameters:
+          meta_data: 4
+          lpw_evnt_type: 1
+          bd_addr: 6          
+          data: -1          
+        return_parameters: 0 #TODO can be included for future purposes
+      kill_firmware:
+        OCF: 0x07
+        length:
+          octets: 1
+          value: 1
+        parameters:
+          empty_byte: 1
+        return_parameters: 0 #TODO can be included for future purposes
+      set_local_lmp_features:
+        OCF: 0x08
+        length:
+          octets: 1
+          value: 8
+        parameters:
+          local_features: 8
+        return_parameters: 0 #TODO can be included for future purposes

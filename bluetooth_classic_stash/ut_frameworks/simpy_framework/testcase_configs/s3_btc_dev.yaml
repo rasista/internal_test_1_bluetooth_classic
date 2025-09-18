@@ -1,0 +1,50 @@
+define: &NUM_BTC_DEVS 3
+
+Models:
+  btc_dev:
+    instances: *NUM_BTC_DEVS
+    secondary_init_function : secondary_init_function
+    python_handlers:
+      init_device : init_device_handler
+      init_page : init_page_handler
+      init_page_scan : init_page_scan_handler
+      start_page : start_page_handler
+      start_page_scan : start_page_scan_handler
+      init_inquiry : init_inquiry_handler
+      start_inquiry : start_inquiry_handler
+      init_inquiry_scan : init_inquiry_scan_handler
+      start_inquiry_scan : start_inquiry_scan_handler
+      compelete_event : complete_event_handler
+      payload_buffer: payload_buffer_handler
+
+      
+    c_handlers:
+  rail:
+    instances: *NUM_BTC_DEVS
+    secondary_init_function : secondary_init_function
+    python_handlers:
+      expect: expect_handler
+      retry_tx : retry_tx_handler
+      schedule_rx  : schedule_rx_handler
+      schedule_tx  : schedule_tx_handler
+      tx_done : tx_done_handler
+      rx_done : rx_done_handler
+      rx_timeout : rx_timeout_handler
+      schedule_backoff : schedule_backoff_handler
+      do_not_expect: do_not_expect_handler
+      set_var : set_var_handler
+      rx_header_recieved: rx_header_recieved_handler
+    c_handlers:
+
+  air_medium:
+    secondary_init_function: secondary_init_function
+    python_handlers:
+      register_tx : register_tx_handler
+      register_rx : register_rx_handler
+      tx_start : tx_start_handler
+      rx_start : rx_start_handler
+      tx_end : air_medium_tx_end_handler
+      rx_end : air_medium_rx_end_handler
+      rx_timeout : air_medium_rx_timeout_handler
+      rx_header_status : air_medium_rx_header_handler
+    c_handlers:

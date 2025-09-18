@@ -1,0 +1,98 @@
+#include "hci_handlers_autogen.h"
+#include <hci.h>
+
+{% set lut_dict = ({0:0})%}
+{% for cmd, details in hci_cmds.items() %}
+/* -------------------{{cmd}}_handlers---------------------*/
+{% if details['OGF'] != 63 %}
+{% set count = namespace(value=1) %}
+hci_handler_t {{cmd}}_lut[] = { 
+NULL,
+    {% for sub_cmd, sub_details in details['cmds'].items() %}
+        {% if sub_details['OCF'] == count.value %}
+hci_cmd_{{sub_cmd}}_handler,
+        {% set count.value = count.value + 1 %}
+        {% else %}
+                {% for count_1 in range(count.value, sub_details['OCF']) %}
+NULL,
+                {% set count.value = count.value + 1 %}
+                {% endfor %}
+hci_cmd_{{sub_cmd}}_handler,
+                {% set count.value = count.value + 1 %}
+        {%endif%}
+    {% endfor %}
+    {% set x=lut_dict.__setitem__(details['OGF'], count.value) %}
+};
+
+{% else %}
+{% set count = namespace(value=1) %}
+hci_handler_t {{cmd}}_lut[] = { 
+NULL,
+    {% for sub_cmd, sub_details in details['cmds'].items() %}
+        {% if sub_details['OCF'] == count.value %}
+hci_cmd_vendor_{{sub_cmd}}_handler,
+        {% set count.value = count.value + 1 %}
+        {% else %}
+                {% for count_1 in range(count.value, sub_details['OCF']) %}
+NULL,
+                {% set count.value = count.value + 1 %}
+                {% endfor %}
+hci_cmd_vendor_{{sub_cmd}}_handler,
+                {% set count.value = count.value + 1 %}
+        {%endif%}
+    {% endfor %}
+        {% set x=lut_dict.__setitem__(details['OGF'], count.value) %}
+};
+{%endif%}
+
+{% endfor %}
+
+{% set count = namespace(value=1) %}
+hci_handler_t *hci_ogf_lut[] = 
+{
+    NULL,
+{% for cmd, details in hci_cmds.items() %}
+{% if details['OGF'] == count.value %}
+    {{cmd}}_lut,
+{% set count.value = count.value + 1 %}
+{% else %}
+{% for count_1 in range(count.value, details['OGF']) %}
+    NULL,
+{% set count.value = count.value + 1 %}
+{% endfor %}
+    {{cmd}}_lut,
+{% set count.value = count.value + 1 %}
+{%endif%}
+{% endfor %}
+};
+
+uint16_t sizes_of_groups[]={
+{% set count = namespace(value=0) %}
+{% for key, value in lut_dict.items()  %}
+    {% if key == count.value %}
+    {{value}},
+    {% set count.value = count.value + 1 %}
+    {% else %}
+        {% for count_1 in range(count.value, key) %}
+    0,
+        {% set count.value = count.value + 1 %}
+        {% endfor %}
+    {{value}},
+    {% set count.value = count.value + 1 %}
+    {%endif%}
+{% endfor %}
+};
+
+
+uint16_t size_of_recieved_group_lut(uint8_t ogf){
+    return sizes_of_groups[ogf];
+}
+
+uint16_t size_of_hci_ogf_lut()
+{
+    return sizeof(hci_ogf_lut);
+}
+hci_handler_t *get_ocf_handlers_lut(uint8_t ogf)
+{
+    return hci_ogf_lut[ogf];
+}

@@ -1,0 +1,33 @@
+Models:
+  model_inquiry:
+    python_handlers:
+      start_role : role_start_handler
+      done_role : role_done_handler
+      extend_role : role_extension_handler
+      abort_role : role_abort_handler
+    c_handlers:
+      extend_role_c :
+      register_role_c :
+      done_role_c :
+  
+  model_sco:
+    python_handlers:
+      start_role : role_start_handler
+      done_role : role_done_handler
+      extend_role : role_extension_handler
+      abort_role : role_abort_handler
+    c_handlers:
+      extend_role_c :
+      register_role_c :
+      done_role_c :
+  
+  model_esco:
+    python_handlers:
+      start_role : role_start_handler
+      done_role : role_done_handler
+      extend_role : role_extension_handler
+      abort_role : role_abort_handler
+    c_handlers:
+      extend_role_c :
+      register_role_c :
+      done_role_c :

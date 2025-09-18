@@ -1,0 +1,34 @@
+#invoke 0 btc_dev_1 init_device {"device_index":1,"init_device":{"bd_address":[11,22,33,44,55,66],"sync_word":[11,22,33,44,55,66,77,88]}}
+#invoke 5000 btc_dev_1 set_device_parameters_esco {"set_device_parameters_esco":{"is_edr":1,"is_esco":1,"connection_device_index":0,"lt_addr":2,"flow":1,"peer_role":1,"t_esco":6,"d_esco":0,"w_esco":2},"device_index":1}
+#invoke 8000 rail_1 set_var packet_type peripheral 2
+#invoke 9000 btc_dev_1 start_esco_peripheral {"start_esco_peripheral":{"connection_device_index":0,"bd_address":[11,22,33,44,55,66],"priority":1,"step_size":1,"end_tsf":40,"sync_word":[11,22,33,44,55,66,77,88]},"device_index":1}
+
+!# FOR DH1 packet we are expecting rx and executing it successfully.
+#invoke 9002 rail_1 expect “rx_start is 15000 in scheduled_activities”
+#invoke 9003 rail_1 expect “rx_end is 16249 in scheduled_activities”
+#invoke 15500 air_medium rx_header_done rail_1
+#invoke 15505 rail_1 set_var packet_type peripheral 3  
+#invoke 16248 air_medium rx_end rail_1
+#invoke 16250 rail_1 expect “tx_start is 16250 in scheduled_activities”
+
+!#scheduling the RX again for next cycle
+Test case 2 : !#Triggering rail_fail_status of esco_peripheral_rx_complete_handler
+#invoke 22500 rail_1 expect "rx_start is 22500 in scheduled_activities"
+#invoke 22505 rail_1 expect “rx_end is 26249 in scheduled_activities”
+#invoke 22510 air_medium rx_header_done rail_1
+#invoke 22520 rail_1 set_var packet_type peripheral 3  
+#invoke 22530 rail_1 set_var rail_status -1
+#invoke 26240 air_medium rx_end rail_1
+
+!#scheduling the RX again for next cycle
+Test Case 3 : !#scheduling next cycle of Rx and triggering fail_status of esco_peripheral_calculate_next_esco_window_start
+#invoke 30000 rail_1 expect "rx_start is 30000 in scheduled_activities"
+#invoke 30005 rail_1 expect “rx_end is 33749 in scheduled_activities”
+#invoke 30500 air_medium rx_header_done rail_1
+#invoke 30502 rail_1 set_var packet_type peripheral 3  
+#invoke 33740 air_medium rx_end rail_1
+#invoke 33750 rail_1 expect "tx_start is 33750 in scheduled_activities”
+#invoke 33751 rail_1 set_var rail_status -1
+
+
+

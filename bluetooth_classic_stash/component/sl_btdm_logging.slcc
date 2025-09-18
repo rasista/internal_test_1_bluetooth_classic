@@ -1,0 +1,23 @@
+id: sli_btdm_logging
+label: Consumer engine for ring buffer populated by BTC fast logging module
+package: Bluetooth-Classic
+description: |-
+  Module consumes the ring buffer popluated by BTC fast logging module
+
+category: Bluetooth-Classic
+quality: internal
+root_path: protocol/bluetooth_classic/src/utils/debug/sl_btdm_logging
+
+provides:
+  - name: sli_btdm_logging
+
+include:
+  - path: "include"
+    file_list: 
+    - path: "sl_btdm_logging.h"
+
+source:
+  - path: "fast_logging_consumer/sl_btdm_fast_logging_read.c"
+  - path: "logging_producer/sl_btdm_logging_write.c"
+  - path: "logging_consumer/sl_btdm_logging_emit.c"
+  - path: "sl_btdm_fast_logging.c"

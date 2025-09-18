@@ -1,0 +1,36 @@
+import copy 
+import ctypes
+import json 
+import numpy as np
+from enum import Enum
+import logging
+logger = logging.getLogger()
+
+
+
+class hci_event_code(Enum):
+{%for events in hci_events.items() %}
+    HCI_EVENT_CODE_{{events[0] | upper }} = {{events[1]['event_code']}}
+{% endfor %}
+
+
+class callback_handlers:
+    def __init__(self):
+        self.command_handlers = {
+            {% for  events in hci_events.items() %}
+                hci_event_code.HCI_EVENT_CODE_{{events[0] | upper}}.value: self.{{events[0]}}_callback_handler,
+            {% endfor %}
+        }
+
+{% for events in hci_events.items() %}
+    def {{events[0]}}_callback_handler(self, packet, opcode):
+        pass
+{% endfor %}
+
+    def handle_unknown_command(self, packet,opcode):
+        pass
+
+ 
+
+
+

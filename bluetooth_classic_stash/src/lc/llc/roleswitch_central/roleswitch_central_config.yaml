@@ -1,0 +1,30 @@
+sm_name : roleswitch_central_sm
+includes: 
+  - device_management/procedure_triggers.yaml
+  
+states:
+  roleswitch_central_sm_idle:
+    START_PROCEDURE: roleswitch_central_start_procedure_handler
+  WAITING_FOR_FHS_RX_PKT_HEADER:
+    RX_HEADER_RECEIVED: rs_central_rx_header_received_handler
+    RX_TIMEOUT: rs_central_fhs_rx_timeout_handler
+    RX_ABORT: rs_central_fhs_rx_timeout_handler
+  WAITING_FOR_FHS_RX_PKT_COMPLETE:
+    RX_DONE: rs_central_fhs_rx_complete_handler
+    RX_TIMEOUT: rs_central_fhs_rx_complete_timeout_handler
+    RX_ABORT: rs_central_fhs_rx_complete_timeout_handler
+  ID_PKT_TX_SCHEDULED:
+    TX_DONE: rs_central_id_tx_done_handler
+    TX_ABORT: rs_central_id_tx_abort_handler
+  NEW_PERIPHERAL_WAITING_FOR_RX_PKT_HEADER:
+    RX_HEADER_RECEIVED: rs_central_new_peripheral_rx_header_handler
+    RX_DONE: rs_central_rx_poll_null_done_handler
+    RX_TIMEOUT: rs_central_new_peripheral_rx_timeout_handler
+    RX_ABORT: rs_central_new_peripheral_rx_timeout_handler
+  NEW_PERIPHERAL_WAITING_FOR_RX_PKT_COMPLETE:
+    RX_DONE: rs_central_new_peripheral_rx_complete_handler
+    RX_TIMEOUT: rs_central_new_peripheral_rx_complete_timeout_handler
+    RX_ABORT: rs_central_new_peripheral_rx_complete_timeout_handler
+  NEW_PERIPHERAL_TX_SCHEDULED:
+    TX_DONE: rs_central_new_peripheral_tx_scheduled_done_handler
+    TX_ABORT: rs_central_new_peripheral_tx_scheduled_abort_handler

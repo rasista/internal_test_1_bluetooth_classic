@@ -1,0 +1,34 @@
+user_interface:
+  root:
+    system:
+      commands:
+        restart:
+          ui_handler: restart_cmd_handler
+        update_sys_tick : 
+          ui_handler : update_sys_tick_handler
+        end:
+          ui_handler : end_cmd_handler
+    usched:
+      commands:
+        usched_init:
+          ui_handler : usched_init_handler
+        start_pi:
+          ui_handler : start_pi_handler
+        stop_pi:
+          ui_handler : stop_pi_handler
+        start_pi_scan:
+          ui_handler : start_pi_scan_handler
+        stop_pi_scan:
+          ui_handler : stop_pi_scan_handler
+        start_acl:
+          ui_handler : start_acl_handler
+        stop_acl:
+          ui_handler : stop_acl_handler
+        lpw_stop_callback:
+          ui_handler : lpw_stop_callback_handler
+        lpw_stop_acl_callback:
+          ui_handler : lpw_stop_acl_callback_handler
+        timer_stop_callback:
+          ui_handler : timer_stop_callback_handler
+        timer_expire_callback:
+          ui_handler : timer_expire_callback_handler
